@@ -15,6 +15,24 @@ public class Uristmaps {
     public static Properties settings;
 
     public static void main(String[] args) {
+        // TODO: Compile Tilesets
+        // TODO: Load world info
+        // TODO: Load sites info
+        // TODO: Load biome info
+        // TODO: Load structures info
+        // TODO: Load detailed site maps
+        // TODO: Load regions info
+
+        // TODO: Render biome tiles
+        // TODO: Render region labels
+        // TODO: Place region labels
+        // TODO: Place site labels
+        // TODO: Place detailed site maps
+
+        // TODO: Create JS files
+        // TODO: Assemble output resources
+
+
         settings = new Properties();
         settings.setProperty(Settings.OUTPUT_DIR, "output");
 

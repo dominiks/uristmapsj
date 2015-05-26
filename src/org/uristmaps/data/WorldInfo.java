@@ -5,14 +5,14 @@ package org.uristmaps.data;
  */
 public class WorldInfo {
 
-    private long size;
+    private int size;
     private String name;
 
-    public void setSize(long size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
-    public long getSize() {
+    public int getSize() {
         return size;
     }
 

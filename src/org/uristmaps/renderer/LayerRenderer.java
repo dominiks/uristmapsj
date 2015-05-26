@@ -1,10 +1,16 @@
 package org.uristmaps.renderer;
 
+import org.uristmaps.Uristmaps;
 import org.uristmaps.data.RenderSettings;
 import org.uristmaps.data.WorldInfo;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Base class for all layer renderer.
@@ -63,7 +69,15 @@ public abstract class LayerRenderer {
             }
         }
 
-        // TODO: Save the image to output folder.
+        // Save the image to output folder.
+        File targetFile = Paths.get(Uristmaps.settings.getProperty("output"), Integer.toString(x), y + ".png").toFile();
+        targetFile.getParentFile().mkdirs();
+
+        try {
+            ImageIO.write(result, "PNG", targetFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

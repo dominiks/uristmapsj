@@ -1,14 +1,18 @@
 package org.uristmaps.renderer;
 
+import org.uristmaps.data.RenderSettings;
+import org.uristmaps.data.WorldInfo;
+
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 /**
  * Renders an image from a tileset onto the map-tile.
  */
 public class SatRenderer extends LayerRenderer {
 
-    public SatRenderer() {
+    public SatRenderer(RenderSettings renderSettings, WorldInfo worldInfo) {
+        super(renderSettings, worldInfo);
+
         // TODO: Load tileset used for rendering.
         // TODO: Get biome information
     }

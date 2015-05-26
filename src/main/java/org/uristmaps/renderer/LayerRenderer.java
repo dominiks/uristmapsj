@@ -1,5 +1,6 @@
 package org.uristmaps.renderer;
 
+import org.uristmaps.Settings;
 import org.uristmaps.Uristmaps;
 import org.uristmaps.data.RenderSettings;
 import org.uristmaps.data.WorldInfo;
@@ -26,7 +27,7 @@ public abstract class LayerRenderer {
     /**
      * Initialize the renderer for the next render call.
      */
-    public void init(RenderSettings renderSettings, WorldInfo worldinfo) {
+    public LayerRenderer(RenderSettings renderSettings, WorldInfo worldinfo) {
         this.renderSettings = renderSettings;
         this.worldInfo = worldinfo;
     }
@@ -70,7 +71,10 @@ public abstract class LayerRenderer {
         }
 
         // Save the image to output folder.
-        File targetFile = Paths.get(Uristmaps.settings.getProperty("output"), Integer.toString(x), y + ".png").toFile();
+        File targetFile = Paths.get(Uristmaps.settings.getProperty(Settings.OUTPUT_DIR),
+                Integer.toString(renderSettings.getLevel()),
+                Integer.toString(x),
+                y + ".png").toFile();
         targetFile.getParentFile().mkdirs();
 
         try {

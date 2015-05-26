@@ -8,6 +8,10 @@ public class WorldInfo {
     private int size;
     private String name;
 
+    public WorldInfo(int size) {
+        this.size = size;
+    }
+
     public void setSize(int size) {
         this.size = size;
     }

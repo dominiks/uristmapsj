@@ -25,12 +25,10 @@ public class Uristmaps {
 
         LayerRenderer renderer = new SatRenderer(renderSettings, worldInfo);
 
-        System.out.println("Starting render");
         for (int x = 0; x < Math.pow(2, level); x++) {
             for (int y = 0; y < Math.pow(2, level); y++) {
                 renderer.renderMapTile(x, y);
             }
         }
-        System.out.println("Done");
     }
 }

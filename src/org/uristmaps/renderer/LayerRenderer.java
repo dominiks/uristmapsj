@@ -3,6 +3,8 @@ package org.uristmaps.renderer;
 import org.uristmaps.RenderSettings;
 import org.uristmaps.WorldInfo;
 
+import java.awt.image.BufferedImage;
+
 /**
  * Base class for all layer renderer.
  * This
@@ -16,7 +18,6 @@ public abstract class LayerRenderer {
 
     /**
      * Initialize the renderer for the next render call.
-     * @param level The zoom level that is currently rendered.
      */
     public void init(RenderSettings renderSettings, WorldInfo worldinfo) {
         this.renderSettings = renderSettings;
@@ -28,6 +29,14 @@ public abstract class LayerRenderer {
      * @param x
      * @param y
      */
-    public abstract void renderWorldTile(int x, int y);
+    public void renderWorldTile(int x, int y) {
+        long scaledWorldSize = worldInfo.getSize() / renderSettings.getStepSize();
+
+        BufferedImage result = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB);
+
+
+
+
+    }
 
 }

@@ -9,11 +9,17 @@ public class RenderSettings {
 
     private int stepSize;
 
+    private int graphicsSize;
+
     public int getStepSize() {
         return stepSize;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public int getGraphicsSize() {
+        return graphicsSize;
     }
 }

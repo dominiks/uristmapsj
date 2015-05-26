@@ -10,7 +10,7 @@ public abstract class Task {
     }
 
     public String[] getTargetFiles() {
-
+        return new String[]{};
     }
 
     public abstract void work();

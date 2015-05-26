@@ -33,7 +33,7 @@ public class RenderSettings {
         scaledWorldSize = worldInfo.getSize() / stepSize;
 
         // Calculate how many tiles are clear left&top of the render to center the world on the map.
-        clearTiles = 256 * (2 ^ zoomOffset) - worldInfo.getSize();
+        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - worldInfo.getSize();
         clearTiles /= stepSize;
         clearTiles /= 2;
 

@@ -28,9 +28,10 @@ public class Uristmaps {
             Log.DEBUG();
         }
 
-        
-
         // TODO: Compile Tilesets
+        Tilesets.compile();
+
+
         // TODO: Load world info
         // TODO: Load sites info
         // TODO: Load biome info

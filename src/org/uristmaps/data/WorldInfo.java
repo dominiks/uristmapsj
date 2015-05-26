@@ -1,4 +1,4 @@
-package org.uristmaps;
+package org.uristmaps.data;
 
 /**
  * Data container for information about the DF world that is being rendered.

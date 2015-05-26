@@ -1,4 +1,4 @@
-package org.uristmaps;
+package org.uristmaps.data;
 
 /**
  * Created by schacht on 26.05.15.

@@ -1,7 +1,7 @@
 package org.uristmaps.renderer;
 
-import org.uristmaps.RenderSettings;
-import org.uristmaps.WorldInfo;
+import org.uristmaps.data.RenderSettings;
+import org.uristmaps.data.WorldInfo;
 
 import java.awt.image.BufferedImage;
 

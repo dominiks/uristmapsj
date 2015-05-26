@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link href="/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/leaflet.css" type="text/css">
+        <link rel="stylesheet" href="/css/MarkerCluster.Default.css" type="text/css">
+        <link rel="stylesheet" href="/css/MarkerCluster.css" type="text/css">
+        <link rel="stylesheet" href="/css/L.Control.Sidebar.css" type="text/css">
+        <link rel="stylesheet" href="/css/urist.css" type="text/css">
+        
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .leaflet-container {
+            background: white;
+        }
+        .map {
+            height: 100vh;
+            width: 100%;
+        }
+        </style>
+
+        <!-- Everyone needs it, so here it is -->
+        <script src="/js/jquery.js" type="text/javascript"></script>
+
+        <!-- Oh all the bootstrap -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="/js/bootstrap.min.js"></script>
+
+        <script src="/js/leaflet.js" type="text/javascript"></script>
+        <script src="/js/leaflet.markercluster.js" type="text/javascript"></script>
+        <script src="/js/easy-button.js" type="text/javascript"></script>
+        <script src="/js/L.Control.Sidebar.js" type="text/javascript"></script>
+        <script src="/js/icons.js"></script>
+        <script src="/js/urist.js"></script>
+        
+        <title>{{ world_name }}</title>
+    </head>
+    <body>
+    <div id="sidebar-left">
+
+    <h1>Sites</h1>
+    {% for type_grp in sites | groupby("properties.type") %}
+    <h4>{{ type_grp.grouper | title }} ({{ type_grp.list | length }})</h4>
+        <ul class="list-unstyled">
+        {% for site in type_grp.list | sort(attribute="properties.name")%}
+            <li>
+            <button class="btn btn-link btn-xs site-btn" data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
+                {{ site.properties.name | title }}
+            </button>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    </div>
+
+    <div id="sidebar-right">
+    {% include "_biome-legend.html" %}
+    </div>
+
+    <div id="map" class="map"></div>
+
+    <script type="text/javascript">
+
+        var urist_version = "{{ version }}";
+        init_uristmaps();
+            
+    </script>
+
+    {{ footer }}
+    </body>
+</html>

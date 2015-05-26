@@ -20,7 +20,15 @@ public class Uristmaps {
 
     public static void main(String[] args) {
         // Load configuration file
+        Log.info("Uristmaps v0.3");
         loadConfig();
+
+        // TODO: Set logger to debug if flag is set in config
+        if (settings.get("App", "debug", Boolean.class)) {
+            Log.DEBUG();
+        }
+
+        
 
         // TODO: Compile Tilesets
         // TODO: Load world info
@@ -39,6 +47,7 @@ public class Uristmaps {
         // TODO: Create JS files
         // TODO: Assemble output resources
 
+        System.exit(0);
         int level = 4;
 
         WorldInfo worldInfo = new WorldInfo(2050);
@@ -67,5 +76,6 @@ public class Uristmaps {
             }
             System.exit(1);
         }
+        Log.info("Found config file.");
     }
 }

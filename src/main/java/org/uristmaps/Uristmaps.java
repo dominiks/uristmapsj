@@ -82,7 +82,9 @@ public class Uristmaps {
         // TODO: Load detailed site maps
         // TODO: Load regions info
 
-        // TODO: Render biome tiles
+        // Render biome tiles
+        LayerRenderer satRenderer = new SatRenderer();
+        satRenderer.work();
         // TODO: Render region labels
         // TODO: Place region labels
         // TODO: Place site labels
@@ -92,17 +94,7 @@ public class Uristmaps {
         // TODO: Assemble output resources
 
         System.exit(0);
-        int level = 4;
 
-        RenderSettings renderSettings = new RenderSettings(level, worldInfo);
-
-        LayerRenderer renderer = new SatRenderer(renderSettings, worldInfo);
-
-        for (int x = 0; x < Math.pow(2, level); x++) {
-            for (int y = 0; y < Math.pow(2, level); y++) {
-                renderer.renderMapTile(x, y);
-            }
-        }
     }
 
     /**

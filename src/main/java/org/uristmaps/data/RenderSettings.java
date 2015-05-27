@@ -1,10 +1,11 @@
 package org.uristmaps.data;
 
+import org.uristmaps.Uristmaps;
+
 /**
  * Created by schacht on 26.05.15.
  */
 public class RenderSettings {
-
 
     private final long scaledWorldSize;
     private final int graphicTilesPerBlock;
@@ -22,18 +23,18 @@ public class RenderSettings {
     private int graphicsSize;
     private int clearTiles;
 
-    public RenderSettings(int level, WorldInfo worldInfo) {
+    public RenderSettings(int level) {
         this.level = level;
 
-        initZoomOffset(worldInfo.getSize());
+        initZoomOffset(Uristmaps.worldInfo.getSize());
 
         graphicsSize = 2 ^ level - zoomOffset;
 
         initStepSize();
-        scaledWorldSize = worldInfo.getSize() / stepSize;
+        scaledWorldSize = Uristmaps.worldInfo.getSize() / stepSize;
 
         // Calculate how many tiles are clear left&top of the render to center the world on the map.
-        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - worldInfo.getSize();
+        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - Uristmaps.worldInfo.getSize();
         clearTiles /= stepSize;
         clearTiles /= 2;
 

@@ -7,8 +7,8 @@ package org.uristmaps.data;
  */
 public class Coord2 {
 
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
     public Coord2() {}
 

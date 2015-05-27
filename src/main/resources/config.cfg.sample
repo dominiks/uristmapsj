@@ -31,6 +31,9 @@ processes = 8
 # Set to true to show debug messages.
 debug = False
 
+# Blacklist categories from debug output (separate with ",")
+log_blacklist = kryo, tileset
+
 [Map]
 # The number of the highest zoom level to render. The higher it gets, the closer you can zoom in.
 max_zoom = 7

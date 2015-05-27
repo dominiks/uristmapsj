@@ -62,7 +62,6 @@ public class TimedProgress extends Progress {
 
         long now = System.currentTimeMillis();
         counter += now - lastShowCall;
-        System.err.println(counter);
 
         if (counter >= delay) {
             counter = 0;

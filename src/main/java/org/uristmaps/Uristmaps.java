@@ -1,14 +1,18 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.*;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
+import org.uristmaps.util.FileFinder;
 import org.uristmaps.util.FileWatcher;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +36,11 @@ public class Uristmaps {
      * The global file watcher object.
      */
     public static FileWatcher files;
+
+    /**
+     * Global worldInfo object.
+     */
+    public static WorldInfo worldInfo;
 
     /**
      * Entry point of the application.
@@ -60,7 +69,8 @@ public class Uristmaps {
         // Compile Tilesets
         Tilesets.compile();
 
-        // TODO: Load world info
+        // Load world info
+        loadWorldInfo();
 
         // Load sites info
         WorldSites.load();
@@ -82,7 +92,6 @@ public class Uristmaps {
         System.exit(0);
         int level = 4;
 
-        WorldInfo worldInfo = new WorldInfo(2050);
         RenderSettings renderSettings = new RenderSettings(level, worldInfo);
 
         LayerRenderer renderer = new SatRenderer(renderSettings, worldInfo);
@@ -92,6 +101,31 @@ public class Uristmaps {
                 renderer.renderMapTile(x, y);
             }
         }
+    }
+
+    /**
+     * Load the world file from disk or import when not available.
+     */
+    private static void loadWorldInfo() {
+        File worldInfoFile = FileFinder.getWorldFile();
+        boolean sourcesUnchanged = (files.allOk(new File[] {
+                FileFinder.getBiomeMap(), FileFinder.getWorldHistory()
+        }));
+        if (worldInfoFile.exists() && sourcesUnchanged) {
+            Log.info("Loading world information");
+            try (Input input = new Input(new FileInputStream(worldInfoFile))) {
+                worldInfo = Uristmaps.kryo.readObject(input, WorldInfo.class);
+            } catch (FileNotFoundException e) {
+                Log.warn("Error when reading world info file: " + worldInfoFile);
+                if (Log.DEBUG) Log.debug("Exception", e);
+                worldInfo = new WorldInfo();
+                worldInfo.init();
+            }
+        } else {
+            worldInfo = new WorldInfo();
+            worldInfo.init();
+        }
+
     }
 
     private static void initFileInfo() {
@@ -122,6 +156,7 @@ public class Uristmaps {
         kryo.register(Coord2.class);
         kryo.register(Site.class);
         kryo.register(FileInfo.class);
+        kryo.register(WorldInfo.class);
     }
 
     /**

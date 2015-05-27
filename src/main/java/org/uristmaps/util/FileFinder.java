@@ -47,4 +47,31 @@ public class FileFinder {
         File result = new File(conf.fetch("Paths", "build"), "files.kryo");
         return result;
     }
+
+    public static File getWorldFile() {
+        File result = new File(conf.fetch("Paths", "build"), "worldinfo.kryo");
+        return result;
+    }
+
+    public static File getBiomeMap() {
+        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().endsWith("-bm.png"));
+        if (searchResult.length == 0) {
+            Log.error("Filefinder", "Could not find legends xml file in " + conf.fetch("paths", "export"));
+            return null;
+        }
+        return searchResult[0];
+    }
+
+    public static File getWorldHistory() {
+        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().endsWith("-world_history.txt"));
+        if (searchResult.length == 0) {
+            Log.error("Filefinder", "Could not find history file in " + conf.fetch("paths", "export"));
+            return null;
+        }
+        return searchResult[0];
+    }
 }

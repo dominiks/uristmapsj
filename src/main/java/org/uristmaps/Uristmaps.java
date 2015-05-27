@@ -50,7 +50,7 @@ public class Uristmaps {
         initDirectories();
         initFileInfo();
 
-        // TODO: Set logger to debug if flag is set in config
+        // Set logger to debug if flag is set in config
         if (conf.get("App", "debug", Boolean.class)) {
             Log.DEBUG();
             Log.info("Enabled Debug Logging");

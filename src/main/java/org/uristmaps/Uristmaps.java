@@ -88,7 +88,7 @@ public class Uristmaps {
      * Configure the logger used for output.
      */
     private static void initLogger() {
-        Log.setLogger(new FilteringLogger(conf.get("App").getAll("log_blacklist")));
+        Log.setLogger(new FilteringLogger(conf.get("App", "log_blacklist").split(",")));
     }
 
     /**
@@ -127,11 +127,14 @@ public class Uristmaps {
          * Create a new filtering logger with the provided blacklist.
          * @param blacklist
          */
-        public FilteringLogger(List<String> blacklist) {
+        public FilteringLogger(String[] blacklist) {
             if (blacklist == null) {
                 this.blacklist = new HashSet<>();
             } else {
-                this.blacklist = new HashSet<String>(blacklist);
+                this.blacklist = new HashSet<>();
+                for (String item : blacklist) {
+                    this.blacklist.add(item.toLowerCase().trim());
+                }
             }
         }
 
@@ -143,7 +146,7 @@ public class Uristmaps {
          * @param ex
          */
         public void log (int level, String category, String message, Throwable ex) {
-            if (blacklist.contains(category)) {
+            if (level == Log.LEVEL_DEBUG && category != null && blacklist.contains(category.toLowerCase())) {
                 return;
             }
             super.log(level, category, message, ex);

@@ -29,7 +29,7 @@ public class Tilesets {
      * TODO: Skip if not needed.
      */
     public static void compile() {
-        Log.debug("Tileset", "Compiling tileset files.");
+        Log.info("Tileset", "Compiling tileset files.");
 
         // Iterate over directories in specified tileset dir
         File tilesDir = new File(Uristmaps.conf.fetch("Paths", "tiles")).getAbsoluteFile();

@@ -13,7 +13,6 @@ import org.uristmaps.renderer.SatRenderer;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,6 +31,11 @@ public class Uristmaps {
     public static Kryo kryo;
 
     /**
+     * The global file watcher object.
+     */
+    public static FileWatcher files;
+
+    /**
      * Entry point of the application.
      *
      * Runs all available tasks.
@@ -44,6 +48,7 @@ public class Uristmaps {
         initKryo();
         initLogger();
         initDirectories();
+        initFileInfo();
 
         // TODO: Set logger to debug if flag is set in config
         if (conf.get("App", "debug", Boolean.class)) {
@@ -88,6 +93,10 @@ public class Uristmaps {
         }
     }
 
+    private static void initFileInfo() {
+        files = new FileWatcher();
+    }
+
     /**
      * Make sure the output directories exist.
      */
@@ -111,6 +120,7 @@ public class Uristmaps {
         kryo = new Kryo();
         kryo.register(Coord2.class);
         kryo.register(Site.class);
+        kryo.register(FileInfo.class);
     }
 
     /**

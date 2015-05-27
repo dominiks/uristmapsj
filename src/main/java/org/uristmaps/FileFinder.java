@@ -37,4 +37,13 @@ public class FileFinder {
         }
         return searchResult[0];
     }
+
+    /**
+     * Return the path to the file-state file.
+     * @return
+     */
+    public static File getFileStore() {
+        File result = new File(conf.fetch("Paths", "build"), "files.kryo");
+        return result;
+    }
 }

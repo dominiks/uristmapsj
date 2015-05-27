@@ -73,4 +73,34 @@ public class Site {
     public void setPopulation(String name, int size) {
         populations.put(name, size);
     }
+
+    /**
+     * Add the info contained in the provided line to the site.
+     *
+     * Line is something like on of these:
+     *     1: Ostukurrith, "Sneakedscar", cave
+     *     Owner: Trulbin, kobolds
+     *     Parent Civ: Jlorsnin, kobolds
+     *     255 kobolds
+     * @param line
+     */
+    public void addInfo(String line) {
+        if (line.contains("\"")) {
+            String[] split = line.split(":")[1].split(",");
+            setName(split[0].trim());
+            setNameEnglish(split[1].trim().replace("\"", ""));
+            setType(split[2].trim());
+        } else if (line.contains(":")) {
+            String[] split = line.split(":");
+            if (split[0].equals("Owner")) {
+                setOwner(split[1]);
+            } else if (split[0].equals("Parent Civ")) {
+                setParentCiv(split[1]);
+            }
+        } else {
+            int separator = line.indexOf(" ");
+            setPopulation(line.substring(separator), Integer.parseInt(line.substring(0, separator - 1)));
+        }
+
+    }
 }

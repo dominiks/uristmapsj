@@ -18,6 +18,7 @@ public class WorldInfo {
     private int size;
     private String name;
     private String nameEnglish;
+    private String[][] biomes;
 
     public WorldInfo() {
 
@@ -100,5 +101,13 @@ public class WorldInfo {
 
     public String getNameEnglish() {
         return nameEnglish;
+    }
+
+    public String[][] getBiomes() {
+        return biomes;
+    }
+
+    public void setBiomes(String[][] biomes) {
+        this.biomes = biomes;
     }
 }

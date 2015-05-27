@@ -75,7 +75,9 @@ public class Uristmaps {
         // Load sites info
         WorldSites.load();
 
-        // TODO: Load biome info
+        // Load biome info
+        BiomeInfo.load();
+
         // TODO: Load structures info
         // TODO: Load detailed site maps
         // TODO: Load regions info

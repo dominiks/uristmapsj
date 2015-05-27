@@ -41,6 +41,7 @@ public class FileFinder {
 
     /**
      * Return the path to the file-state file.
+     * Contains a Map<String, FileInfo> object.
      * @return
      */
     public static File getFileStore() {
@@ -48,6 +49,10 @@ public class FileFinder {
         return result;
     }
 
+    /**
+     * Contains a WorldInfo object.
+     * @return
+     */
     public static File getWorldFile() {
         File result = new File(conf.fetch("Paths", "build"), "worldinfo.kryo");
         return result;
@@ -73,5 +78,14 @@ public class FileFinder {
             return null;
         }
         return searchResult[0];
+    }
+
+    /**
+     * The biome data file. Contains a String[][] array that maps x,y to biome name.
+     * @return
+     */
+    public static File getBiomeInfo() {
+        File result = new File(conf.fetch("Paths", "build"), "biomes.kryo");
+        return result;
     }
 }

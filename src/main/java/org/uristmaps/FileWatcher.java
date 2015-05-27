@@ -34,7 +34,6 @@ public class FileWatcher {
         // Try to read the file-info file.
         File storeFile = FileFinder.getFileStore();
         if (storeFile.exists()) {
-
             try (Input input = new Input(new FileInputStream(storeFile))) {
                 fileMap = Uristmaps.kryo.readObject(input, HashMap.class);
             } catch (FileNotFoundException e) {
@@ -42,7 +41,7 @@ public class FileWatcher {
                 if (Log.DEBUG) Log.debug("FileWatcher", "Exception", e);
                 fileMap = new HashMap<>();
             }
-
+        } else {
             fileMap = new HashMap<>();
         }
     }
@@ -54,10 +53,20 @@ public class FileWatcher {
      */
     public boolean allOk(File[] files) {
         for (File f : files) {
-            if (!fileMap.containsKey(f.getAbsolutePath())) return false;
-            if (!f.exists()) return false;
-            if (f.length() != fileMap.get(f.getAbsolutePath()).getSize()) return false;
+            if (!fileOk(f)) return false;
         }
+        return true;
+    }
+
+    /**
+     * Check if this single file exists and has (correct) info stored.
+     * @param f
+     * @return
+     */
+    public boolean fileOk(File f) {
+        if (!fileMap.containsKey(f.getAbsolutePath())) return false;
+        if (!f.exists()) return false;
+        if (f.length() != fileMap.get(f.getAbsolutePath()).getSize()) return false;
         return true;
     }
 
@@ -69,10 +78,9 @@ public class FileWatcher {
     public File[] getDirty(File[] files) {
         List<File> result = new LinkedList<>();
         for (File f : files) {
-            if (!fileMap.containsKey(f.getAbsolutePath())) result.add(f);
-            if (!f.exists()) result.add(f);
-            if (f.length() != fileMap.get(f.getAbsolutePath()).getSize()) result.add(f);
+            if (!fileOk(f)) result.add(f);
         }
+        Log.debug("FileWatcher", "From " + files.length + " provided files, " + result.size() + " were dirty.");
         return result.toArray(new File[]{});
     }
 
@@ -84,6 +92,7 @@ public class FileWatcher {
         for (File f : files) {
             fileMap.put(f.getAbsolutePath(), new FileInfo(f));
         }
+        Log.debug("FileWatcher", "Updated " + files.length + " files.");
         saveFile();
     }
 
@@ -95,6 +104,15 @@ public class FileWatcher {
             Log.warn("FileWatcher", "Error when writing state file: " + storeFile);
             if (Log.DEBUG) Log.debug("FileWatcher", "Exception", e);
         }
+        Log.debug("FileWatcher", "Saved store.");
     }
 
+    /**
+     * Update a single file. Saves the data immediately, don't use this for many files.
+     * @param f
+     */
+    public void updateFile(File f) {
+        fileMap.put(f.getAbsolutePath(), new FileInfo(f));
+        saveFile();
+    }
 }

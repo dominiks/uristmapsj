@@ -54,6 +54,12 @@ public class Tilesets {
         File[] files = directory.listFiles(pathname -> pathname.getName().endsWith(".png"));
         Log.debug("Tileset", "Found " + files.length + " images.");
 
+        // Check if any files need refreshing.
+        // If we did .dirty to get only the dirty files and recompiled them, the result would be a
+        // tilesheet of only these tiles.
+        boolean needRefresh = !Uristmaps.files.allOk(files);
+        if (!needRefresh) return;
+
         int tileSize = 0;
         try {
             tileSize = Integer.parseInt(directory.getName());
@@ -90,6 +96,9 @@ public class Tilesets {
                 continue;
             }
         }
+
+        // Save state for all files
+        Uristmaps.files.updateFiles(files);
 
         // Store the tileset image
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),

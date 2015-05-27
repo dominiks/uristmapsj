@@ -1,5 +1,6 @@
 package org.uristmaps;
 
+import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.data.Site;
@@ -18,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by dominik on 27.05.2015.
+ *
  */
 public class WorldSites {
 
@@ -26,8 +27,26 @@ public class WorldSites {
 
     public static void load() {
         Log.info("Sites", "Loading site information");
-        Map<Integer, Site> sites = loadPopulationInfo();
-        loadLegendsXML(sites);
+
+        Map<Integer, Site> sites = new HashMap<>();
+
+        // Read kryo world info.
+        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
+                "sites.kryo").toFile();
+        try (Input input = new Input(new FileInputStream(sitesFile))) {
+            sites = Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (FileNotFoundException e) {
+            Log.warn("Sites", "Error when reading state file: " + sitesFile);
+            if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+        }
+
+        boolean pops = loadPopulationInfo(sites);
+        boolean xml = loadLegendsXML(sites);
+
+        // When neither did work, there's no need to write.
+        if (!xml && !pops) {
+            return;
+        }
 
         Log.debug("Sites", "Writing site info");
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
@@ -35,16 +54,29 @@ public class WorldSites {
         try (Output output = new Output(new FileOutputStream(targetFile))) {
             Uristmaps.kryo.writeObject(output, sites);
         } catch (Exception e) {
-            Log.warn("Tilesets", "Could not write sites index file: " + targetFile);
+            Log.warn("Sites", "Could not write sites index file: " + targetFile);
             if (Log.DEBUG) Log.debug("Exception: ", e);
         }
 
     }
 
-    private static void loadLegendsXML(Map<Integer, Site> sites) {
+    /**
+     *
+     * @param sites
+     * @return True if work was done
+     */
+    private static boolean loadLegendsXML(Map<Integer, Site> sites) {
         File legendsFile = FileFinder.getLegendsXML();
         if (legendsFile == null) {
             System.exit(1);
+        }
+
+        // Check if work needs to be done
+        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
+                "sites.kryo").toFile();
+        if (Uristmaps.files.fileOk(legendsFile) && sitesFile.exists()) {
+            Log.debug("Sites", "Skipping XML reading.");
+            return false;
         }
 
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -64,24 +96,29 @@ public class WorldSites {
             e.printStackTrace();
         }
 
-
+        Uristmaps.files.updateFile(legendsFile);
+        return true;
     }
 
-    private static Map<Integer, Site> loadPopulationInfo() {
+    private static boolean loadPopulationInfo(Map<Integer, Site> sites) {
         // Read region_name*-world_sites_and_pops.txt
         File popFile = FileFinder.getPopulationFile();
         if (popFile == null) {
             System.exit(1);
         }
 
-        // The result of all collected site info
-        Map<Integer, Site> sites = new HashMap<Integer, Site>();
+        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
+                "sites.kryo").toFile();
+        if (Uristmaps.files.fileOk(popFile) && sitesFile.exists()) {
+            Log.debug("Sites", "Skipping population reading.");
+            return false;
+        }
 
         // The last read site
         Site lastSite = null;
 
         // The matcher object for the regex
-        Matcher match = null;
+        Matcher match;
 
         String line = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(popFile))) {
@@ -112,14 +149,16 @@ public class WorldSites {
                 }
             }
         } catch (Exception e) {
-            Log.error("WorldSites", "Could not read world population file.");
+            Log.error("Sites", "Could not read world population file.");
             if (Log.DEBUG) {
-                Log.debug("WorldSites", "Last line: \"" + line + "\"");
+                Log.debug("Sites", "Last line: \"" + line + "\"");
                 Log.debug("Exception: ", e);
             }
             System.exit(1);
         }
 
-        return sites;
+        Uristmaps.files.updateFile(popFile);
+
+        return true;
     }
 }

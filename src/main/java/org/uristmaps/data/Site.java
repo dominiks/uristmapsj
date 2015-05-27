@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class Site {
 
-    private final int id;
+    private int id;
     private String name;
     private String nameEnglish;
     private String type;
@@ -17,6 +17,8 @@ public class Site {
     private Coord2 coords;
 
     private Map<String, Integer> populations;
+
+    public Site() {}
 
     public Site(int id) {
         this.id = id;

@@ -54,10 +54,11 @@ public class Uristmaps {
         // Compile Tilesets
         //Tilesets.compile();
 
-        // TODO: Load sites info
+        // TODO: Load world info
+
+        // Load sites info
         WorldSites.load();
 
-        // TODO: Load world info
         // TODO: Load biome info
         // TODO: Load structures info
         // TODO: Load detailed site maps

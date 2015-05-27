@@ -66,7 +66,8 @@ public class LegendsSiteReader extends DefaultHandler {
             String content = String.copyValueOf(ch, start, length);
             readingCoords = false;
             String[] split = content.split(",");
-            lastSite.setCoords(new Coord2(Integer.parseInt(split[0]), Integer.parseInt(split[1])));
+            Coord2 parsedCoords = new Coord2(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+            lastSite.setCoords(Util.worldToUnitCentered(parsedCoords));
         }
     }
 }

@@ -17,12 +17,22 @@ public class FileFinder {
      * @return A file reference to the file or null if no file was found.
      */
     public static File getPopulationFile() {
-        File exportDir = new File(conf.fetch("Paths", "region"));
-        File[] searchResult = exportDir.listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-world_sites_and_pops.txt"));
         if (searchResult.length == 0) {
             Log.error("Filefinder", "Could not find population file in " + conf.fetch("paths", "export"));
+            return null;
+        }
+        return searchResult[0];
+    }
+
+    public static File getLegendsXML() {
+        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().endsWith("-legends.xml"));
+        if (searchResult.length == 0) {
+            Log.error("Filefinder", "Could not find legends xml file in " + conf.fetch("paths", "export"));
             return null;
         }
         return searchResult[0];

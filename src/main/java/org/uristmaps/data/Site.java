@@ -14,6 +14,7 @@ public class Site {
     private String type;
     private String owner;
     private String parentCiv;
+    private Coord2 coords;
 
     private Map<String, Integer> populations;
 
@@ -102,5 +103,13 @@ public class Site {
             setPopulation(line.substring(separator), Integer.parseInt(line.substring(0, separator)));
         }
 
+    }
+
+    public Coord2 getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coord2 coords) {
+        this.coords = coords;
     }
 }

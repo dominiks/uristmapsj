@@ -7,8 +7,10 @@ package org.uristmaps.data;
  */
 public class Coord2 {
 
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
+
+    public Coord2() {}
 
     /**
      * Create a new value pair.

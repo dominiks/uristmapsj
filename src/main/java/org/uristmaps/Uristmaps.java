@@ -52,7 +52,7 @@ public class Uristmaps {
         }
 
         // Compile Tilesets
-        //Tilesets.compile();
+        Tilesets.compile();
 
         // TODO: Load world info
 

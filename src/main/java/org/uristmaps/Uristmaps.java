@@ -1,7 +1,9 @@
 package org.uristmaps;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
+import org.uristmaps.data.Coord2;
 import org.uristmaps.data.RenderSettings;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
@@ -9,26 +11,29 @@ import org.uristmaps.renderer.SatRenderer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Created by schacht on 26.05.15.
  */
 public class Uristmaps {
 
-    public static Wini settings;
+    public static Wini conf;
+
+    public static Kryo kryo;
 
     public static void main(String[] args) {
         // Load configuration file
         Log.info("Uristmaps v0.3");
         loadConfig();
+        initKryo();
 
         // TODO: Set logger to debug if flag is set in config
-        if (settings.get("App", "debug", Boolean.class)) {
+        if (conf.get("App", "debug", Boolean.class)) {
             Log.DEBUG();
+            Log.info("Enabled Debug Logging");
         }
 
-        // TODO: Compile Tilesets
+        // Compile Tilesets
         Tilesets.compile();
 
 
@@ -63,6 +68,11 @@ public class Uristmaps {
         }
     }
 
+    private static void initKryo() {
+        kryo = new Kryo();
+        kryo.register(Coord2.class);
+    }
+
     /**
      * Load the config ini-style file.
      */
@@ -70,7 +80,7 @@ public class Uristmaps {
         // TODO: Read config file path from ARGS if provided.
         File targetFile = new File("config.cfg");
         try {
-            settings = new Wini(targetFile);
+            conf = new Wini(targetFile);
         } catch (IOException e) {
             if (!targetFile.exists()){
                 Log.error("Could not find the config file: " + targetFile);

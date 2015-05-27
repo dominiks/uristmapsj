@@ -69,7 +69,7 @@ public abstract class LayerRenderer {
         }
 
         // Save the image to output folder.
-        File targetFile = Paths.get(Uristmaps.settings.fetch("Paths", "output"),
+        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
                 Integer.toString(renderSettings.getLevel()),
                 Integer.toString(x),
                 y + ".png").toFile();

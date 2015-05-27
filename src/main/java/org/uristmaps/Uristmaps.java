@@ -5,6 +5,7 @@ import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.RenderSettings;
+import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
@@ -52,9 +53,10 @@ public class Uristmaps {
         // Compile Tilesets
         Tilesets.compile();
 
+        // TODO: Load sites info
+        WorldSites.load();
 
         // TODO: Load world info
-        // TODO: Load sites info
         // TODO: Load biome info
         // TODO: Load structures info
         // TODO: Load detailed site maps
@@ -97,6 +99,7 @@ public class Uristmaps {
     private static void initKryo() {
         kryo = new Kryo();
         kryo.register(Coord2.class);
+        kryo.register(Site.class);
     }
 
     /**

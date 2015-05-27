@@ -43,6 +43,7 @@ public class Uristmaps {
         loadConfig();
         initKryo();
         initLogger();
+        initDirectories();
 
         // TODO: Set logger to debug if flag is set in config
         if (conf.get("App", "debug", Boolean.class)) {
@@ -51,7 +52,7 @@ public class Uristmaps {
         }
 
         // Compile Tilesets
-        Tilesets.compile();
+        //Tilesets.compile();
 
         // TODO: Load sites info
         WorldSites.load();
@@ -84,6 +85,15 @@ public class Uristmaps {
                 renderer.renderMapTile(x, y);
             }
         }
+    }
+
+    /**
+     * Make sure the output directories exist.
+     */
+    private static void initDirectories() {
+        new File(conf.fetch("Paths", "output")).mkdirs();
+        new File(conf.fetch("Paths", "build")).mkdirs();
+        new File(conf.fetch("Paths", "tilesets")).mkdirs();
     }
 
     /**

@@ -99,7 +99,7 @@ public class Site {
             }
         } else {
             int separator = line.indexOf(" ");
-            setPopulation(line.substring(separator), Integer.parseInt(line.substring(0, separator - 1)));
+            setPopulation(line.substring(separator), Integer.parseInt(line.substring(0, separator)));
         }
 
     }

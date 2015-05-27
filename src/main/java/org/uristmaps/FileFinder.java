@@ -17,8 +17,9 @@ public class FileFinder {
      * @return A file reference to the file or null if no file was found.
      */
     public static File getPopulationFile() {
-        File[] searchResult = new File(conf.fetch("paths", "export")).getAbsoluteFile().listFiles(
-                filename -> filename.getName().contains(conf.get("paths", "region_name"))
+        File exportDir = new File(conf.fetch("Paths", "region"));
+        File[] searchResult = exportDir.listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-world_sites_and_pops.txt"));
         if (searchResult.length == 0) {
             Log.error("Filefinder", "Could not find population file in " + conf.fetch("paths", "export"));

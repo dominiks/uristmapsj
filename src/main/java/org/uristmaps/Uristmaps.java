@@ -11,9 +11,6 @@ import org.uristmaps.renderer.SatRenderer;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,10 +20,22 @@ import java.util.Set;
  */
 public class Uristmaps {
 
+    /**
+     * The global configuration object.
+     */
     public static Wini conf;
 
+    /**
+     * The global kryo object.
+     */
     public static Kryo kryo;
 
+    /**
+     * Entry point of the application.
+     *
+     * Runs all available tasks.
+     * @param args
+     */
     public static void main(String[] args) {
         // Load configuration file
         Log.info("Uristmaps v0.3");
@@ -75,10 +84,16 @@ public class Uristmaps {
         }
     }
 
+    /**
+     * Configure the logger used for output.
+     */
     private static void initLogger() {
         Log.setLogger(new FilteringLogger(conf.get("App").getAll("log_blacklist")));
     }
 
+    /**
+     * Configure the kryo instance used for reading/writing objects.
+     */
     private static void initKryo() {
         kryo = new Kryo();
         kryo.register(Coord2.class);

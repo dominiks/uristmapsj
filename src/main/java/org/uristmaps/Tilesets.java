@@ -23,6 +23,10 @@ public class Tilesets {
     /**
      * Check the tile directory for new loose tiles and compile
      * them into the tileset file.
+     *
+     * TODO: Check if the source files have changed since the last compilation
+     * TODO: Check if the target files are incomplete and need recompiling
+     * TODO: Skip if not needed.
      */
     public static void compile() {
         Log.debug("Tileset", "Compiling tileset files.");

@@ -36,6 +36,11 @@ public class Uristmaps {
     public static FileWatcher files;
 
     /**
+     * Global worldInfo object.
+     */
+    public static WorldInfo worldInfo;
+
+    /**
      * Entry point of the application.
      *
      * Runs all available tasks.
@@ -59,7 +64,9 @@ public class Uristmaps {
         // Compile Tilesets
         Tilesets.compile();
 
-        // TODO: Load world info
+        // Load world info
+        worldInfo = new WorldInfo();
+        worldInfo.init();
 
         // Load sites info
         WorldSites.load();

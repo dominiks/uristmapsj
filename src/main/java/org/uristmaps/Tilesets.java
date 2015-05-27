@@ -39,9 +39,6 @@ public class Tilesets {
             System.exit(1);
         }
 
-        // Make sure the target directory exists.
-        new File(Uristmaps.conf.fetch("Paths", "tilesets")).mkdirs();
-
         for (File tileDir : tilesDir.listFiles(fname -> fname.isDirectory())) {
             Log.debug("Tileset", "Processing directory: " + tileDir);
             compileDirectory(tileDir);
@@ -89,7 +86,7 @@ public class Tilesets {
             } catch (IOException e) {
                 // Could not read the image
                 Log.warn("Tileset", "Could not read image file: " + imageFile);
-                if (Log.DEBUG) e.printStackTrace();
+                if (Log.DEBUG) Log.debug("Exception: ", e);
                 continue;
             }
         }
@@ -101,7 +98,7 @@ public class Tilesets {
             ImageIO.write(result, "PNG", targetFile);
         } catch (Exception e) {
             Log.warn("Tilesets", "Could not write tileset image file: " + targetFile);
-            if (Log.DEBUG) e.printStackTrace();
+            if (Log.DEBUG) Log.debug("Exception: ", e);
         }
 
         // TODO: Export the index file
@@ -111,7 +108,7 @@ public class Tilesets {
             Uristmaps.kryo.writeObject(output, index);
         } catch (Exception e) {
             Log.warn("Tilesets", "Could not write tileset index file: " + targetFile);
-            if (Log.DEBUG) e.printStackTrace();
+            if (Log.DEBUG) Log.debug("Exception: ", e);
         }
     }
 }

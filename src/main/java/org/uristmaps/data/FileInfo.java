@@ -1,4 +1,4 @@
-package org.uristmaps;
+package org.uristmaps.data;
 
 import java.io.File;
 

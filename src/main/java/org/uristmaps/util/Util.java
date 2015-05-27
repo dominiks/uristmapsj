@@ -1,4 +1,4 @@
-package org.uristmaps;
+package org.uristmaps.util;
 
 import org.uristmaps.data.Coord2;
 

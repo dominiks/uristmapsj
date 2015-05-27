@@ -3,12 +3,10 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.RenderSettings;
-import org.uristmaps.data.Site;
-import org.uristmaps.data.WorldInfo;
+import org.uristmaps.data.*;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
+import org.uristmaps.util.FileWatcher;
 
 import java.io.File;
 import java.io.IOException;

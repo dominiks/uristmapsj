@@ -3,6 +3,7 @@ package org.uristmaps;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.Site;
+import org.uristmaps.util.Util;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

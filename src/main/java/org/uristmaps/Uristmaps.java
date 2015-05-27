@@ -11,6 +11,12 @@ import org.uristmaps.renderer.SatRenderer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by schacht on 26.05.15.
@@ -26,6 +32,7 @@ public class Uristmaps {
         Log.info("Uristmaps v0.3");
         loadConfig();
         initKryo();
+        initLogger();
 
         // TODO: Set logger to debug if flag is set in config
         if (conf.get("App", "debug", Boolean.class)) {
@@ -68,6 +75,10 @@ public class Uristmaps {
         }
     }
 
+    private static void initLogger() {
+        Log.setLogger(new FilteringLogger(conf.get("App").getAll("log_blacklist")));
+    }
+
     private static void initKryo() {
         kryo = new Kryo();
         kryo.register(Coord2.class);
@@ -89,4 +100,40 @@ public class Uristmaps {
         }
         Log.info("Found config file.");
     }
+
+    /**
+     * A logger that can ignore items belonging to a set category.
+     */
+    static public class FilteringLogger extends Log.Logger {
+
+        private final Set<String> blacklist;
+
+        /**
+         * Create a new filtering logger with the provided blacklist.
+         * @param blacklist
+         */
+        public FilteringLogger(List<String> blacklist) {
+            if (blacklist == null) {
+                this.blacklist = new HashSet<>();
+            } else {
+                this.blacklist = new HashSet<String>(blacklist);
+            }
+        }
+
+        /**
+         * Drop log messages from blacklisted categories.
+         * @param level
+         * @param category
+         * @param message
+         * @param ex
+         */
+        public void log (int level, String category, String message, Throwable ex) {
+            if (blacklist.contains(category)) {
+                return;
+            }
+            super.log(level, category, message, ex);
+        }
+    }
 }
+
+

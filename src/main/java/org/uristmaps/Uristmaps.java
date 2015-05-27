@@ -56,6 +56,9 @@ public class Uristmaps {
             Log.info("Enabled Debug Logging");
         }
 
+        // Convert all BMP in the export dir to PNG
+        BmpConverter.convert();
+
         // Compile Tilesets
         Tilesets.compile();
 

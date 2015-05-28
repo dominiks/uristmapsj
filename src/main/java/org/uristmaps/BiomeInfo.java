@@ -58,7 +58,7 @@ public class BiomeInfo {
         colorTranslation.put(makeColor(255,128,64), "rock_desert");
     }
 
-    private Map<Coord2, String> biomeInfo;
+    public static String[][] biomeInfo;
 
 
     public static void load() {
@@ -71,7 +71,7 @@ public class BiomeInfo {
             File biomeInfoFile = FileFinder.getBiomeInfo();
             try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
                 String[][] biomes = Uristmaps.kryo.readObject(input, String[][].class);
-                Uristmaps.worldInfo.setBiomes(biomes);
+                biomeInfo = biomes;
             } catch (FileNotFoundException e) {
                 Log.warn("BiomeInfo", "Error when reading biome file: " + biomeInfoFile);
                 if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
@@ -102,7 +102,7 @@ public class BiomeInfo {
         }
 
         Log.info("BiomeInfo", "Done");
-        Uristmaps.worldInfo.setBiomes(result);
+        biomeInfo = result;
         File biomeInfoFile = FileFinder.getBiomeInfo();
         try (Output output = new Output(new FileOutputStream(biomeInfoFile))) {
             Uristmaps.kryo.writeObject(output, result);

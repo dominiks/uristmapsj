@@ -8,29 +8,9 @@ import com.esotericsoftware.minlog.Log;
 public class UnitProgress extends Progress {
 
     /**
-     * The maximum value of work units.
-     */
-    private int max;
-
-    /**
-     * The current worked units.
-     */
-    private int current;
-
-    /**
      * At which percentage step the progress will report.
      */
     private int step;
-
-    /**
-     * The category to log as.
-     */
-    private String category;
-
-    /**
-     * The log level to use.
-     */
-    private int loglevel;
 
     /**
      * When the last call of show() was.
@@ -46,6 +26,8 @@ public class UnitProgress extends Progress {
      */
     public UnitProgress(int max, int step, String category, int loglevel) {
         super(max, category, loglevel);
+        nextUnits = step;
+        this.step = step;
     }
 
     /**

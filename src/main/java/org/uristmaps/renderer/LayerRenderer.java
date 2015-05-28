@@ -5,6 +5,8 @@ import org.uristmaps.Uristmaps;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.Coord2Mutable;
 import org.uristmaps.data.RenderSettings;
+import org.uristmaps.util.Progress;
+import org.uristmaps.util.UnitProgress;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -59,8 +61,8 @@ public abstract class LayerRenderer {
                     break;
                 }
 
-                world.setX(globalTileX - renderSettings.getClearTiles() * renderSettings.getStepSize());
-                world.setY(globalTileY - renderSettings.getClearTiles() * renderSettings.getStepSize());
+                world.setX((globalTileX - renderSettings.getClearTiles()) * renderSettings.getStepSize());
+                world.setY((globalTileY - renderSettings.getClearTiles()) * renderSettings.getStepSize());
 
                 renderTile(world, tile, graphics, renderSettings);
             }
@@ -79,6 +81,12 @@ public abstract class LayerRenderer {
             e.printStackTrace();
         }
     }
+
+    /**
+     * This is the level that will be drawn in the next batch. Load resources for this zoom level.
+     * @param level
+     */
+    protected abstract void prepareForLevel(int level, RenderSettings renderSettings);
 
     /**
      * Render the tile within the result map-tile.
@@ -101,12 +109,15 @@ public abstract class LayerRenderer {
         for (int level = minLevel; level <= maxLevel; level++) {
             Log.info(getName(), "Rendering zoom level " + level);
             RenderSettings renderSettings = new RenderSettings(level);
+            prepareForLevel(level, renderSettings);
 
+            Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
             // Iterate over all tiles of this renderlevel and render them.
             for (int x = 0; x < Math.pow(2, level); x++) {
                 for (int y = 0; y < Math.pow(2, level); y++) {
                     renderMapTile(x, y, renderSettings);
                 }
+                prog.show();
             }
         }
     }

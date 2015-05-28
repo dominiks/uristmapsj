@@ -28,7 +28,7 @@ public class RenderSettings {
 
         initZoomOffset(Uristmaps.worldInfo.getSize());
 
-        graphicsSize = 2 ^ level - zoomOffset;
+        graphicsSize = (int) Math.pow(2,(level - zoomOffset));
 
         initStepSize();
         scaledWorldSize = Uristmaps.worldInfo.getSize() / stepSize;
@@ -53,8 +53,8 @@ public class RenderSettings {
          When the word does not fit into the renderer at 1px steps,
          double the step size until it does.
           */
-        if (zoomOffset == 0) {
-            stepSize = 2 ^ zoomOffset - level;
+        if (graphicsSize == 0) {
+            stepSize = (int) Math.pow(2, zoomOffset - level);
             graphicsSize = 1;
         }
     }

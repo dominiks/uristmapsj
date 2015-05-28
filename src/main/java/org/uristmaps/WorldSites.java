@@ -34,11 +34,14 @@ public class WorldSites {
         // Read kryo world info.
         File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
                 "sites.kryo").toFile();
-        try (Input input = new Input(new FileInputStream(sitesFile))) {
-            sites = Uristmaps.kryo.readObject(input, HashMap.class);
-        } catch (FileNotFoundException e) {
-            Log.warn("Sites", "Error when reading state file: " + sitesFile);
-            if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+        if (sitesFile.exists()) {
+            try (Input input = new Input(new FileInputStream(sitesFile))) {
+                sites = Uristmaps.kryo.readObject(input, HashMap.class);
+                return;
+            } catch (FileNotFoundException e) {
+                Log.warn("Sites", "Error when reading state file: " + sitesFile);
+                if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+            }
         }
 
         boolean pops = loadPopulationInfo(sites);

@@ -17,21 +17,19 @@ function init_uristmaps() {
     map = L.map('map').setView([0, 0], 3);
     L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         noWrap: true,
-        minZoom: {{ min_zoom }},
-        maxZoom: {{ max_zoom }},
-        attribution: "<a href='http://www.uristmaps.org/'>UristMaps {{ version }}</a>",
+        minZoom: $map.min_zoom,
+        maxZoom: $map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
     }).addTo(map);
     
     window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {
         noWrap: true,
-        minZoom: {{ min_zoom }},
-        maxZoom: {{ max_zoom }},
-        attribution: "<a href='http://www.uristmaps.org/'>UristMaps {{ version }}</a>",
+        minZoom: $map.min_zoom,
+        maxZoom: $map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
     });
     
     window.map = map;
-    
-    
 
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
@@ -56,11 +54,11 @@ function init_buttons() {
 function setup_sidebars() {
     leftbar = L.control.sidebar("sidebar-left", {
         position: "left",
-	autoPan: false,
+        autoPan: false,
     });
     rightbar = L.control.sidebar("sidebar-right", {
         position: "right",
-	autoPan: false,
+        autoPan: false,
     });
 
     map.addControl(leftbar);
@@ -115,7 +113,7 @@ function process_loaded_sites(data) {
   
     // Create a cluster group to better show the site icons
     var clusters = new L.MarkerClusterGroup({
-        maxClusterRadius: {{ max_cluster_radius }}
+        maxClusterRadius: $map.max_cluster_radius
     });
 
     // Convert geojson info to clustered markers
@@ -147,7 +145,7 @@ function process_loaded_regions(data) {
 
     // Create a cluster group to better show the site icons
     var clusters = new L.MarkerClusterGroup({
-        maxClusterRadius: {{ max_cluster_radius }}
+        maxClusterRadius: $map.max_cluster_radius
     });
 
     // Convert geojson info to clustered markers

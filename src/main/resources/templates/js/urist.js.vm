@@ -1,3 +1,4 @@
+#* @vtlvariable name="conf" type="org.ini4j.Wini" *#
 
 // Global reference to the map object
 var map;

@@ -5,6 +5,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Site;
+import org.uristmaps.util.Util;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,7 +31,7 @@ public class TemplateRenderer {
         context.put("conf", Uristmaps.conf);
         context.put("version", "0.3");
 
-        Template uristJs = Velocity.getTemplate("templates/js/urist.js");
+        Template uristJs = Velocity.getTemplate("templates/js/urist.js.vm");
 
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
                 "js", "urist.js").toFile();
@@ -49,9 +50,10 @@ public class TemplateRenderer {
         context.put("sites", groupSites());
         context.put("conf", Uristmaps.conf);
         context.put("worldInfo", Uristmaps.worldInfo);
+        context.put("biomeLegend", getBiomeLegend());
         context.put("version", "0.3");
 
-        Template uristJs = Velocity.getTemplate("templates/index.html");
+        Template uristJs = Velocity.getTemplate("templates/index.html.vm");
 
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
                 "index.html").toFile();
@@ -62,6 +64,26 @@ public class TemplateRenderer {
             Log.warn("TemplateRenderer", "Could not write js file: " + targetFile);
             if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
         }
+    }
+
+    /**
+     * Create a map of all Biomes, mapping the biome name to the url of the biome image.
+     * The map is ordered by its keys.
+     * @return
+     */
+    private static Map<String, String> getBiomeLegend() {
+        Map<String, String> result = new TreeMap<>();
+
+        // Get list of all biomeicons in 32px folder
+        File tilesDir = Paths.get(Uristmaps.conf.fetch("Paths", "tiles"), "32").toFile();
+        for (File tileFile : tilesDir.listFiles(filename -> filename.getName().endsWith(".png"))) {
+            String biomeName = Util.removeExtension(tileFile.getName());
+
+            // Add icon under the biome name to the result map.
+            result.put(biomeName.replace(" ", "_"), "biome_legend/" + tileFile.getName());
+        }
+
+        return result;
     }
 
     /**

@@ -40,31 +40,31 @@
         <script src="/js/icons.js"></script>
         <script src="/js/urist.js"></script>
         
-        <title>#worldInfo.name</title>
+        <title>$worldInfo.name - $worldInfo.nameEnglish</title>
     </head>
     <body>
     <div id="sidebar-left">
 
-    <h1>Sites</h1>
-    #foreach ($groupName in $sites.keys)
-    #set ($group = $sites[$groupname])
-
-        <h4>$groupName ($group.size)</h4>
-        <ul class="list-unstyled">
-        #foreach ($sitename in $group.values)
-            <li>
-            <button class="btn btn-link btn-xs site-btn"
-                    data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
-                $site.name
-            </button>
-            </li>
+        <h1>Sites</h1>
+            $sites.size()
+        #foreach( $groupName in $sites.keySet() )
+        #set ($group = $sites[$groupName])
+            <h4>$groupName ($group.size())</h4>
+            <ul class="list-unstyled">
+            #foreach ($siteName in $group.values())
+                <li>
+                <button class="btn btn-link btn-xs site-btn"
+                        data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
+                    $siteName.name
+                </button>
+                </li>
+            #end
+            </ul>
         #end
-        </ul>
-    #end
     </div>
 
     <div id="sidebar-right">
-    #parse("templates/_biome-legend.html)
+    #parse("templates/_biome-legend.html.vm")
     </div>
 
     <div id="map" class="map"></div>
@@ -76,6 +76,6 @@
             
     </script>
 
-    #footer
+    $conf.Output.footer
     </body>
 </html>

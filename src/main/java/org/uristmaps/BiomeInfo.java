@@ -67,7 +67,9 @@ public class BiomeInfo {
         if (!Uristmaps.files.fileOk(FileFinder.getBiomeMap())
                 || !FileFinder.getBiomeInfo().exists()) {
             reload();
+
         } else {
+            // TODO: Reading from the image might be faster than this kryo import.
             File biomeInfoFile = FileFinder.getBiomeInfo();
             try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
                 String[][] biomes = Uristmaps.kryo.readObject(input, String[][].class);

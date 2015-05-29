@@ -95,8 +95,10 @@ public class Uristmaps {
         // TODO: Place site labels
         // TODO: Place detailed site maps
 
-        // Compile JS files
+        // Compile template files
         TemplateRenderer.compileUristJs();
+        TemplateRenderer.compileIndexHtml();
+
         // TODO: Assemble output resources
 
         System.exit(0);

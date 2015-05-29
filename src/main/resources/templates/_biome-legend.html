@@ -1,8 +1,0 @@
-<h2>Biomes Legend</h2>
-<ul class="list-unstyled">
-    {% for biome_name, biome_url in biomes_legend | dictsort %}
-    <li style="margin-bottom: 5px;">
-        <img src="{{ biome_url }}" /> {{ biome_name | title }}
-    </li>
-    {% endfor %}
-</ul>

@@ -80,7 +80,8 @@ public class TemplateRenderer {
         for (File tileFile : tilesDir.listFiles(filename -> filename.getName().endsWith(".png"))) {
             String biomeName = FilenameUtils.removeExtension(tileFile.getName());
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
-                    || biomeName.startsWith("river") || biomeName.startsWith("wall")) {
+                    || biomeName.startsWith("river") || biomeName.startsWith("wall")
+                    || biomeName.startsWith("road")) {
                 Log.debug("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
                 continue;
             }

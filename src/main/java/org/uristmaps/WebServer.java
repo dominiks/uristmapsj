@@ -12,7 +12,7 @@ public class WebServer {
         Log.info("WebServer", "Starting");
 
         Spark.port(Uristmaps.conf.get("Web", "port", Integer.class));
-        Spark.staticFileLocation(Uristmaps.conf.fetch("Paths", "output"));
+        Spark.externalStaticFileLocation(Uristmaps.conf.fetch("Paths", "output"));
         Spark.get("/stop", (request, response) -> {
                 Spark.stop();
                 return null;

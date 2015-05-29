@@ -17,15 +17,15 @@ function init_uristmaps() {
     map = L.map('map').setView([0, 0], 3);
     L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         noWrap: true,
-        minZoom: $map.min_zoom,
-        maxZoom: $map.max_zoom,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
         attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
     }).addTo(map);
     
     window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {
         noWrap: true,
-        minZoom: $map.min_zoom,
-        maxZoom: $map.max_zoom,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
         attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
     });
     
@@ -113,7 +113,7 @@ function process_loaded_sites(data) {
   
     // Create a cluster group to better show the site icons
     var clusters = new L.MarkerClusterGroup({
-        maxClusterRadius: $map.max_cluster_radius
+        maxClusterRadius: $conf.Map.max_cluster_radius
     });
 
     // Convert geojson info to clustered markers
@@ -145,7 +145,7 @@ function process_loaded_regions(data) {
 
     // Create a cluster group to better show the site icons
     var clusters = new L.MarkerClusterGroup({
-        maxClusterRadius: $map.max_cluster_radius
+        maxClusterRadius: $conf.Map.max_cluster_radius
     });
 
     // Convert geojson info to clustered markers

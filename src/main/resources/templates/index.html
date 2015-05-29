@@ -40,39 +40,42 @@
         <script src="/js/icons.js"></script>
         <script src="/js/urist.js"></script>
         
-        <title>{{ world_name }}</title>
+        <title>#worldInfo.name</title>
     </head>
     <body>
     <div id="sidebar-left">
 
     <h1>Sites</h1>
-    {% for type_grp in sites | groupby("properties.type") %}
-    <h4>{{ type_grp.grouper | title }} ({{ type_grp.list | length }})</h4>
+    #foreach ($groupName in $sites.keys)
+    #set ($group = $sites[$groupname])
+
+        <h4>$groupName ($group.size)</h4>
         <ul class="list-unstyled">
-        {% for site in type_grp.list | sort(attribute="properties.name")%}
+        #foreach ($sitename in $group.values)
             <li>
-            <button class="btn btn-link btn-xs site-btn" data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
-                {{ site.properties.name | title }}
+            <button class="btn btn-link btn-xs site-btn"
+                    data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
+                $site.name
             </button>
             </li>
-        {% endfor %}
+        #end
         </ul>
-    {% endfor %}
+    #end
     </div>
 
     <div id="sidebar-right">
-    {% include "_biome-legend.html" %}
+    #parse("templates/_biome-legend.html)
     </div>
 
     <div id="map" class="map"></div>
 
     <script type="text/javascript">
 
-        var urist_version = "{{ version }}";
+        var urist_version = "$version";
         init_uristmaps();
             
     </script>
 
-    {{ footer }}
+    #footer
     </body>
 </html>

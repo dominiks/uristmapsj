@@ -88,7 +88,7 @@ public class Uristmaps {
 
         // Render biome tiles
         LayerRenderer satRenderer = new SatRenderer();
-        satRenderer.work();
+        //satRenderer.work();
 
         // TODO: Render region labels
         // TODO: Place region labels

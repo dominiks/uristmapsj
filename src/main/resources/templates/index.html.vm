@@ -46,7 +46,6 @@
     <div id="sidebar-left">
 
         <h1>Sites</h1>
-            $sites.size()
         #foreach( $groupName in $sites.keySet() )
         #set ($group = $sites[$groupName])
             <h4>$groupName ($group.size())</h4>

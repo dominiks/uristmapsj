@@ -3,6 +3,7 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.util.Util;
 
@@ -80,7 +81,7 @@ public class Tilesets {
             try {
                 BufferedImage tile = ImageIO.read(imageFile);
                 graphics.drawImage(tile, x * tileSize, y * tileSize, null);
-                index.put(Util.removeExtension(imageFile.getName()), new Coord2(x * tileSize, y*tileSize));
+                index.put(FilenameUtils.removeExtension(imageFile.getName()), new Coord2(x * tileSize, y*tileSize));
             } catch (IOException e) {
                 // Could not read the image
                 Log.warn("Tileset", "Could not read image file: " + imageFile);

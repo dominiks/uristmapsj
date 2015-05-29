@@ -1,6 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -77,7 +78,7 @@ public class TemplateRenderer {
         // Get list of all biomeicons in 32px folder
         File tilesDir = Paths.get(Uristmaps.conf.fetch("Paths", "tiles"), "32").toFile();
         for (File tileFile : tilesDir.listFiles(filename -> filename.getName().endsWith(".png"))) {
-            String biomeName = Util.removeExtension(tileFile.getName());
+            String biomeName = FilenameUtils.removeExtension(tileFile.getName());
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
                     || biomeName.startsWith("river") || biomeName.startsWith("wall")) {
                 Log.debug("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");

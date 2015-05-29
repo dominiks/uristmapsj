@@ -1,6 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.uristmaps.util.*;
 
 import javax.imageio.ImageIO;
@@ -27,7 +28,7 @@ public class BmpConverter {
             try {
                 Log.debug("BmpConverter", "Converting " + bmp);
                 BufferedImage image = ImageIO.read(bmp);
-                ImageIO.write(image, "PNG", new File(Util.removeExtension(bmp.getAbsolutePath()) + ".png"));
+                ImageIO.write(image, "PNG", new File(FilenameUtils.removeExtension(bmp.getAbsolutePath()) + ".png"));
                 bmp.delete();
                 progress.show();
             } catch (IOException e) {

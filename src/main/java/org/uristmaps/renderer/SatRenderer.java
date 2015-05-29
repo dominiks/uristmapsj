@@ -61,6 +61,11 @@ public class SatRenderer extends LayerRenderer {
     }
 
     @Override
+    protected String getFolderName() {
+        return "tiles";
+    }
+
+    @Override
     public String getName() {
         return "SatRenderer";
     }

@@ -4,7 +4,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
-import org.uristmaps.data.*;
+import org.uristmaps.data.Coord2;
+import org.uristmaps.data.FileInfo;
+import org.uristmaps.data.Site;
+import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.util.FileFinder;
@@ -19,6 +22,7 @@ import java.util.Set;
 
 /**
  * Created by schacht on 26.05.15.
+ * TODO: Store the version number somewhere.
  */
 public class Uristmaps {
 
@@ -74,6 +78,7 @@ public class Uristmaps {
 
         // Load sites info
         WorldSites.load();
+        WorldSites.geoJson();
 
         // Load biome info
         BiomeInfo.load();
@@ -84,14 +89,19 @@ public class Uristmaps {
 
         // Render biome tiles
         LayerRenderer satRenderer = new SatRenderer();
-        satRenderer.work();
+        //satRenderer.work();
+
         // TODO: Render region labels
         // TODO: Place region labels
         // TODO: Place site labels
         // TODO: Place detailed site maps
 
-        // TODO: Create JS files
+        // Compile template files
+        TemplateRenderer.compileUristJs();
+        TemplateRenderer.compileIndexHtml();
+
         // TODO: Assemble output resources
+        FileCopier.distResources();
 
         System.exit(0);
 

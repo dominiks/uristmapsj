@@ -40,39 +40,42 @@
         <script src="/js/icons.js"></script>
         <script src="/js/urist.js"></script>
         
-        <title>{{ world_name }}</title>
+        <title>$worldInfo.name - $worldInfo.nameEnglish</title>
     </head>
     <body>
     <div id="sidebar-left">
 
-    <h1>Sites</h1>
-    {% for type_grp in sites | groupby("properties.type") %}
-    <h4>{{ type_grp.grouper | title }} ({{ type_grp.list | length }})</h4>
-        <ul class="list-unstyled">
-        {% for site in type_grp.list | sort(attribute="properties.name")%}
-            <li>
-            <button class="btn btn-link btn-xs site-btn" data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
-                {{ site.properties.name | title }}
-            </button>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endfor %}
+        <h1>Sites</h1>
+            $sites.size()
+        #foreach( $groupName in $sites.keySet() )
+        #set ($group = $sites[$groupName])
+            <h4>$groupName ($group.size())</h4>
+            <ul class="list-unstyled">
+            #foreach ($siteName in $group.values())
+                <li>
+                <button class="btn btn-link btn-xs site-btn"
+                        data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
+                    $siteName.name
+                </button>
+                </li>
+            #end
+            </ul>
+        #end
     </div>
 
     <div id="sidebar-right">
-    {% include "_biome-legend.html" %}
+    #parse("templates/_biome-legend.html.vm")
     </div>
 
     <div id="map" class="map"></div>
 
     <script type="text/javascript">
 
-        var urist_version = "{{ version }}";
+        var urist_version = "$version";
         init_uristmaps();
             
     </script>
 
-    {{ footer }}
+    $conf.Output.footer
     </body>
 </html>

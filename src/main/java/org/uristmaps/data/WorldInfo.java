@@ -15,13 +15,22 @@ import java.io.*;
  */
 public class WorldInfo {
 
+    /**
+     * The width ( and height) of the world.
+     */
     private int size;
+
+    /**
+     * The dwarven name of the world.
+     */
     private String name;
+
+    /**
+     * The translated name.
+     */
     private String nameEnglish;
 
-    public WorldInfo() {
-
-    }
+    public WorldInfo() { }
 
     /**
      * Load world info from the export files.

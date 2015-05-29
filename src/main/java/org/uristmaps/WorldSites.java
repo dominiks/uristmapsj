@@ -26,10 +26,12 @@ public class WorldSites {
 
     private static final Pattern idReader = Pattern.compile("(\\d+):");
 
+    public static Map<Integer, Site> sites;
+
     public static void load() {
         Log.info("Sites", "Loading site information");
 
-        Map<Integer, Site> sites = new HashMap<>();
+        sites = new HashMap<>();
 
         // Read kryo world info.
         File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
@@ -44,8 +46,8 @@ public class WorldSites {
             }
         }
 
-        boolean pops = loadPopulationInfo(sites);
-        boolean xml = loadLegendsXML(sites);
+        boolean pops = loadPopulationInfo();
+        boolean xml = loadLegendsXML();
 
         // When neither did work, there's no need to write.
         if (!xml && !pops) {
@@ -66,10 +68,9 @@ public class WorldSites {
 
     /**
      *
-     * @param sites
      * @return True if work was done
      */
-    private static boolean loadLegendsXML(Map<Integer, Site> sites) {
+    private static boolean loadLegendsXML() {
         File legendsFile = FileFinder.getLegendsXML();
         if (legendsFile == null) {
             System.exit(1);
@@ -104,7 +105,7 @@ public class WorldSites {
         return true;
     }
 
-    private static boolean loadPopulationInfo(Map<Integer, Site> sites) {
+    private static boolean loadPopulationInfo() {
         // Read region_name*-world_sites_and_pops.txt
         File popFile = FileFinder.getPopulationFile();
         if (popFile == null) {
@@ -164,5 +165,12 @@ public class WorldSites {
         Uristmaps.files.updateFile(popFile);
 
         return true;
+    }
+
+    /**
+     * Write the sitesgeo.json for the output. Also contains the translated coordinates for all sites.
+     */
+    public static void geoJson() {
+        // TODO: Implement me.
     }
 }

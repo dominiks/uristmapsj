@@ -70,6 +70,7 @@ public abstract class LayerRenderer {
 
         // Save the image to output folder.
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
+                getFolderName(),
                 Integer.toString(renderSettings.getLevel()),
                 Integer.toString(x),
                 y + ".png").toFile();
@@ -96,6 +97,12 @@ public abstract class LayerRenderer {
      * @param renderSettings The rendersettings for this rendering process.
      */
     protected abstract void renderTile(Coord2 world, Coord2 tile, Graphics2D graphics, RenderSettings renderSettings);
+
+    /**
+     * The name of the folder within the output directory where the tiles will be placed in.
+     * @return
+     */
+    protected abstract String getFolderName();
 
     /**
      * Have this renderer create the output tiles for all required zoom levels.

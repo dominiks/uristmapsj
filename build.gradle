@@ -1,10 +1,33 @@
 group 'org.uristmaps'
-version '0.1-SNAPSHOT'
+version '0.3-SNAPSHOT'
 
 apply plugin: 'java'
 
 repositories {
     mavenCentral()
+}
+
+apply from: 'https://raw.github.com/akhikhl/gradle-onejar/master/pluginScripts/gradle-onejar.plugin'
+ext {
+    mainClass = "org.uristmaps.Uristmaps"
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude "fonts/"
+            exclude "res/"
+            exclude "config.cfg*"
+            exclude "templates"
+            exclude "tiles"
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "org.uristmaps.Uristmaps"
+    }
 }
 
 dependencies {

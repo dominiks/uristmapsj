@@ -56,6 +56,14 @@ public class Uristmaps {
         // Load configuration file
         Log.info("Uristmaps v0.3");
         loadConfig();
+
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("host")) {
+                WebServer.start();
+                return;
+            }
+        }
+
         initKryo();
         initLogger();
         initDirectories();
@@ -102,9 +110,6 @@ public class Uristmaps {
 
         // TODO: Assemble output resources
         FileCopier.distResources();
-
-        System.exit(0);
-
     }
 
     /**

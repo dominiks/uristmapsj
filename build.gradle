@@ -3,8 +3,6 @@ version '0.1-SNAPSHOT'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.5
-
 repositories {
     mavenCentral()
 }
@@ -15,4 +13,5 @@ dependencies {
     compile group: "commons-io", name: "commons-io", version: "2.4"
     compile group: "org.ini4j", name: "ini4j", version:"0.5.4"
     compile group: "com.esotericsoftware", name:"kryo", version:"3.0.1"
+    compile group: "com.sparkjava", name: "spark-core", version: "2.2"
 }

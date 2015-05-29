@@ -166,4 +166,11 @@ public class WorldSites {
 
         return true;
     }
+
+    /**
+     * Write the sitesgeo.json for the output. Also contains the translated coordinates for all sites.
+     */
+    public static void geoJson() {
+        // TODO: Implement me.
+    }
 }

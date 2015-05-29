@@ -12,6 +12,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: "org.apache.velocity", name: "velocity", version: "1.7"
+    compile group: "commons-io", name: "commons-io", version: "2.4"
     compile group: "org.ini4j", name: "ini4j", version:"0.5.4"
     compile group: "com.esotericsoftware", name:"kryo", version:"3.0.1"
 }

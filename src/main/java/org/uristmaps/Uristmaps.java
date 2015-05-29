@@ -78,6 +78,7 @@ public class Uristmaps {
 
         // Load sites info
         WorldSites.load();
+        WorldSites.geoJson();
 
         // Load biome info
         BiomeInfo.load();
@@ -100,6 +101,7 @@ public class Uristmaps {
         TemplateRenderer.compileIndexHtml();
 
         // TODO: Assemble output resources
+        FileCopier.distResources();
 
         System.exit(0);
 

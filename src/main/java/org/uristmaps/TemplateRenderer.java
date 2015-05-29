@@ -78,9 +78,14 @@ public class TemplateRenderer {
         File tilesDir = Paths.get(Uristmaps.conf.fetch("Paths", "tiles"), "32").toFile();
         for (File tileFile : tilesDir.listFiles(filename -> filename.getName().endsWith(".png"))) {
             String biomeName = Util.removeExtension(tileFile.getName());
+            if (biomeName.startsWith("castle") || biomeName.startsWith("village")
+                    || biomeName.startsWith("river") || biomeName.startsWith("wall")) {
+                Log.debug("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
+                continue;
+            }
 
             // Add icon under the biome name to the result map.
-            result.put(biomeName.replace(" ", "_"), "biome_legend/" + tileFile.getName());
+            result.put(biomeName, "biome_legend/" + tileFile.getName().replace(" ", "_"));
         }
 
         return result;

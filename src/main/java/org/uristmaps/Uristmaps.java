@@ -108,7 +108,7 @@ public class Uristmaps {
         TemplateRenderer.compileUristJs();
         TemplateRenderer.compileIndexHtml();
 
-        // TODO: Assemble output resources
+        // Assemble output resources
         FileCopier.distResources();
     }
 

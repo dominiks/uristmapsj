@@ -16,6 +16,9 @@ public class Site {
     private String parentCiv;
     private Coord2 coords;
 
+    private double lat;
+    private double lon;
+
     private Map<String, Integer> populations;
 
     public Site() {}
@@ -113,5 +116,21 @@ public class Site {
 
     public void setCoords(Coord2 coords) {
         this.coords = coords;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

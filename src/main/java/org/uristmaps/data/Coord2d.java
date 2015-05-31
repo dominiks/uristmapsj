@@ -3,19 +3,19 @@ package org.uristmaps.data;
 /**
  * Object containing an X and Y coordinate. Can be used as a key in maps.
  */
-public class Coord2 {
+public class Coord2d {
 
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
 
-    public Coord2() {}
+    public Coord2d() {}
 
     /**
      * Create a new value pair.
      * @param x
      * @param y
      */
-    public Coord2(int x, int y) {
+    public Coord2d(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -24,7 +24,7 @@ public class Coord2 {
      * Get the x value.
      * @return
      */
-    public int X() {
+    public double X() {
         return x;
     }
 
@@ -32,7 +32,7 @@ public class Coord2 {
      * Get the y value.
      * @return
      */
-    public int Y() {
+    public double Y() {
         return y;
     }
 
@@ -42,16 +42,16 @@ public class Coord2 {
             return true;
         }
 
-        if (!(obj instanceof Coord2)) {
+        if (!(obj instanceof Coord2d)) {
             return false;
         }
 
-        Coord2 other = (Coord2) obj;
+        Coord2d other = (Coord2d) obj;
         return (x == other.x && y == other.y);
     }
 
     @Override
     public int hashCode() {
-        return 31 * x + y;
+        return (int) (31 * x + y);
     }
 }

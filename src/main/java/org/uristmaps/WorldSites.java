@@ -3,6 +3,10 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.util.FileFinder;
 import org.xml.sax.InputSource;
@@ -27,6 +31,10 @@ public class WorldSites {
     private static final Pattern idReader = Pattern.compile("(\\d+):");
 
     public static Map<Integer, Site> sites;
+    private static int zoom;
+    private static int offset;
+    private static boolean xyInitialized;
+    private static int mapSize;
 
     public static void load() {
         Log.info("Sites", "Loading site information");
@@ -49,10 +57,13 @@ public class WorldSites {
         boolean pops = loadPopulationInfo();
         boolean xml = loadLegendsXML();
 
+        UpdateLatLon();
+
         // When neither did work, there's no need to write.
         if (!xml && !pops) {
             return;
         }
+
 
         Log.debug("Sites", "Writing site info");
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
@@ -64,6 +75,17 @@ public class WorldSites {
             if (Log.DEBUG) Log.debug("Exception: ", e);
         }
 
+    }
+
+    /**
+     * Calculate the latitude & longitude for every site and update the values.
+     */
+    private static void UpdateLatLon() {
+        for (Site site : sites.values()) {
+            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
+            site.setLon(latlon.X());
+            site.setLat(latlon.Y());
+        }
     }
 
     /**
@@ -103,6 +125,23 @@ public class WorldSites {
 
         Uristmaps.files.updateFile(legendsFile);
         return true;
+    }
+
+    /**
+     * Convert the x,y coordinates to a lat&lon pair for the web-map.
+     * @param x
+     * @param y
+     * @return
+     */
+    private static Coord2d xy2LonLat(int x, int y) {
+        if (!xyInitialized) {
+            initLonLat();
+        }
+        double lonDeg = (double)x / mapSize * 360.0f - 180f;
+
+        double n = Math.PI - (2.0 * Math.PI * y) / mapSize;
+        double latDeg=  Math.toDegrees(Math.atan(Math.sinh(n)));
+        return new Coord2d(lonDeg, latDeg);
     }
 
     private static boolean loadPopulationInfo() {
@@ -171,6 +210,34 @@ public class WorldSites {
      * Write the sitesgeo.json for the output. Also contains the translated coordinates for all sites.
      */
     public static void geoJson() {
-        // TODO: Implement me.
+        VelocityContext context = new VelocityContext();
+        context.put("sites", sites.values());
+
+        Template uristJs = Velocity.getTemplate("templates/js/sitesgeo.js.vm");
+
+        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
+                "js", "sitesgeo.js").toFile();
+        targetFile.getParentFile().mkdirs();
+        try (FileWriter writer = new FileWriter(targetFile)) {
+            uristJs.merge(context, writer);
+        } catch (IOException e) {
+            Log.warn("WorldSites", "Could not write js file: " + targetFile);
+            if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
+        }
+
+    }
+
+    /**
+     * Initialize the calculation vars needed to convert site coordinates into lon&lat coords.
+     */
+    private static void initLonLat() {
+        long worldSize = Uristmaps.worldInfo.getSize();
+        zoom = 0;
+        while (Math.pow(2, zoom) < worldSize) {
+            zoom++;
+        }
+        mapSize = (int) Math.pow(2, zoom);
+        offset = (int) ((mapSize - worldSize) / 2);
+        xyInitialized = true;
     }
 }

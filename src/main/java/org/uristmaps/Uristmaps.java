@@ -10,6 +10,9 @@ import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
+import org.uristmaps.tasks.BiomeInfoTask;
+import org.uristmaps.tasks.BiomeSatRendererTask;
+import org.uristmaps.tasks.TaskExecutor;
 import org.uristmaps.util.FileFinder;
 import org.uristmaps.util.FileWatcher;
 
@@ -74,6 +77,17 @@ public class Uristmaps {
             Log.DEBUG();
             Log.info("Enabled Debug Logging");
         }
+
+        // Fill the executor with all available tasks.
+        TaskExecutor executor = new TaskExecutor();
+        executor.addTask(new BiomeInfoTask());
+        executor.addTask(new BiomeSatRendererTask());
+
+        // TODO: Run the default task or the requested task.
+        executor.exec("BiomeRenderer");
+    }
+
+    public static void Old() {
 
         // Convert all BMP in the export dir to PNG
         BmpConverter.convert();

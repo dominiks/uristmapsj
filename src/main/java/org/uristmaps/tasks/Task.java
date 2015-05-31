@@ -35,7 +35,7 @@ public abstract class Task {
     public abstract void work();
 
     /**
-     * The name of the task.
+     * The name of the task used for identification.
      * @return
      */
     public abstract String getName();

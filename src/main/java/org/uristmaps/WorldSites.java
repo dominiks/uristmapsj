@@ -31,7 +31,6 @@ public class WorldSites {
     private static final Pattern idReader = Pattern.compile("(\\d+):");
 
     public static Map<Integer, Site> sites;
-    private static int zoom;
     private static int offset;
     private static boolean xyInitialized;
     private static int mapSize;
@@ -83,8 +82,8 @@ public class WorldSites {
     private static void UpdateLatLon() {
         for (Site site : sites.values()) {
             Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
-            site.setLon(latlon.X());
-            site.setLat(latlon.Y());
+            site.setLat(latlon.X());
+            site.setLon(latlon.Y());
         }
     }
 
@@ -137,6 +136,8 @@ public class WorldSites {
         if (!xyInitialized) {
             initLonLat();
         }
+        x += offset;
+        y += offset;
         double lonDeg = (double)x / mapSize * 360.0f - 180f;
 
         double n = Math.PI - (2.0 * Math.PI * y) / mapSize;
@@ -216,7 +217,7 @@ public class WorldSites {
         Template uristJs = Velocity.getTemplate("templates/js/sitesgeo.js.vm");
 
         File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
-                "js", "sitesgeo.js").toFile();
+                "js", "sitesgeo.json").toFile();
         targetFile.getParentFile().mkdirs();
         try (FileWriter writer = new FileWriter(targetFile)) {
             uristJs.merge(context, writer);
@@ -232,7 +233,7 @@ public class WorldSites {
      */
     private static void initLonLat() {
         long worldSize = Uristmaps.worldInfo.getSize();
-        zoom = 0;
+        int zoom = 0;
         while (Math.pow(2, zoom) < worldSize) {
             zoom++;
         }

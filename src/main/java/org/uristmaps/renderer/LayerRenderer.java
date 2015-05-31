@@ -114,6 +114,12 @@ public abstract class LayerRenderer {
 
         // Iterate over all levels that are to be rendered
         for (int level = minLevel; level <= maxLevel; level++) {
+            // TODO: Check if any output file for this level is missing, only render in that case
+            if (allResultFilesOK(level)) {
+                Log.info(getName(), "Nothing to do for level " + level);
+                continue;
+            }
+
             Log.info(getName(), "Rendering zoom level " + level);
             RenderSettings renderSettings = new RenderSettings(level);
             prepareForLevel(level, renderSettings);
@@ -127,6 +133,30 @@ public abstract class LayerRenderer {
                 prog.show();
             }
         }
+    }
+
+    /**
+     * Check if all files that are created for a given level are already in place.
+     * @param level
+     * @return
+     */
+    private boolean allResultFilesOK(int level) {
+        File levelFolder = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
+                getFolderName(),
+                Integer.toString(level)).toFile();
+
+        if (!levelFolder.exists()) return false;
+
+        for (int x = 0; x < Math.pow(2, level); x++) {
+            File xFolder = new File(levelFolder, Integer.toString(x));
+            if (!xFolder.exists()) return false;
+
+            for (int y = 0; y < Math.pow(2, level); y++) {
+                File yFile = new File(xFolder, y + ".png");
+                if (!yFile.exists()) return false;
+            }
+        }
+        return true;
     }
 
     /**

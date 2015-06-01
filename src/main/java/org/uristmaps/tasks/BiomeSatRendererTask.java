@@ -1,7 +1,7 @@
 package org.uristmaps.tasks;
 
 import org.uristmaps.renderer.SatRenderer;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
 
 /**
  * Task to integrate the biome sat renderer into the task framework.
@@ -24,8 +24,8 @@ public class BiomeSatRendererTask extends Task {
     @Override
     public String[] getDependendFiles() {
         return new String[]{
-                FileFinder.getBiomeInfo().getAbsolutePath(),
-                FileFinder.getWorldFile().getAbsolutePath()
+                BuildFiles.getBiomeInfo().getAbsolutePath(),
+                BuildFiles.getWorldFile().getAbsolutePath()
         };
     }
 }

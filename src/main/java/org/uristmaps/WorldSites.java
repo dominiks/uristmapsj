@@ -9,7 +9,9 @@ import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.OutputFiles;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -41,33 +43,13 @@ public class WorldSites {
 
         sites = new HashMap<>();
 
-        // Read kryo world info.
-        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
-                "sites.kryo").toFile();
-        if (sitesFile.exists()) {
-            try (Input input = new Input(new FileInputStream(sitesFile))) {
-                sites = Uristmaps.kryo.readObject(input, HashMap.class);
-                return;
-            } catch (FileNotFoundException e) {
-                Log.warn("Sites", "Error when reading state file: " + sitesFile);
-                if (Log.DEBUG) Log.debug("Sites", "Exception", e);
-            }
-        }
-
-        boolean pops = loadPopulationInfo();
-        boolean xml = loadLegendsXML();
+        loadPopulationInfo();
+        loadLegendsXML();
 
         UpdateLatLon();
 
-        // When neither did work, there's no need to write.
-        if (!xml && !pops) {
-            return;
-        }
-
-
         Log.debug("Sites", "Writing site info");
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
-                "sites.kryo").toFile();
+        File targetFile = BuildFiles.getSitesFile();
         try (Output output = new Output(new FileOutputStream(targetFile))) {
             Uristmaps.kryo.writeObject(output, sites);
         } catch (Exception e) {
@@ -92,23 +74,10 @@ public class WorldSites {
      *
      * @return True if work was done
      */
-    private static boolean loadLegendsXML() {
-        File legendsFile = FileFinder.getLegendsXML();
-        if (legendsFile == null) {
-            System.exit(1);
-        }
-
-        // Check if work needs to be done
-        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
-                "sites.kryo").toFile();
-        if (Uristmaps.files.fileOk(legendsFile) && sitesFile.exists()) {
-            Log.debug("Sites", "Skipping XML reading.");
-            return false;
-        }
-
+    private static void loadLegendsXML() {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);
-        try (Reader reader = new InputStreamReader(new FileInputStream(legendsFile), "UTF-8")){
+        try (Reader reader = new InputStreamReader(new FileInputStream(ExportFilesFinder.getLegendsXML()), "UTF-8")){
             InputSource source = new InputSource(reader);
             source.setEncoding("UTF-8");
             SAXParser saxParser = spf.newSAXParser();
@@ -122,9 +91,6 @@ public class WorldSites {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Uristmaps.files.updateFile(legendsFile);
-        return true;
     }
 
     /**
@@ -146,20 +112,7 @@ public class WorldSites {
         return new Coord2d(lonDeg, latDeg);
     }
 
-    private static boolean loadPopulationInfo() {
-        // Read region_name*-world_sites_and_pops.txt
-        File popFile = FileFinder.getPopulationFile();
-        if (popFile == null) {
-            System.exit(1);
-        }
-
-        File sitesFile = Paths.get(Uristmaps.conf.fetch("Paths", "build"),
-                "sites.kryo").toFile();
-        if (Uristmaps.files.fileOk(popFile) && sitesFile.exists()) {
-            Log.debug("Sites", "Skipping population reading.");
-            return false;
-        }
-
+    private static void loadPopulationInfo() {
         // The last read site
         Site lastSite = null;
 
@@ -167,7 +120,7 @@ public class WorldSites {
         Matcher match;
 
         String line = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(popFile))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFilesFinder.getPopulationFile()))) {
 
             boolean parsingSites = false; // Is active when we have reached the correct section in the file
             while ((line = reader.readLine()) != null) {
@@ -198,14 +151,10 @@ public class WorldSites {
             Log.error("Sites", "Could not read world population file.");
             if (Log.DEBUG) {
                 Log.debug("Sites", "Last line: \"" + line + "\"");
-                Log.debug("Exception: ", e);
+                Log.debug("Sites", "Exception: ", e);
             }
             System.exit(1);
         }
-
-        Uristmaps.files.updateFile(popFile);
-
-        return true;
     }
 
     /**
@@ -213,12 +162,11 @@ public class WorldSites {
      */
     public static void geoJson() {
         VelocityContext context = new VelocityContext();
-        context.put("sites", sites.values());
+        context.put("sites", getSites().values());
 
         Template uristJs = Velocity.getTemplate("templates/js/sitesgeo.js.vm");
 
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
-                "js", "sitesgeo.json").toFile();
+        File targetFile = OutputFiles.getSitesGeojson();
         targetFile.getParentFile().mkdirs();
         try (FileWriter writer = new FileWriter(targetFile)) {
             uristJs.merge(context, writer);
@@ -227,6 +175,22 @@ public class WorldSites {
             if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
         }
 
+    }
+
+    private static Map<Integer, Site> getSites() {
+        if (sites == null) initSites();
+        return sites;
+    }
+
+    private static void initSites() {
+        File sitesFile = BuildFiles.getSitesFile();
+        try (Input input = new Input(new FileInputStream(sitesFile))) {
+            sites = Uristmaps.kryo.readObject(input, HashMap.class);
+            return;
+        } catch (FileNotFoundException e) {
+            Log.warn("Sites", "Error when reading state file: " + sitesFile);
+            if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+        }
     }
 
     /**
@@ -242,4 +206,6 @@ public class WorldSites {
         offset = (int) ((mapSize - worldSize) / 2);
         xyInitialized = true;
     }
+
+
 }

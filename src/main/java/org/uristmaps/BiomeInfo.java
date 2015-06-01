@@ -3,8 +3,8 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -71,7 +71,7 @@ public class BiomeInfo {
         Log.info("BiomeInfo", "Reloading biome data from exported image.");
         BufferedImage image = null;
         try {
-            image = ImageIO.read(FileFinder.getBiomeMap());
+            image = ImageIO.read(ExportFilesFinder.getBiomeMap());
         } catch (IOException e) {
             Log.error("BiomeInfo", "Could not read biome export image.");
             if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
@@ -86,7 +86,7 @@ public class BiomeInfo {
         }
 
 
-        File biomeInfoFile = FileFinder.getBiomeInfo();
+        File biomeInfoFile = BuildFiles.getBiomeInfo();
         try (Output output = new Output(new FileOutputStream(biomeInfoFile))) {
             Uristmaps.kryo.writeObject(output, biomeData);
         } catch (FileNotFoundException e) {
@@ -107,7 +107,7 @@ public class BiomeInfo {
             return biomeData;
         }
         // TODO: Reading from the image might be faster than this kryo import.
-        File biomeInfoFile = FileFinder.getBiomeInfo();
+        File biomeInfoFile = BuildFiles.getBiomeInfo();
         try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
             biomeData = Uristmaps.kryo.readObject(input, String[][].class);
             return biomeData;

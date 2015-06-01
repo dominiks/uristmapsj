@@ -4,7 +4,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.Uristmaps;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -32,7 +33,7 @@ public class WorldInfo {
         loadNameFromHistory();
 
         // Export the worldfile
-        File worldInfoFile = FileFinder.getWorldFile();
+        File worldInfoFile = BuildFiles.getWorldFile();
         try (Output output = new Output(new FileOutputStream(worldInfoFile))) {
             Uristmaps.kryo.writeObject(output, data);
         } catch (FileNotFoundException e) {
@@ -46,7 +47,7 @@ public class WorldInfo {
      */
     private static void loadNameFromHistory() {
         Log.debug("WorldInfo", "Reading population counts.");
-        try (BufferedReader reader = new BufferedReader(new FileReader(FileFinder.getWorldHistory()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFilesFinder.getWorldHistory()))) {
             data.put("name", reader.readLine());
             data.put("nameEnglish", reader.readLine());
         } catch (Exception e) {
@@ -63,7 +64,7 @@ public class WorldInfo {
         Log.debug("WorldInfo", "Importing world size from biome");
 
         try {
-            BufferedImage image = ImageIO.read(FileFinder.getBiomeMap());
+            BufferedImage image = ImageIO.read(ExportFilesFinder.getBiomeMap());
             data.put("size", image.getWidth() + "");
         } catch (IOException e) {
             Log.error("WorldInfo", "Could not read biome image file.");
@@ -85,10 +86,10 @@ public class WorldInfo {
      * Load the saved data.
      */
     private static void loadData() {
-        try (Input input = new Input(new FileInputStream(FileFinder.getWorldFile()))) {
-            data = Uristmaps.kryo.readObject(input, Map.class);
+        try (Input input = new Input(new FileInputStream(BuildFiles.getWorldFile()))) {
+            data = Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (Exception e) {
-            Log.error("WorldInfo", "Could not read world info file: " + FileFinder.getWorldFile());
+            Log.error("WorldInfo", "Could not read world info file: " + BuildFiles.getWorldFile());
             if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
             System.exit(1);
         }

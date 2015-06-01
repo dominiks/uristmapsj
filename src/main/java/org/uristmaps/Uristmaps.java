@@ -1,7 +1,6 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.Coord2;
@@ -11,12 +10,12 @@ import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.tasks.*;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 import org.uristmaps.util.FileWatcher;
+import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,6 +53,7 @@ public class Uristmaps {
         Log.info("Uristmaps v0.3");
         loadConfig();
 
+        // Check if we can stop initializing here and start the web server.
         for (String arg : args) {
             if (arg.equalsIgnoreCase("host")) {
                 WebServer.start();
@@ -79,6 +79,18 @@ public class Uristmaps {
         executor.addTask("TilesetTask", null, null, () -> Tilesets.compile());
         executor.addTask("BmpConvertTask", null, null, () -> BmpConverter.convert());
 
+        executor.addTask("SitesGeojson",
+                new String[]{BuildFiles.getSitesFile().getAbsolutePath(),
+                             BuildFiles.getWorldFile().getAbsolutePath()},
+                new String[]{OutputFiles.getSitesGeojson().getAbsolutePath()},
+                () -> WorldSites.geoJson());
+
+        executor.addTask("Sites",
+                new String[]{ExportFilesFinder.getLegendsXML().getAbsolutePath(),
+                             ExportFilesFinder.getPopulationFile().getAbsolutePath()},
+                new String[]{BuildFiles.getSitesFile().getAbsolutePath()},
+                () -> WorldSites.load());
+
         executor.addTask(new WorldInfoTask());
         executor.addTask(new BiomeInfoTask());
         executor.addTask(new BiomeSatRendererTask());
@@ -98,7 +110,7 @@ public class Uristmaps {
         }
 
         // Run the default task or the requested task.
-        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer");
+        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer", "SitesGeojson");
     }
 
     /**
@@ -136,11 +148,6 @@ public class Uristmaps {
 
     public static void Old() {
         // Load sites info
-        WorldSites.load();
-        WorldSites.geoJson();
-
-        // Load biome info
-        BiomeInfo.load();
 
         // TODO: Load structures info
         // TODO: Load detailed site maps

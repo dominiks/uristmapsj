@@ -1,7 +1,8 @@
 package org.uristmaps.tasks;
 
 import org.uristmaps.data.WorldInfo;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 
 /**
  * Created by dominik on 01.06.2015.
@@ -21,12 +22,12 @@ public class WorldInfoTask extends Task {
     @Override
     public String[] getDependendFiles() {
         return new String[] {
-                FileFinder.getWorldHistory().getAbsolutePath(),
-                FileFinder.getBiomeMap().getAbsolutePath()};
+                ExportFilesFinder.getWorldHistory().getAbsolutePath(),
+                ExportFilesFinder.getBiomeMap().getAbsolutePath()};
     }
 
     @Override
     public String[] getTargetFiles() {
-        return new String[] {FileFinder.getWorldFile().getAbsolutePath()};
+        return new String[] {BuildFiles.getWorldFile().getAbsolutePath()};
     }
 }

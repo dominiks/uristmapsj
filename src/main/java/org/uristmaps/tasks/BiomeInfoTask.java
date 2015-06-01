@@ -1,6 +1,7 @@
 package org.uristmaps.tasks;
 
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 
 /**
  * Task to control the parsing of biome data.
@@ -20,14 +21,14 @@ public class BiomeInfoTask extends Task {
     @Override
     public String[] getDependendFiles() {
         return new String[] {
-                FileFinder.getBiomeMap().getAbsolutePath()
+                ExportFilesFinder.getBiomeMap().getAbsolutePath()
         };
     }
 
     @Override
     public String[] getTargetFiles() {
         return new String[] {
-                FileFinder.getBiomeInfo().getAbsolutePath()
+                BuildFiles.getBiomeInfo().getAbsolutePath()
         };
     }
 }

@@ -178,10 +178,6 @@ public class Uristmaps {
         // TODO: Place region labels
         // TODO: Place site labels
         // TODO: Place detailed site maps
-
-        // Compile template files;
-
-        // Assemble output resources
     }
 
 

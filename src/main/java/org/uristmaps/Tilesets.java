@@ -29,7 +29,6 @@ public class Tilesets {
      *
      */
     public static void compile() {
-        Log.info("Tileset", "Compiling tileset files.");
 
         // Iterate over directories in specified tileset dir
         File tilesDir = new File(Uristmaps.conf.fetch("Paths", "tiles")).getAbsoluteFile();
@@ -59,6 +58,8 @@ public class Tilesets {
         // tilesheet of only these tiles.
         boolean needRefresh = !Uristmaps.files.allOk(files);
         if (!needRefresh) return;
+
+        Log.info("Tileset", "Compiling tileset in " + directory);
 
         int tileSize = 0;
         try {

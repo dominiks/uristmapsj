@@ -148,6 +148,7 @@ public class TaskExecutor {
         // Now run it. But only if it needs to.
         if (runIt) {
             task.work();
+            Log.debug("TaskExecutor", "Ran " + task.getName());
         } else {
             Log.debug("TaskExecutor", "Skipping " + task.getName());
         }

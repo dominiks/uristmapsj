@@ -4,7 +4,10 @@ import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.util.FileFinder;
 
 /**
- * Task to integrate the biome sat renderer into the task framework
+ * Task to integrate the biome sat renderer into the task framework.
+ *
+ * Uses no target files. The target tile-files are managed by the renderer itself to
+ * check which zoom level can be skipped.
  */
 public class BiomeSatRendererTask extends Task {
     @Override

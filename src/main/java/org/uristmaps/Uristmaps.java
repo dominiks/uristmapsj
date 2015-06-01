@@ -10,10 +10,7 @@ import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
-import org.uristmaps.tasks.BiomeInfoTask;
-import org.uristmaps.tasks.BiomeSatRendererTask;
-import org.uristmaps.tasks.TaskExecutor;
-import org.uristmaps.tasks.WorldInfoTask;
+import org.uristmaps.tasks.*;
 import org.uristmaps.util.FileFinder;
 import org.uristmaps.util.FileWatcher;
 
@@ -77,6 +74,11 @@ public class Uristmaps {
 
         // Fill the executor with all available tasks.
         TaskExecutor executor = new TaskExecutor();
+
+        // No file management for this task until subtasks are possible.
+        executor.addTask("TilesetTask", null, null, () -> Tilesets.compile());
+        executor.addTask("BmpConvertTask", null, null, () -> BmpConverter.convert());
+
         executor.addTask(new WorldInfoTask());
         executor.addTask(new BiomeInfoTask());
         executor.addTask(new BiomeSatRendererTask());
@@ -96,7 +98,7 @@ public class Uristmaps {
         }
 
         // Run the default task or the requested task.
-        executor.exec("BiomeRenderer");
+        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer");
     }
 
     /**
@@ -133,13 +135,6 @@ public class Uristmaps {
     }
 
     public static void Old() {
-
-        // Convert all BMP in the export dir to PNG
-        BmpConverter.convert();
-
-        // Compile Tilesets
-        Tilesets.compile();
-
         // Load sites info
         WorldSites.load();
         WorldSites.geoJson();

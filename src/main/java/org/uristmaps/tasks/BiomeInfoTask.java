@@ -1,11 +1,9 @@
 package org.uristmaps.tasks;
 
-import com.esotericsoftware.minlog.Log;
-import org.uristmaps.BiomeInfo;
 import org.uristmaps.util.FileFinder;
 
 /**
- * Created by dominik on 01.06.2015.
+ * Task to control the parsing of biome data.
  */
 public class BiomeInfoTask extends Task {
 

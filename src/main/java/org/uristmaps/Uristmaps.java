@@ -161,11 +161,7 @@ public class Uristmaps {
         // List all available tasks
         System.out.println("Available tasks:");
         TreeSet<String> taskNames = new TreeSet<>(executor.getTasks());
-        for (String name : taskNames) {
-            if (executor.getTask(name).isPublic()) {
-                System.out.println(name);
-            }
-        }
+        taskNames.stream().filter(name -> executor.getTask(name).isPublic()).forEach(System.out::println);
     }
 
     public static void Old() {

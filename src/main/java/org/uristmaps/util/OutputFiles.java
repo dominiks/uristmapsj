@@ -17,4 +17,8 @@ public class OutputFiles {
     public static File getSitesGeojson() {
         return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "js", "sitesgeo.json").toFile();
     }
+
+    public static File getUristJs() {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "js", "urist.js").toFile();
+    }
 }

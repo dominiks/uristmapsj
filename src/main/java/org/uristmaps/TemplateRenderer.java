@@ -7,6 +7,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
+import org.uristmaps.util.OutputFiles;
 import org.uristmaps.util.Util;
 
 import java.io.File;
@@ -35,8 +36,7 @@ public class TemplateRenderer {
 
         Template uristJs = Velocity.getTemplate("templates/js/urist.js.vm");
 
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
-                "js", "urist.js").toFile();
+        File targetFile = OutputFiles.getUristJs();
         targetFile.getParentFile().mkdirs();
         try (FileWriter writer = new FileWriter(targetFile)) {
             uristJs.merge(context, writer);

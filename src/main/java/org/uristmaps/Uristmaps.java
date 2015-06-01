@@ -76,20 +76,25 @@ public class Uristmaps {
         TaskExecutor executor = new TaskExecutor();
 
         // No file management for this task until subtasks are possible.
-        executor.addTask("TilesetTask", null, null, () -> Tilesets.compile());
-        executor.addTask("BmpConvertTask", null, null, () -> BmpConverter.convert());
+        executor.addTask("TilesetTask", () -> Tilesets.compile());
+        executor.addTask("BmpConvertTask", () -> BmpConverter.convert());
 
         executor.addTask("SitesGeojson",
                 new String[]{BuildFiles.getSitesFile().getAbsolutePath(),
                              BuildFiles.getWorldFile().getAbsolutePath()},
-                new String[]{OutputFiles.getSitesGeojson().getAbsolutePath()},
+                OutputFiles.getSitesGeojson().getAbsolutePath(),
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
                 new String[]{ExportFilesFinder.getLegendsXML().getAbsolutePath(),
                              ExportFilesFinder.getPopulationFile().getAbsolutePath()},
-                new String[]{BuildFiles.getSitesFile().getAbsolutePath()},
+                BuildFiles.getSitesFile().getAbsolutePath(),
                 () -> WorldSites.load());
+
+        executor.addTask("CompileUristJs",
+                new String[]{},
+                OutputFiles.getUristJs().getAbsolutePath(),
+                () -> TemplateRenderer.compileUristJs());
 
         executor.addTask(new WorldInfoTask());
         executor.addTask(new BiomeInfoTask());
@@ -110,7 +115,7 @@ public class Uristmaps {
         }
 
         // Run the default task or the requested task.
-        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer", "SitesGeojson");
+        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer", "SitesGeojson", "CompileUristJs");
     }
 
     /**
@@ -147,15 +152,10 @@ public class Uristmaps {
     }
 
     public static void Old() {
-        // Load sites info
 
         // TODO: Load structures info
         // TODO: Load detailed site maps
         // TODO: Load regions info
-
-        // Render biome tiles
-        LayerRenderer satRenderer = new SatRenderer();
-        satRenderer.work();
 
         // TODO: Render region labels
         // TODO: Place region labels
@@ -163,7 +163,6 @@ public class Uristmaps {
         // TODO: Place detailed site maps
 
         // Compile template files
-        TemplateRenderer.compileUristJs();
         TemplateRenderer.compileIndexHtml();
 
         // Assemble output resources

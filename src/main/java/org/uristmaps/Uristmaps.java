@@ -89,12 +89,6 @@ public class Uristmaps {
                 BuildFiles.getSitesFile().getAbsolutePath(),
                 () -> WorldSites.load());
 
-
-        executor.addTask("StructuresTask",
-                ExportFilesFinder.getStructuresMap().getAbsolutePath(),
-                BuildFiles.getStructureInfo().getAbsolutePath(),
-                () -> StructureInfo.load());
-
         executor.addTask("CompileUristJs",
                 new String[]{},
                 OutputFiles.getUristJs().getAbsolutePath(),

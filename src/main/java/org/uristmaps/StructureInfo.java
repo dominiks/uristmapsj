@@ -2,6 +2,7 @@ package org.uristmaps;
 
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import org.uristmaps.data.Coord2;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
 
@@ -22,9 +23,8 @@ import static org.uristmaps.util.Util.makeColor;
  */
 public class StructureInfo {
 
-    private static String[][] structData;
-
     private static Map<Integer, String> colorTranslation;
+    private static BufferedImage image;
 
     static {
         colorTranslation = new HashMap<>();
@@ -50,7 +50,6 @@ public class StructureInfo {
      * Load the structure data from the map file and save it to the build dir.
      */
     public static void load() {
-        BufferedImage image = null;
         try {
             image = ImageIO.read(ExportFilesFinder.getBiomeMap());
         } catch (IOException e) {
@@ -58,22 +57,6 @@ public class StructureInfo {
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
             System.exit(1);
         }
-
-        structData = new String[image.getWidth()][image.getHeight()];
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                structData[x][y] = colorTranslation.get(image.getRGB(x, y));
-            }
-        }
-
-        File structureInfoFile = BuildFiles.getStructureInfo();
-        try (Output output = new Output(new FileOutputStream(structureInfoFile))) {
-            Uristmaps.kryo.writeObject(output, structData);
-        } catch (FileNotFoundException e) {
-            Log.warn("StructureInfo", "Error when writing structure file: " + structureInfoFile);
-            if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
-        }
-
         Log.info("StructureInfo", "Done");
     }
 
@@ -81,15 +64,9 @@ public class StructureInfo {
      * Get the data.
      * @return
      */
-    public static String[][] getData() {
-        if (structData == null) loadData();
-        return structData;
+    public static String getData(int x, int y) {
+        if (image == null) load();
+        return colorTranslation.get(image.getRGB(x, y));
     }
 
-    /**
-     * Load the processed struct data from disk.
-     */
-    private static void loadData() {
-        // TODO: Implement me.
-    }
 }

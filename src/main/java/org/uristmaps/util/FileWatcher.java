@@ -125,6 +125,7 @@ public class FileWatcher {
      * Delete the file store file.
      */
     public void forget() {
+        if (!FileFinder.getFileStore().exists()) return;
         Log.debug("FileWatcher", "Deleting store file.");
         FileFinder.getFileStore().delete();
     }

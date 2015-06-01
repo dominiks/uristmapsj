@@ -78,10 +78,7 @@ public class Uristmaps {
         // Fill the executor with all available tasks.
         TaskExecutor executor = new TaskExecutor();
         executor.addTask(new WorldInfoTask());
-        executor.addTask("BiomeInfoTask",
-                new String[]{ FileFinder.getBiomeMap().getAbsolutePath()},
-                new String[]{ FileFinder.getBiomeInfo().getAbsolutePath()},
-                () -> BiomeInfo.load());
+        executor.addTask(new BiomeInfoTask());
         executor.addTask(new BiomeSatRendererTask());
 
         // Parse more parameters

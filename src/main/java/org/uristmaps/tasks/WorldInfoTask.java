@@ -1,35 +1,32 @@
 package org.uristmaps.tasks;
 
-import com.esotericsoftware.minlog.Log;
-import org.uristmaps.BiomeInfo;
+import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.FileFinder;
 
 /**
  * Created by dominik on 01.06.2015.
  */
-public class BiomeInfoTask extends Task {
+public class WorldInfoTask extends Task {
 
     @Override
     public void work() {
-        ;
+        WorldInfo.load();
     }
 
     @Override
     public String getName() {
-        return "BiomeInfoTask";
+        return "WorldInfo";
     }
 
     @Override
     public String[] getDependendFiles() {
         return new String[] {
-                FileFinder.getBiomeMap().getAbsolutePath()
-        };
+                FileFinder.getWorldHistory().getAbsolutePath(),
+                FileFinder.getBiomeMap().getAbsolutePath()};
     }
 
     @Override
     public String[] getTargetFiles() {
-        return new String[] {
-                FileFinder.getBiomeInfo().getAbsolutePath()
-        };
+        return new String[] {FileFinder.getWorldFile().getAbsolutePath()};
     }
 }

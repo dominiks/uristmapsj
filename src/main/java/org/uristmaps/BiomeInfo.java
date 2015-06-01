@@ -18,6 +18,12 @@ import java.util.Map;
 public class BiomeInfo {
 
     private static Map<Integer, String> colorTranslation;
+
+    /**
+     * The loaded biome data.
+     */
+    private static String[][] biomeData;
+
     static {
         colorTranslation = new HashMap<>();
         colorTranslation.put(makeColor(128,128,128), "mountain");
@@ -58,33 +64,9 @@ public class BiomeInfo {
         colorTranslation.put(makeColor(255,128,64), "rock_desert");
     }
 
-    public static String[][] biomeInfo;
-
-
     public static void load() {
         Log.info("BiomeInfo", "Loading biome data.");
-        // Check if source file has changed or target is missing
-        if (!Uristmaps.files.fileOk(FileFinder.getBiomeMap())
-                || !FileFinder.getBiomeInfo().exists()) {
-            reload();
 
-        } else {
-            // TODO: Reading from the image might be faster than this kryo import.
-            File biomeInfoFile = FileFinder.getBiomeInfo();
-            try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
-                String[][] biomes = Uristmaps.kryo.readObject(input, String[][].class);
-                biomeInfo = biomes;
-            } catch (FileNotFoundException e) {
-                Log.warn("BiomeInfo", "Error when reading biome file: " + biomeInfoFile);
-                if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
-            }
-        }
-    }
-
-    /**
-     * Reload the biome information from the biome export map and write to biomes.kryo.
-     */
-    private static void reload() {
         // Open biome image
         Log.info("BiomeInfo", "Reloading biome data from exported image.");
         BufferedImage image = null;
@@ -96,22 +78,45 @@ public class BiomeInfo {
             System.exit(1);
         }
 
-        String[][] result = new String[image.getWidth()][image.getHeight()];
+        biomeData = new String[image.getWidth()][image.getHeight()];
         for (int x = 0; x < image.getWidth(); x++) {
             for (int y = 0; y < image.getHeight(); y++) {
-                result[x][y] = colorTranslation.get(image.getRGB(x,y));
+                biomeData[x][y] = colorTranslation.get(image.getRGB(x, y));
             }
         }
 
-        Log.info("BiomeInfo", "Done");
-        biomeInfo = result;
+
         File biomeInfoFile = FileFinder.getBiomeInfo();
         try (Output output = new Output(new FileOutputStream(biomeInfoFile))) {
-            Uristmaps.kryo.writeObject(output, result);
+            Uristmaps.kryo.writeObject(output, biomeData);
         } catch (FileNotFoundException e) {
             Log.warn("BiomeInfo", "Error when writing biome file: " + biomeInfoFile);
             if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
         }
+
+        Log.info("BiomeInfo", "Done");
+    }
+
+    /**
+     * Call this to retrieve the biome data.
+     * This info is cached after the first call.
+     * @return
+     */
+    public static String[][] getBiomeData() {
+        if (biomeData != null) {
+            return biomeData;
+        }
+        // TODO: Reading from the image might be faster than this kryo import.
+        File biomeInfoFile = FileFinder.getBiomeInfo();
+        try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
+            biomeData = Uristmaps.kryo.readObject(input, String[][].class);
+            return biomeData;
+        } catch (FileNotFoundException e) {
+            Log.warn("BiomeInfo", "Error when reading biome file: " + biomeInfoFile);
+            if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
+            System.exit(1);
+        }
+        return null;
     }
 
     /**

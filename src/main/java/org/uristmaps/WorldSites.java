@@ -8,6 +8,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
+import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.FileFinder;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -232,7 +233,7 @@ public class WorldSites {
      * Initialize the calculation vars needed to convert site coordinates into lon&lat coords.
      */
     private static void initLonLat() {
-        long worldSize = Uristmaps.worldInfo.getSize();
+        long worldSize = WorldInfo.getSize();
         int zoom = 0;
         while (Math.pow(2, zoom) < worldSize) {
             zoom++;

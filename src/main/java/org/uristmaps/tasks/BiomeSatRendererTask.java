@@ -1,15 +1,16 @@
 package org.uristmaps.tasks;
 
-import com.esotericsoftware.minlog.Log;
+import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.util.FileFinder;
 
 /**
- * Created by dominik on 01.06.2015.
+ * Task to integrate the biome sat renderer into the task framework
  */
 public class BiomeSatRendererTask extends Task {
     @Override
     public void work() {
-        Log.info("BiomeRenderer", "Look at me, working!");
+        SatRenderer renderer = new SatRenderer();
+        renderer.work();
     }
 
     @Override
@@ -20,7 +21,8 @@ public class BiomeSatRendererTask extends Task {
     @Override
     public String[] getDependendFiles() {
         return new String[]{
-                FileFinder.getBiomeInfo().getAbsolutePath()
+                FileFinder.getBiomeInfo().getAbsolutePath(),
+                FileFinder.getWorldFile().getAbsolutePath()
         };
     }
 }

@@ -6,6 +6,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Site;
+import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.Util;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class TemplateRenderer {
         VelocityContext context = new VelocityContext();
         context.put("sites", groupSites());
         context.put("conf", Uristmaps.conf);
-        context.put("worldInfo", Uristmaps.worldInfo);
+        context.put("worldInfo", WorldInfo.getData());
         context.put("biomeLegend", getBiomeLegend());
         context.put("version", "0.3");
 

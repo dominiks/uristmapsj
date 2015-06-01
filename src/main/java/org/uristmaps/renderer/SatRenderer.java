@@ -25,20 +25,17 @@ public class SatRenderer extends LayerRenderer {
      */
     private BufferedImage tilesImage;
 
-    public SatRenderer() {
-        super();
-
-
-        // TODO: Load tileset used for rendering.
-
-        // Assert biome information is available
-        assert BiomeInfo.biomeInfo != null: "Biome data missing!";
-    }
+    /**
+     * Biome data.
+     */
+    private String[][] biomeInfo;
 
     @Override
     protected void prepareForLevel(int level, RenderSettings renderSettings) {
         tilesIndex = Tilesets.getTilesetIndex(renderSettings.getGraphicsSize());
         tilesImage = Tilesets.getTilesetImage(renderSettings.getGraphicsSize());
+
+        biomeInfo = BiomeInfo.getBiomeData();
     }
 
     @Override
@@ -47,10 +44,10 @@ public class SatRenderer extends LayerRenderer {
                                         tile.Y() * renderSettings.getGraphicsSize());
 
         // Render the tile onto the graphic object at imageX,imageY position.
-        String biomeName = BiomeInfo.biomeInfo[world.X()][world.Y()];
-        assert biomeName != null: "No biome name found in biome data!";
+        String biomeName = biomeInfo[world.X()][world.Y()];
+        assert biomeName != null;
         Coord2 tileCoord = tilesIndex.get(biomeName);
-        assert tileCoord != null: "No tile found for biome: " + biomeName;
+        assert tileCoord != null;
         assert tileCoord.X() < tilesImage.getWidth(): "Tile X is out of bounds!";
         assert tileCoord.Y() < tilesImage.getHeight(): "Tile Y is out of bounds!";
 

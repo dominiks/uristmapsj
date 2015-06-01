@@ -124,6 +124,14 @@ public class TaskExecutor {
             }
         }
 
+        // When any of the target files is missing, the task must run
+        for (String fileName : task.getTargetFiles()) {
+            if (!new File(fileName).exists()) {
+                runIt = true;
+                break;
+            }
+        }
+
         // When the task has no dependencies, just run it.
         if (task.getDependantTasks().length == 0 && task.getDependendFiles().length == 0) {
             runIt = true;
@@ -143,9 +151,22 @@ public class TaskExecutor {
         // Now run it. But only if it needs to.
         if (runIt) {
             task.work();
+        } else {
+            Log.debug("TaskExecutor", "Skipping " + task.getName());
         }
         // Add it to the log of completed task.
         executedTasks.add(task.getName());
+    }
+
+    /**
+     * Add a task with the given parameters.
+     * @param name
+     * @param depFiles May be null.
+     * @param targetFiles May be null.
+     * @param work
+     */
+    public void addTask(String name, String[] depFiles, String[] targetFiles, Runnable work) {
+        addTask(new AdhocTask(name, depFiles, targetFiles, work));
     }
 
 }

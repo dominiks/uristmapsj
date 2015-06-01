@@ -168,6 +168,39 @@ public class TaskExecutor {
     }
 
     /**
+     * Add a task with the given parameters.
+     * @param name
+     * @param depFile
+     * @param targetFile
+     * @param work
+     */
+    public void addTask(String name, String depFile, String targetFile, Runnable work) {
+        addTask(name, new String[]{depFile}, new String[] {targetFile}, work);
+    }
+
+    /**
+     * Add a task with the given parameters.
+     * @param name
+     * @param depFiles
+     * @param targetFile
+     * @param work
+     */
+    public void addTask(String name, String[] depFiles, String targetFile, Runnable work) {
+        addTask(name, depFiles, new String[] {targetFile}, work);
+    }
+
+    /**
+     * Add a task with the given parameters.
+     * @param name
+     * @param depFile
+     * @param targetFiles
+     * @param work
+     */
+    public void addTask(String name, String depFile, String[] targetFiles, Runnable work) {
+        addTask(name, new String[]{depFile}, targetFiles, work);
+    }
+
+    /**
      * Return the unordered set of task names.
      * @return
      */
@@ -182,5 +215,9 @@ public class TaskExecutor {
      */
     public Task getTask(String name) {
         return tasks.get(name);
+    }
+
+    public void addTask(String name, Runnable work) {
+        addTask(new AdhocTask(name, new String[]{}, new String[]{}, work));
     }
 }

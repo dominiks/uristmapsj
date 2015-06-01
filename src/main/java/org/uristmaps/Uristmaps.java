@@ -130,6 +130,7 @@ public class Uristmaps {
         // Run the default task or the requested task.
         Log.info("Starting full build");
         executor.exec("FullBuild");
+        String suffixed = StructureInfo.getSuffixed(29, 1278);
     }
 
     /**

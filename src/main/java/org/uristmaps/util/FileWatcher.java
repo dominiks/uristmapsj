@@ -120,4 +120,12 @@ public class FileWatcher {
         fileMap.put(f.getAbsolutePath(), new FileInfo(f));
         saveFile();
     }
+
+    /**
+     * Delete the file store file.
+     */
+    public void forget() {
+        Log.debug("FileWatcher", "Deleting store file.");
+        FileFinder.getFileStore().delete();
+    }
 }

@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by schacht on 26.05.15.
@@ -83,8 +84,35 @@ public class Uristmaps {
                 () -> BiomeInfo.load());
         executor.addTask(new BiomeSatRendererTask());
 
-        // TODO: Run the default task or the requested task.
+        // Parse more parameters
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("tasks") ||arg.equalsIgnoreCase("list")) {
+                echoTasks(executor);
+                return;
+            } else if (arg.equalsIgnoreCase("forget")) {
+                forgetInputFiles();
+                return;
+            }
+        }
+
+        // Run the default task or the requested task.
         executor.exec("BiomeRenderer");
+    }
+
+    private static void forgetInputFiles() {
+        System.out.println("Forgetting all file states.");
+        files.forget();
+    }
+
+    private static void echoTasks(TaskExecutor executor) {
+        // List all available tasks
+        System.out.println("Available tasks:");
+        TreeSet<String> taskNames = new TreeSet<>(executor.getTasks());
+        for (String name : taskNames) {
+            if (executor.getTask(name).isPublic()) {
+                System.out.println(name);
+            }
+        }
     }
 
     public static void Old() {

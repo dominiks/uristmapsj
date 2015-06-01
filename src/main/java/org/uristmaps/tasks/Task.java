@@ -39,4 +39,13 @@ public abstract class Task {
      * @return
      */
     public abstract String getName();
+
+    /**
+     * Whether this task will be shown to the user when using "list".
+     * // TODO: Cannot run this task directly?
+     * @return
+     */
+    public boolean isPublic() {
+        return true;
+    }
 }

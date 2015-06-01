@@ -4,10 +4,7 @@ import com.esotericsoftware.minlog.Log;
 import org.uristmaps.Uristmaps;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A task executor has a list of tasks, then gets told which tasks to execute.
@@ -169,4 +166,20 @@ public class TaskExecutor {
         addTask(new AdhocTask(name, depFiles, targetFiles, work));
     }
 
+    /**
+     * Return the unordered set of task names.
+     * @return
+     */
+    public Collection<String> getTasks() {
+        return tasks.keySet();
+    }
+
+    /**
+     * Retrieve a single task by its name.
+     * @param name
+     * @return
+     */
+    public Task getTask(String name) {
+        return tasks.get(name);
+    }
 }

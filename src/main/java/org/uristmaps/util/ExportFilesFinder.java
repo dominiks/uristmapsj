@@ -73,4 +73,15 @@ public class ExportFilesFinder {
         }
         return searchResult[0];
     }
+
+    public static File getHydroMap() {
+        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().endsWith("-hyd.png"));
+        if (searchResult.length == 0) {
+            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("paths", "export"));
+            return null;
+        }
+        return searchResult[0];
+    }
 }

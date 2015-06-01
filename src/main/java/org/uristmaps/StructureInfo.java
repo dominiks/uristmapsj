@@ -18,7 +18,11 @@ import static org.uristmaps.util.Util.makeColor;
 public class StructureInfo {
 
     private static Map<Integer, String> colorTranslation;
-    private static BufferedImage image;
+    private static Map<Integer, String> hydroColors;
+
+    private static BufferedImage structImage;
+    private static BufferedImage hydroImage;
+
     private static String[][] structures;
 
     static {
@@ -39,17 +43,31 @@ public class StructureInfo {
         colorTranslation.put(makeColor( 96,  96,  96), "stone_wall");
         colorTranslation.put(makeColor(160, 127,  20), "other_wall");
         colorTranslation.put(makeColor(  0,  96, 255), "lake");
+
+        hydroColors = new HashMap<>();
+        hydroColors.put(makeColor(  0, 224, 255), "river");
+        hydroColors.put(makeColor(  0, 255, 255), "river");
+        hydroColors.put(makeColor(  0, 112, 255), "river");
     }
+
 
     /**
      * Load the structure data from the map file and save it to the build dir.
      */
     public static void load() {
         try {
-            image = ImageIO.read(ExportFilesFinder.getBiomeMap());
+            structImage = ImageIO.read(ExportFilesFinder.getStructuresMap());
             updateStructureConnections();
         } catch (IOException e) {
             Log.error("StructureInfo", "Could not read structure export image.");
+            if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
+            System.exit(1);
+        }
+        try {
+            hydroImage = ImageIO.read(ExportFilesFinder.getHydroMap());
+            updateStructureConnections();
+        } catch (IOException e) {
+            Log.error("StructureInfo", "Could not read hydro export image.");
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
             System.exit(1);
         }
@@ -62,13 +80,13 @@ public class StructureInfo {
      * the direction in which a same typed tile lays.
      */
     private static void updateStructureConnections() {
-        if (image == null) load();
-        structures = new String[image.getWidth()][image.getHeight()];
+        if (structImage == null) load();
+        structures = new String[structImage.getWidth()][structImage.getHeight()];
         StringBuilder suffix = new StringBuilder();
         String current;
         String neighbour;
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
+        for (int x = 0; x < structImage.getWidth(); x++) {
+            for (int y = 0; y < structImage.getHeight(); y++) {
                 // Reset the suffix builder, set current structure
                 current = getData(x,y);
 
@@ -111,10 +129,14 @@ public class StructureInfo {
      * @return Null when nothing could be found.
      */
     public static String getData(int x, int y) {
-        if (image == null) load();
+        if (structImage == null) load();
         if (x < 0 || y < 0) return null;
-        if (x >= image.getWidth() || y >= image.getHeight()) return null;
-        return colorTranslation.get(image.getRGB(x, y));
+        if (x >= structImage.getWidth() || y >= structImage.getHeight()) return null;
+
+        // First check if there is a river, as that is more important!
+        String result = hydroColors.get(hydroImage.getRGB(x,y));
+        if (result != null) return result;
+        return colorTranslation.get(structImage.getRGB(x, y));
     }
 
     /**

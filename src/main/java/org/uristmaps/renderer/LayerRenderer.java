@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 /**
  * Base class for all layer renderer.
- * This
+ * TODO: Multithread the tile rendering.
  */
 public abstract class LayerRenderer {
 

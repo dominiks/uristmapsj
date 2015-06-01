@@ -65,7 +65,10 @@ public class TaskExecutor {
         // Run all provided tasks.
         for (String taskName : tasksToRun) {
             // Skip the task if it has been run as a dependency for a previous task
-            if (executedTasks.contains(taskName)) continue;
+            if (executedTasks.contains(taskName)) {
+                Log.debug("TastExecutor", "Task already done: " + taskName);
+                continue;
+            }
 
             // Execute the task and add it to the completed tasks.
             Task task = tasks.get(taskName);

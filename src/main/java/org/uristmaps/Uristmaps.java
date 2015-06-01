@@ -92,6 +92,9 @@ public class Uristmaps {
             } else if (arg.equalsIgnoreCase("forget")) {
                 forgetInputFiles();
                 return;
+            } else if (arg.equalsIgnoreCase("help")) {
+                usage();
+                return;
             }
         }
 
@@ -99,11 +102,28 @@ public class Uristmaps {
         executor.exec("BiomeRenderer");
     }
 
+    /**
+     * Print some help text.
+     */
+    private static void usage() {
+        System.out.println("Usage: ");
+        System.out.println("\tlist\tTo list all available tasks.");
+        System.out.println("\tforget\tTo forget file states and not skip any tasks.");
+        System.out.println("\thost\tTo start the local webserver.");
+    }
+
+    /**
+     * Remove the file state store so all tasks will run as if its their first time, in the next run.
+     */
     private static void forgetInputFiles() {
         System.out.println("Forgetting all file states.");
         files.forget();
     }
 
+    /**
+     * Print all public tasks.
+     * @param executor
+     */
     private static void echoTasks(TaskExecutor executor) {
         // List all available tasks
         System.out.println("Available tasks:");

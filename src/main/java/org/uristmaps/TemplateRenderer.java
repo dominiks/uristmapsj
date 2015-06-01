@@ -102,7 +102,7 @@ public class TemplateRenderer {
         Map<String, Map<String, Site>> result = new TreeMap<>();
 
         // Iterate over all sites
-        for (Site site : WorldSites.sites.values()) {
+        for (Site site : WorldSites.getSites().values()) {
             if (!result.containsKey(site.getType())) {
                 result.put(site.getType(), new TreeMap<>());
             }

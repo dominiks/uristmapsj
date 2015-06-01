@@ -1,6 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.Coord2;
@@ -96,9 +97,24 @@ public class Uristmaps {
                 OutputFiles.getUristJs().getAbsolutePath(),
                 () -> TemplateRenderer.compileUristJs());
 
-        executor.addTask(new WorldInfoTask());
-        executor.addTask(new BiomeInfoTask());
+        executor.addTask(new CompileIndexTask());
+
+        executor.addTask("DistResources", () -> FileCopier.distResources());
+
+        executor.addTask("WorldInfo",
+                new String[] { ExportFilesFinder.getWorldHistory().getAbsolutePath(),
+                        ExportFilesFinder.getBiomeMap().getAbsolutePath()},
+                BuildFiles.getWorldFile().getAbsolutePath(),
+                () -> WorldInfo.load());
+
+        executor.addTask("BiomeInfoTask",
+                ExportFilesFinder.getBiomeMap().getAbsolutePath(),
+                BuildFiles.getBiomeInfo().getAbsolutePath(),
+                () -> BiomeInfo.load());
+
         executor.addTask(new BiomeSatRendererTask());
+
+        executor.addTask(new FullBuildMetaTask());
 
         // Parse more parameters
         for (String arg : args) {
@@ -114,8 +130,9 @@ public class Uristmaps {
             }
         }
 
+
         // Run the default task or the requested task.
-        executor.exec("TilesetTask", "BmpConvertTask", "BiomeRenderer", "SitesGeojson", "CompileUristJs");
+        executor.exec("FullBuild");
     }
 
     /**
@@ -162,11 +179,9 @@ public class Uristmaps {
         // TODO: Place site labels
         // TODO: Place detailed site maps
 
-        // Compile template files
-        TemplateRenderer.compileIndexHtml();
+        // Compile template files;
 
         // Assemble output resources
-        FileCopier.distResources();
     }
 
 

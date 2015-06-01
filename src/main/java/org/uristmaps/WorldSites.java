@@ -27,13 +27,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * World sites manager.
  */
 public class WorldSites {
 
     private static final Pattern idReader = Pattern.compile("(\\d+):");
 
-    public static Map<Integer, Site> sites;
+    private static Map<Integer, Site> sites;
     private static int offset;
     private static boolean xyInitialized;
     private static int mapSize;
@@ -177,7 +177,7 @@ public class WorldSites {
 
     }
 
-    private static Map<Integer, Site> getSites() {
+    public static Map<Integer, Site> getSites() {
         if (sites == null) initSites();
         return sites;
     }

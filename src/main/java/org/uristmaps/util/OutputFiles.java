@@ -21,4 +21,8 @@ public class OutputFiles {
     public static File getUristJs() {
         return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "js", "urist.js").toFile();
     }
+
+    public static File getIndexHtml() {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "urist.js").toFile();
+    }
 }

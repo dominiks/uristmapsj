@@ -9,7 +9,7 @@ import static org.uristmaps.Uristmaps.conf;
 /**
  * Provides easy access to resource files.
  */
-public class FileFinder {
+public class ExportFilesFinder {
 
     /**
      * Retrieve the population report file.
@@ -39,24 +39,7 @@ public class FileFinder {
     }
 
 
-    /**
-     * Return the path to the file-state file.
-     * Contains a Map<String, FileInfo> object.
-     * @return
-     */
-    public static File getFileStore() {
-        File result = new File(conf.fetch("Paths", "build"), "files.kryo");
-        return result;
-    }
 
-    /**
-     * Contains a WorldInfo object.
-     * @return
-     */
-    public static File getWorldFile() {
-        File result = new File(conf.fetch("Paths", "build"), "worldinfo.kryo");
-        return result;
-    }
 
     public static File getBiomeMap() {
         File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
@@ -78,14 +61,5 @@ public class FileFinder {
             return null;
         }
         return searchResult[0];
-    }
-
-    /**
-     * The biome data file. Contains a String[][] array that maps x,y to biome name.
-     * @return
-     */
-    public static File getBiomeInfo() {
-        File result = new File(conf.fetch("Paths", "build"), "biomes.kryo");
-        return result;
     }
 }

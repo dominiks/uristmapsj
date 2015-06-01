@@ -1,7 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.Coord2;
@@ -10,15 +10,17 @@ import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.renderer.LayerRenderer;
 import org.uristmaps.renderer.SatRenderer;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.tasks.*;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 import org.uristmaps.util.FileWatcher;
+import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by schacht on 26.05.15.
@@ -42,11 +44,6 @@ public class Uristmaps {
     public static FileWatcher files;
 
     /**
-     * Global worldInfo object.
-     */
-    public static WorldInfo worldInfo;
-
-    /**
      * Entry point of the application.
      *
      * Runs all available tasks.
@@ -57,6 +54,7 @@ public class Uristmaps {
         Log.info("Uristmaps v0.3");
         loadConfig();
 
+        // Check if we can stop initializing here and start the web server.
         for (String arg : args) {
             if (arg.equalsIgnoreCase("host")) {
                 WebServer.start();
@@ -75,67 +73,113 @@ public class Uristmaps {
             Log.info("Enabled Debug Logging");
         }
 
-        // Convert all BMP in the export dir to PNG
-        BmpConverter.convert();
+        // Fill the executor with all available tasks.
+        TaskExecutor executor = new TaskExecutor();
 
-        // Compile Tilesets
-        Tilesets.compile();
+        // No file management for this task until subtasks are possible.
+        executor.addTask("TilesetTask", () -> Tilesets.compile());
+        executor.addTask("BmpConvertTask", () -> BmpConverter.convert());
 
-        // Load world info
-        loadWorldInfo();
+        executor.addTask("SitesGeojson",
+                new String[]{BuildFiles.getSitesFile().getAbsolutePath(),
+                             BuildFiles.getWorldFile().getAbsolutePath()},
+                OutputFiles.getSitesGeojson().getAbsolutePath(),
+                () -> WorldSites.geoJson());
 
-        // Load sites info
-        WorldSites.load();
-        WorldSites.geoJson();
+        executor.addTask("Sites",
+                new String[]{ExportFilesFinder.getLegendsXML().getAbsolutePath(),
+                             ExportFilesFinder.getPopulationFile().getAbsolutePath()},
+                BuildFiles.getSitesFile().getAbsolutePath(),
+                () -> WorldSites.load());
 
-        // Load biome info
-        BiomeInfo.load();
+        executor.addTask("CompileUristJs",
+                new String[]{},
+                OutputFiles.getUristJs().getAbsolutePath(),
+                () -> TemplateRenderer.compileUristJs());
+
+        executor.addTask(new CompileIndexTask());
+
+        executor.addTask("DistResources", () -> FileCopier.distResources());
+
+        executor.addTask("WorldInfo",
+                new String[] { ExportFilesFinder.getWorldHistory().getAbsolutePath(),
+                        ExportFilesFinder.getBiomeMap().getAbsolutePath()},
+                BuildFiles.getWorldFile().getAbsolutePath(),
+                () -> WorldInfo.load());
+
+        executor.addTask("BiomeInfoTask",
+                ExportFilesFinder.getBiomeMap().getAbsolutePath(),
+                BuildFiles.getBiomeInfo().getAbsolutePath(),
+                () -> BiomeInfo.load());
+
+        executor.addTask(new BiomeSatRendererTask());
+
+        executor.addTask(new FullBuildMetaTask());
+
+        // Parse more parameters
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("tasks") ||arg.equalsIgnoreCase("list")) {
+                echoTasks(executor);
+                return;
+            } else if (arg.equalsIgnoreCase("forget")) {
+                forgetInputFiles();
+                return;
+            } else if (arg.equalsIgnoreCase("help")) {
+                usage();
+                return;
+            }
+        }
+
+
+        // Run the default task or the requested task.
+        executor.exec("FullBuild");
+    }
+
+    /**
+     * Print some help text.
+     */
+    private static void usage() {
+        System.out.println("Usage: ");
+        System.out.println("\tlist\tTo list all available tasks.");
+        System.out.println("\tforget\tTo forget file states and not skip any tasks.");
+        System.out.println("\thost\tTo start the local webserver.");
+    }
+
+    /**
+     * Remove the file state store so all tasks will run as if its their first time, in the next run.
+     */
+    private static void forgetInputFiles() {
+        System.out.println("Forgetting all file states.");
+        files.forget();
+    }
+
+    /**
+     * Print all public tasks.
+     * @param executor
+     */
+    private static void echoTasks(TaskExecutor executor) {
+        // List all available tasks
+        System.out.println("Available tasks:");
+        TreeSet<String> taskNames = new TreeSet<>(executor.getTasks());
+        for (String name : taskNames) {
+            if (executor.getTask(name).isPublic()) {
+                System.out.println(name);
+            }
+        }
+    }
+
+    public static void Old() {
 
         // TODO: Load structures info
         // TODO: Load detailed site maps
         // TODO: Load regions info
 
-        // Render biome tiles
-        LayerRenderer satRenderer = new SatRenderer();
-        satRenderer.work();
-
         // TODO: Render region labels
         // TODO: Place region labels
         // TODO: Place site labels
         // TODO: Place detailed site maps
-
-        // Compile template files
-        TemplateRenderer.compileUristJs();
-        TemplateRenderer.compileIndexHtml();
-
-        // Assemble output resources
-        FileCopier.distResources();
     }
 
-    /**
-     * Load the world file from disk or import when not available.
-     */
-    private static void loadWorldInfo() {
-        File worldInfoFile = FileFinder.getWorldFile();
-        boolean sourcesUnchanged = (files.allOk(new File[] {
-                FileFinder.getBiomeMap(), FileFinder.getWorldHistory()
-        }));
-        if (worldInfoFile.exists() && sourcesUnchanged) {
-            Log.info("Loading world information");
-            try (Input input = new Input(new FileInputStream(worldInfoFile))) {
-                worldInfo = Uristmaps.kryo.readObject(input, WorldInfo.class);
-            } catch (FileNotFoundException e) {
-                Log.warn("Error when reading world info file: " + worldInfoFile);
-                if (Log.DEBUG) Log.debug("Exception", e);
-                worldInfo = new WorldInfo();
-                worldInfo.init();
-            }
-        } else {
-            worldInfo = new WorldInfo();
-            worldInfo.init();
-        }
-
-    }
 
     private static void initFileInfo() {
         files = new FileWatcher();

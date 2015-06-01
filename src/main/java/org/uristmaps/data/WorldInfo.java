@@ -4,11 +4,14 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.Uristmaps;
-import org.uristmaps.util.FileFinder;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFilesFinder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Data container for information about the DF world that is being rendered.
@@ -16,99 +19,106 @@ import java.io.*;
 public class WorldInfo {
 
     /**
-     * The width ( and height) of the world.
+     * The cached data for the world info.
      */
-    private int size;
-
-    /**
-     * The dwarven name of the world.
-     */
-    private String name;
-
-    /**
-     * The translated name.
-     */
-    private String nameEnglish;
-
-    public WorldInfo() { }
+    private static Map<String, String> data;
 
     /**
      * Load world info from the export files.
      */
-    public void init() {
+    public static void load() {
+        data = new HashMap<>();
         // World size will be taken from the biome export map
-        boolean readBiome = loadWorldSize();
-        boolean readHistory = loadNameFromHistory();
+        loadWorldSize();
+        loadNameFromHistory();
 
-        if (readBiome || readHistory) {
-            // Export the worldfile
-            File worldInfoFile = FileFinder.getWorldFile();
-            try (Output output = new Output(new FileOutputStream(worldInfoFile))) {
-                Uristmaps.kryo.writeObject(output, this);
-            } catch (FileNotFoundException e) {
-                Log.warn("FileWatcher", "Error when writing state file: " + worldInfoFile);
-                if (Log.DEBUG) Log.debug("FileWatcher", "Exception", e);
-            }
-            Log.debug("FileWatcher", "Saved store.");
+        // Export the worldfile
+        File worldInfoFile = BuildFiles.getWorldFile();
+        try (Output output = new Output(new FileOutputStream(worldInfoFile))) {
+            Uristmaps.kryo.writeObject(output, data);
+        } catch (FileNotFoundException e) {
+            Log.warn("WorldInfo", "Error when writing state file: " + worldInfoFile);
+            if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
         }
     }
 
-    private boolean loadNameFromHistory() {
-        if (Uristmaps.files.fileOk(FileFinder.getWorldHistory())) {
-            Log.debug("WorldInfo", "Skipping world history file.");
-            return false;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(FileFinder.getWorldHistory()))) {
-            name = reader.readLine();
-            nameEnglish = reader.readLine();
+    /**
+     * Load the name(s) from the history file.
+     */
+    private static void loadNameFromHistory() {
+        Log.debug("WorldInfo", "Reading population counts.");
+        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFilesFinder.getWorldHistory()))) {
+            data.put("name", reader.readLine());
+            data.put("nameEnglish", reader.readLine());
         } catch (Exception e) {
-            Log.error("WorldInfo", "Could not read world history file.");
+            Log.error("WorldInfo", "Could not read population info file.");
             if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
+            System.exit(1);
         }
-        Uristmaps.files.updateFile(FileFinder.getWorldHistory());
-        return true;
     }
 
     /**
      * Load the biome map and check its px size for world unit-size.
      */
-    private boolean loadWorldSize() {
-        if (Uristmaps.files.fileOk(FileFinder.getBiomeMap()) && FileFinder.getWorldFile().exists()) {
-            Log.debug("WorldInfo", "Skipping biome map");
-            return false;
-        }
+    private static void loadWorldSize() {
         Log.debug("WorldInfo", "Importing world size from biome");
 
         try {
-            BufferedImage image = ImageIO.read(FileFinder.getBiomeMap());
-            size = image.getWidth();
+            BufferedImage image = ImageIO.read(ExportFilesFinder.getBiomeMap());
+            data.put("size", image.getWidth() + "");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error("WorldInfo", "Could not read biome image file.");
+            if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
+            System.exit(1);
         }
-
-        Uristmaps.files.updateFile(FileFinder.getBiomeMap());
-        return true;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    /**
+     * Get the dimension size of the world (width or height).
+     * @return
+     */
+    public static int getSize() {
+        if (data == null) loadData();
+        return Integer.parseInt(data.get("size"));
     }
 
-    public int getSize() {
-        return size;
+    /**
+     * Load the saved data.
+     */
+    private static void loadData() {
+        try (Input input = new Input(new FileInputStream(BuildFiles.getWorldFile()))) {
+            data = Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (Exception e) {
+            Log.error("WorldInfo", "Could not read world info file: " + BuildFiles.getWorldFile());
+            if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
+            System.exit(1);
+        }
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Get the dwarven name of this world.
+     * @return
+     */
+    public static String getName() {
+        if (data == null) loadData();
+        return data.get("name");
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Get the english translation of the world's name.
+     * @return
+     */
+    public static String getNameEnglish() {
+        if (data == null) loadData();
+        return data.get("nameEnglish");
     }
 
-    public String getNameEnglish() {
-        return nameEnglish;
+    /**
+     * Return a direct reference to the data object. Used for velocity.
+     * @return
+     */
+    public static Map<String, String> getData() {
+        if (data == null) loadData();
+        return data;
     }
-
 }

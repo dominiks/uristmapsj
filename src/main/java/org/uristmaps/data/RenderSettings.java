@@ -26,15 +26,15 @@ public class RenderSettings {
     public RenderSettings(int level) {
         this.level = level;
 
-        initZoomOffset(Uristmaps.worldInfo.getSize());
+        initZoomOffset(WorldInfo.getSize());
 
         graphicsSize = (int) Math.pow(2,(level - zoomOffset));
 
         initStepSize();
-        scaledWorldSize = Uristmaps.worldInfo.getSize() / stepSize;
+        scaledWorldSize = WorldInfo.getSize() / stepSize;
 
         // Calculate how many tiles are clear left&top of the render to center the world on the map.
-        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - Uristmaps.worldInfo.getSize();
+        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - WorldInfo.getSize();
         clearTiles /= stepSize;
         clearTiles /= 2;
 

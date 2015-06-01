@@ -37,7 +37,7 @@ public class FileWatcher {
      */
     public FileWatcher() {
         // Try to read the file-info file.
-        File storeFile = FileFinder.getFileStore();
+        File storeFile = BuildFiles.getFileStore();
         if (storeFile.exists()) {
             try (Input input = new Input(new FileInputStream(storeFile))) {
                 fileMap = Uristmaps.kryo.readObject(input, HashMap.class);
@@ -102,7 +102,7 @@ public class FileWatcher {
     }
 
     public void saveFile() {
-        File storeFile = FileFinder.getFileStore();
+        File storeFile = BuildFiles.getFileStore();
         try (Output output = new Output(new FileOutputStream(storeFile))) {
             Uristmaps.kryo.writeObject(output, fileMap);
         } catch (FileNotFoundException e) {
@@ -119,5 +119,14 @@ public class FileWatcher {
     public void updateFile(File f) {
         fileMap.put(f.getAbsolutePath(), new FileInfo(f));
         saveFile();
+    }
+
+    /**
+     * Delete the file store file.
+     */
+    public void forget() {
+        if (!BuildFiles.getFileStore().exists()) return;
+        Log.debug("FileWatcher", "Deleting store file.");
+        BuildFiles.getFileStore().delete();
     }
 }

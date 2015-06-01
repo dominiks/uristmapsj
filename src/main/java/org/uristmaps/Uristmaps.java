@@ -1,15 +1,12 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.FileInfo;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
-import org.uristmaps.renderer.LayerRenderer;
-import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.tasks.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
@@ -92,6 +89,12 @@ public class Uristmaps {
                 BuildFiles.getSitesFile().getAbsolutePath(),
                 () -> WorldSites.load());
 
+
+        executor.addTask("StructuresTask",
+                ExportFilesFinder.getStructuresMap().getAbsolutePath(),
+                BuildFiles.getStructureInfo().getAbsolutePath(),
+                () -> StructureInfo.load());
+
         executor.addTask("CompileUristJs",
                 new String[]{},
                 OutputFiles.getUristJs().getAbsolutePath(),
@@ -130,7 +133,6 @@ public class Uristmaps {
             }
         }
 
-
         // Run the default task or the requested task.
         Log.info("Starting full build");
         executor.exec("FullBuild");
@@ -167,7 +169,6 @@ public class Uristmaps {
 
     public static void Old() {
 
-        // TODO: Load structures info
         // TODO: Load detailed site maps
         // TODO: Load regions info
 

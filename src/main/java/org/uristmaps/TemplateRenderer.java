@@ -8,14 +8,11 @@ import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.OutputFiles;
-import org.uristmaps.util.Util;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -83,7 +80,7 @@ public class TemplateRenderer {
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
                     || biomeName.startsWith("river") || biomeName.startsWith("wall")
                     || biomeName.startsWith("road")) {
-                Log.debug("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
+                Log.trace("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
                 continue;
             }
 

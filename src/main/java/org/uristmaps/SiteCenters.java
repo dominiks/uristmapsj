@@ -46,10 +46,7 @@ public class SiteCenters {
 
         // Iterate over all sites, find the closest group and move the site there.
         for (Site site : WorldSites.getSites().values()) {
-            if (!typeToStruct.containsKey(site.getType())) {
-                System.err.println("Skipping " + site.getType());
-                continue;
-            }
+            if (!typeToStruct.containsKey(site.getType())) continue;
             StructureGroup group = findClosestGroup(site, grps, visitedGroups);
             if (group == null) {
                 Log.warn("SiteCenters", "Could not find close group for site " + site + "@" + site.getCoords());

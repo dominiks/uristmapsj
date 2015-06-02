@@ -38,4 +38,16 @@ public class BuildFiles {
         File result = new File(conf.fetch("Paths", "build"), "biomes.kryo");
         return result;
     }
+
+    public static File getStructureGroups() {
+        return new File(conf.fetch("Paths", "build"), "struct_groups.kryo");
+    }
+
+    public static File getStructureGroupsDefinitions() {
+        return new File(conf.fetch("Paths", "build"), "group_types.kryo");
+    }
+
+    public static File getSiteCenters() {
+        return new File(conf.fetch("Paths", "build"), "site_centers.kryo");
+    }
 }

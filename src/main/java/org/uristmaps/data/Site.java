@@ -133,4 +133,9 @@ public class Site {
     public void setLon(double lon) {
         this.lon = lon;
     }
+
+    @Override
+    public String toString() {
+        return getName() + "(" + getType() + ")";
+    }
 }

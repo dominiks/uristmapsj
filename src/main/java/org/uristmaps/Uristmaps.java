@@ -1,15 +1,9 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.FileInfo;
-import org.uristmaps.data.Site;
-import org.uristmaps.data.WorldInfo;
-import org.uristmaps.renderer.LayerRenderer;
-import org.uristmaps.renderer.SatRenderer;
+import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
@@ -81,20 +75,21 @@ public class Uristmaps {
         executor.addTask("BmpConvertTask", () -> BmpConverter.convert());
 
         executor.addTask("SitesGeojson",
-                new String[]{BuildFiles.getSitesFile().getAbsolutePath(),
-                             BuildFiles.getWorldFile().getAbsolutePath()},
-                OutputFiles.getSitesGeojson().getAbsolutePath(),
+                new File[]{BuildFiles.getSitesFile(),
+                           BuildFiles.getWorldFile(),
+                           BuildFiles.getSiteCenters()},
+                OutputFiles.getSitesGeojson(),
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
-                new String[]{ExportFilesFinder.getLegendsXML().getAbsolutePath(),
-                             ExportFilesFinder.getPopulationFile().getAbsolutePath()},
-                BuildFiles.getSitesFile().getAbsolutePath(),
+                new File[]{ExportFilesFinder.getLegendsXML(),
+                           ExportFilesFinder.getPopulationFile()},
+                BuildFiles.getSitesFile(),
                 () -> WorldSites.load());
 
         executor.addTask("CompileUristJs",
-                new String[]{},
-                OutputFiles.getUristJs().getAbsolutePath(),
+                new File[]{},
+                OutputFiles.getUristJs(),
                 () -> TemplateRenderer.compileUristJs());
 
         executor.addTask(new CompileIndexTask());
@@ -102,19 +97,36 @@ public class Uristmaps {
         executor.addTask("DistResources", () -> FileCopier.distResources());
 
         executor.addTask("WorldInfo",
-                new String[] { ExportFilesFinder.getWorldHistory().getAbsolutePath(),
-                        ExportFilesFinder.getBiomeMap().getAbsolutePath()},
-                BuildFiles.getWorldFile().getAbsolutePath(),
+                new File[] {ExportFilesFinder.getWorldHistory(),
+                            ExportFilesFinder.getBiomeMap()},
+                BuildFiles.getWorldFile(),
                 () -> WorldInfo.load());
 
         executor.addTask("BiomeInfoTask",
-                ExportFilesFinder.getBiomeMap().getAbsolutePath(),
-                BuildFiles.getBiomeInfo().getAbsolutePath(),
+                ExportFilesFinder.getBiomeMap(),
+                BuildFiles.getBiomeInfo(),
                 () -> BiomeInfo.load());
 
         executor.addTask(new BiomeSatRendererTask());
 
         executor.addTask(new FullBuildMetaTask());
+
+        executor.addTask("GroupStructures",
+                new File[] {ExportFilesFinder.getStructuresMap(),
+                            BuildFiles.getSitesFile(),
+                            BuildFiles.getWorldFile()},
+                new File[]{BuildFiles.getStructureGroups(),
+                        BuildFiles.getStructureGroupsDefinitions()},
+                () -> StructureGroups.load());
+
+        executor.addTask("CenterSites",
+                new File[]{
+                        BuildFiles.getWorldFile(),
+                        BuildFiles.getSitesFile(),
+                        BuildFiles.getStructureGroups(),
+                        BuildFiles.getStructureGroupsDefinitions()},
+                BuildFiles.getSiteCenters(),
+                () -> SiteCenters.load());
 
         // Parse more parameters
         for (String arg : args) {
@@ -130,8 +142,8 @@ public class Uristmaps {
             }
         }
 
-
         // Run the default task or the requested task.
+        Log.info("Starting full build");
         executor.exec("FullBuild");
     }
 
@@ -166,7 +178,6 @@ public class Uristmaps {
 
     public static void Old() {
 
-        // TODO: Load structures info
         // TODO: Load detailed site maps
         // TODO: Load regions info
 
@@ -206,6 +217,7 @@ public class Uristmaps {
         kryo.register(Site.class);
         kryo.register(FileInfo.class);
         kryo.register(WorldInfo.class);
+        kryo.register(StructureGroup.class);
     }
 
     /**

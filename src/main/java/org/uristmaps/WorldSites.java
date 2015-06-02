@@ -6,6 +6,7 @@ import com.esotericsoftware.minlog.Log;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.uristmaps.data.Coord2;
 import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
@@ -62,7 +63,7 @@ public class WorldSites {
     /**
      * Calculate the latitude & longitude for every site and update the values.
      */
-    private static void UpdateLatLon() {
+    public static void UpdateLatLon() {
         for (Site site : sites.values()) {
             Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
             site.setLat(latlon.X());
@@ -162,6 +163,18 @@ public class WorldSites {
      */
     public static void geoJson() {
         VelocityContext context = new VelocityContext();
+
+        // Apply site centers
+        Site site;
+        for (Map.Entry<Integer, Coord2> entry : SiteCenters.getCenters().entrySet()) {
+            site = getSites().get(entry.getKey());
+            site.setCoords(entry.getValue());
+            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
+            site.setLat(latlon.X());
+            site.setLon(latlon.Y());
+
+        }
+
         context.put("sites", getSites().values());
 
         Template uristJs = Velocity.getTemplate("templates/js/sitesgeo.js.vm");
@@ -206,6 +219,5 @@ public class WorldSites {
         offset = (int) ((mapSize - worldSize) / 2);
         xyInitialized = true;
     }
-
 
 }

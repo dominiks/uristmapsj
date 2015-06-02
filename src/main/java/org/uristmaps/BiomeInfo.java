@@ -5,12 +5,14 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
+import static org.uristmaps.util.Util.makeColor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Loads the biome information for rendering.
@@ -65,8 +67,6 @@ public class BiomeInfo {
     }
 
     public static void load() {
-        Log.info("BiomeInfo", "Loading biome data.");
-
         // Open biome image
         Log.info("BiomeInfo", "Reloading biome data from exported image.");
         BufferedImage image = null;
@@ -117,19 +117,5 @@ public class BiomeInfo {
             System.exit(1);
         }
         return null;
-    }
-
-    /**
-     * Translate rgb values into an integer.
-     * @param R 0-255
-     * @param G 0-255
-     * @param B 0-255
-     * @return An integer as returned by BufferedImage.getRGB(x,y)
-     */
-    private static int makeColor(int R, int G, int B) {
-        R = (R << 16) & 0x00FF0000;
-        G = (G << 8) & 0x0000FF00;
-        B = B & 0x000000FF;
-        return 0xFF000000 | R | G | B;
     }
 }

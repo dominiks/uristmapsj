@@ -1,14 +1,16 @@
 package org.uristmaps.tasks;
 
+import java.io.File;
+
 /**
- * Created by dominik on 01.06.2015.
+ * Configurable task object. Mainly used for "anonymous" tasks created by the TaskExecutor.
  */
 public class AdhocTask extends Task {
 
 
     private String name;
-    private String[] depFiles;
-    private String[] targetFiles;
+    private File[] depFiles;
+    private File[] targetFiles;
     private Runnable run;
 
     /**
@@ -18,10 +20,10 @@ public class AdhocTask extends Task {
      * @param targetFiles Array of targetFiles. May be null.
      * @param runnable Rn
      */
-    public AdhocTask(String name, String[] depFiles, String[] targetFiles, Runnable runnable) {
+    public AdhocTask(String name, File[] depFiles, File[] targetFiles, Runnable runnable) {
         this.name = name;
-        this.depFiles = depFiles != null ? depFiles: new String[]{};
-        this.targetFiles = targetFiles != null ? targetFiles: new String[]{};
+        this.depFiles = depFiles != null ? depFiles: new File[]{};
+        this.targetFiles = targetFiles != null ? targetFiles: new File[]{};
         this.run = runnable;
     }
 
@@ -31,12 +33,12 @@ public class AdhocTask extends Task {
     }
 
     @Override
-    public String[] getDependendFiles() {
+    public File[] getDependendFiles() {
         return depFiles;
     }
 
     @Override
-    public String[] getTargetFiles() {
+    public File[] getTargetFiles() {
         return targetFiles;
     }
 

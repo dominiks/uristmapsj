@@ -5,17 +5,17 @@
 base_dir = .
 
 # Where the exported files are stored
-region = %(base_dir)s/export
+region = ${base_dir}/export
 
 # The name of the region. Exported files start with this name.
 region_name = region1
 
 # Where to place build files You don't really need to change this.
-build = %(base_dir)s/build
+build = ${base_dir}/build
 
 # Where the created map will be placed. This folder will then
 # contain an index.html
-output = %(base_dir)s/output
+output = ${base_dir}/output
 
 # Location of the single tile images that will be merged into tile sheets
 tiles = tiles
@@ -32,7 +32,7 @@ processes = 8
 debug = False
 
 # Blacklist categories from debug output (separate with ",")
-log_blacklist = kryo, tileset
+log_blacklist = kryo, tileset, FileCopier
 
 [Map]
 # The number of the highest zoom level to render. The higher it gets, the closer you can zoom in.

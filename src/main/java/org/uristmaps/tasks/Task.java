@@ -1,5 +1,7 @@
 package org.uristmaps.tasks;
 
+import java.io.File;
+
 /**
  * Base class for tasks.
  *
@@ -11,16 +13,16 @@ public abstract class Task {
      * The array of files that this task needs for it to run.
      * @return
      */
-    public String[] getDependendFiles() {
-        return new String[]{};
+    public File[] getDependendFiles() {
+        return new File[]{};
     }
 
     /**
      * The array of files that are produced by this task.
      * @return
      */
-    public String[] getTargetFiles() {
-        return new String[]{};
+    public File[] getTargetFiles() {
+        return new File[]{};
     }
 
     /**
@@ -49,5 +51,10 @@ public abstract class Task {
      */
     public boolean isPublic() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

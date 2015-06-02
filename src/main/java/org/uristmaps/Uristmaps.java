@@ -3,10 +3,7 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.FileInfo;
-import org.uristmaps.data.Site;
-import org.uristmaps.data.WorldInfo;
+import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
@@ -79,13 +76,14 @@ public class Uristmaps {
 
         executor.addTask("SitesGeojson",
                 new File[]{BuildFiles.getSitesFile(),
-                             BuildFiles.getWorldFile()},
+                           BuildFiles.getWorldFile(),
+                           BuildFiles.getSiteCenters()},
                 OutputFiles.getSitesGeojson(),
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
                 new File[]{ExportFilesFinder.getLegendsXML(),
-                             ExportFilesFinder.getPopulationFile()},
+                           ExportFilesFinder.getPopulationFile()},
                 BuildFiles.getSitesFile(),
                 () -> WorldSites.load());
 
@@ -99,8 +97,8 @@ public class Uristmaps {
         executor.addTask("DistResources", () -> FileCopier.distResources());
 
         executor.addTask("WorldInfo",
-                new File[] { ExportFilesFinder.getWorldHistory(),
-                        ExportFilesFinder.getBiomeMap()},
+                new File[] {ExportFilesFinder.getWorldHistory(),
+                            ExportFilesFinder.getBiomeMap()},
                 BuildFiles.getWorldFile(),
                 () -> WorldInfo.load());
 
@@ -114,12 +112,17 @@ public class Uristmaps {
         executor.addTask(new FullBuildMetaTask());
 
         executor.addTask("GroupStructures",
-                ExportFilesFinder.getStructuresMap(),
-                BuildFiles.getStructureGroups(),
+                new File[] {ExportFilesFinder.getStructuresMap(),
+                            BuildFiles.getSitesFile(),
+                            BuildFiles.getWorldFile()},
+                new File[]{BuildFiles.getStructureGroups(),
+                        BuildFiles.getStructureGroupsDefinitions()},
                 () -> StructureGroups.load());
 
         executor.addTask("CenterSites",
-                new File[] {
+                new File[]{
+                        BuildFiles.getWorldFile(),
+                        BuildFiles.getSitesFile(),
                         BuildFiles.getStructureGroups(),
                         BuildFiles.getStructureGroupsDefinitions()},
                 BuildFiles.getSiteCenters(),
@@ -214,6 +217,7 @@ public class Uristmaps {
         kryo.register(Site.class);
         kryo.register(FileInfo.class);
         kryo.register(WorldInfo.class);
+        kryo.register(StructureGroup.class);
     }
 
     /**

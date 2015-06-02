@@ -150,10 +150,11 @@ public class TaskExecutor {
 
         // Now run it. But only if it needs to.
         if (runIt) {
+            Log.debug("TaskExecutor", "Starting: " + task.getName());
             task.work();
-            Log.debug("TaskExecutor", "Ran " + task.getName());
+            Log.debug("TaskExecutor", "Completed: " + task.getName());
         } else {
-            Log.debug("TaskExecutor", "Skipping " + task.getName());
+            Log.debug("TaskExecutor", "Skipped: " + task.getName());
         }
         // Add it to the log of completed task.
         executedTasks.add(task.getName());

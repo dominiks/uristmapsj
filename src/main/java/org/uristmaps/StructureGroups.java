@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.data.Coord2;
+import org.uristmaps.data.StructureGroup;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.BuildFiles;
 
@@ -26,12 +27,12 @@ public class StructureGroups {
     /**
      * Maps coordinates to group ids.
      */
-    private static int[][] groups;
+    private static int[][] groupMap;
 
     /**
      * Maps group ids to group types.
      */
-    private static Map<Integer, String> groupTypes;
+    private static Map<Integer, StructureGroup> groups;
 
     static {
         structBlacklist = new HashSet<>(Arrays.asList(
@@ -40,21 +41,21 @@ public class StructureGroups {
     }
 
     /**
-     * Iterate over all coordinates and make groups of connected structures.
+     * Iterate over all coordinates and make groupMap of connected structures.
      */
     public static void load() {
         // Try to load the kryo files
         if (BuildFiles.getStructureGroups().exists() && BuildFiles.getStructureGroupsDefinitions().exists()) {
-            Log.debug("StructureGroups", "Reading groups from build dir.");
+            Log.debug("StructureGroups", "Reading groupMap from build dir.");
             loadFromStore();
             return;
         }
 
-        Log.debug("StructureGroups", "Reading groups from exported files.");
+        Log.debug("StructureGroups", "Reading groupMap from exported files.");
         int size = WorldInfo.getSize();
 
-        groups = new int[size][size];
-        groupTypes = new HashMap<>();
+        groupMap = new int[size][size];
+        groups = new HashMap<>();
 
         String currentType;
         Coord2 checkCoord;
@@ -62,6 +63,7 @@ public class StructureGroups {
         int nextGrpId = 1;
         int cX;
         int cY;
+        StructureGroup lastAdded;
 
         // Bitmap to keep track of all tiles that have been visited already.
         // Tiles might be visited before they are reached by the loops by
@@ -73,11 +75,14 @@ public class StructureGroups {
                 currentType = StructureInfo.getData(x,y);
                 if (currentType == null || structBlacklist.contains(currentType)) continue;
 
-                currentGrp = groups[x][y];
+                currentGrp = groupMap[x][y];
                 if (currentGrp != 0) continue;
 
-                groupTypes.put(nextGrpId, currentType);
-                groups[x][y] = nextGrpId;
+                lastAdded = new StructureGroup(nextGrpId, currentType);
+                lastAdded.addPoint(new Coord2(x,y));
+                groups.put(nextGrpId, lastAdded);
+
+                groupMap[x][y] = nextGrpId;
                 currentGrp = nextGrpId;
                 nextGrpId += 1;
 
@@ -91,17 +96,20 @@ public class StructureGroups {
                     cX = checkCoord.X();
                     cY = checkCoord.Y();
                     visited[cX][cY] = true;
-                    if (groups[cX][cY] != 0) continue; // Allready added to a group
+                    int i = groupMap[cX][cY];
+                    if (i == 0) continue; // Allready added to a group
 
                     // nothing there
-                    if (StructureInfo.getData(cX, cY) != null
+                    String struct = StructureInfo.getData(cX, cY);
+                    if (struct != null
                             && StructureInfo.getData(cX, cY).equalsIgnoreCase(currentType)) continue;
 
                     // Add this tile to the group
-                    groups[cX][cY] = currentGrp;
+                    groupMap[cX][cY] = currentGrp;
+                    lastAdded.addPoint(new Coord2(cX,cY));
 
-                    // add all neighbours to check
-                    addToCheck(cX+1,   cY, visited, toVisit);
+                    // Add all neighbours to check
+                    addToCheck(cX + 1, cY, visited, toVisit);
                     addToCheck(cX  , cY+1, visited, toVisit);
                     addToCheck(cX+1, cY+1, visited, toVisit);
                     addToCheck(cX-1,   cY, visited, toVisit);
@@ -115,7 +123,7 @@ public class StructureGroups {
 
         // Store the group info
         try (Output output = new Output(new FileOutputStream(BuildFiles.getStructureGroups()))) {
-            Uristmaps.kryo.writeObject(output, groups);
+            Uristmaps.kryo.writeObject(output, groupMap);
         } catch (FileNotFoundException e) {
             Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroups());
             if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
@@ -123,7 +131,7 @@ public class StructureGroups {
         }
 
         try (Output output = new Output(new FileOutputStream(BuildFiles.getStructureGroupsDefinitions()))) {
-            Uristmaps.kryo.writeObject(output, groupTypes);
+            Uristmaps.kryo.writeObject(output, groups);
         } catch (FileNotFoundException e) {
             Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
             if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
@@ -132,11 +140,11 @@ public class StructureGroups {
     }
 
     /**
-     * Load the groups and group definitions from the build directory.
+     * Load the groupMap and group definitions from the build directory.
      */
     private static void loadFromStore() {
         try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroups()))) {
-            groups = Uristmaps.kryo.readObject(input, int[][].class);
+            groupMap = Uristmaps.kryo.readObject(input, int[][].class);
         } catch (FileNotFoundException e) {
             Log.error("StructureGroups", "Could not read file: " + BuildFiles.getStructureGroups());
             if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
@@ -144,7 +152,7 @@ public class StructureGroups {
         }
 
         try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroupsDefinitions()))) {
-            groupTypes = Uristmaps.kryo.readObject(input, HashMap.class);
+            groups = Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (FileNotFoundException e) {
             Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
             if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
@@ -156,9 +164,9 @@ public class StructureGroups {
      * Retrieve the group data.
      * @return
      */
-    public static int[][] getGroups() {
-        if (groups == null) load();
-        return groups;
+    public static int[][] getGroupMap() {
+        if (groupMap == null) load();
+        return groupMap;
     }
 
     /**
@@ -166,9 +174,9 @@ public class StructureGroups {
      * @param grpId
      * @return
      */
-    public static String getType(int grpId) {
-        if (groupTypes == null) load();
-        return groupTypes.get(grpId);
+    public static StructureGroup getGroup(int grpId) {
+        if (groups == null) load();
+        return groups.get(grpId);
     }
 
     /**
@@ -181,9 +189,20 @@ public class StructureGroups {
     private static void addToCheck(int x, int y, boolean[][] visited, LinkedList<Coord2> toVisit) {
         try {
             if (visited[x][y]) return;
+            if (toVisit.contains(new Coord2(x,y))) return;
             toVisit.add(new Coord2(x, y));
         } catch (ArrayIndexOutOfBoundsException e) {
             // Just fail silently, don't care if we were trying to add an out of bounds coordinate.
         }
+    }
+
+    public static Set<Integer> getGroupIds() {
+        if (groups == null) load();
+        return groups.keySet();
+    }
+
+    public static Collection<StructureGroup> getGroups() {
+        if (groups == null) load();
+        return groups.values();
     }
 }

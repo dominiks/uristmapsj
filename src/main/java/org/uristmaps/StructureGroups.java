@@ -1,9 +1,15 @@
 package org.uristmaps;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.minlog.Log;
 import org.uristmaps.data.Coord2;
-import org.uristmaps.data.Coord2Mutable;
 import org.uristmaps.data.WorldInfo;
+import org.uristmaps.util.BuildFiles;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.*;
 
 /**
@@ -51,6 +57,14 @@ public class StructureGroups {
      * Iterate over all coordinates and make groups of connected structures.
      */
     public static void load() {
+        // Try to load the kryo files
+        if (BuildFiles.getStructureGroups().exists() && BuildFiles.getStructureGroupsDefinitions().exists()) {
+            Log.debug("StructureGroups", "Reading groups from build dir.");
+            loadFromStore();
+            return;
+        }
+
+        Log.debug("StructureGroups", "Reading groups from exported files.");
         int size = WorldInfo.getSize();
 
         groups = new int[size][size];
@@ -114,7 +128,61 @@ public class StructureGroups {
         }
 
         // Store the group info
+        try (Output output = new Output(new FileOutputStream(BuildFiles.getStructureGroups()))) {
+            Uristmaps.kryo.writeObject(output, groups);
+        } catch (FileNotFoundException e) {
+            Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroups());
+            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+            System.exit(1);
+        }
 
+        try (Output output = new Output(new FileOutputStream(BuildFiles.getStructureGroupsDefinitions()))) {
+            Uristmaps.kryo.writeObject(output, groupTypes);
+        } catch (FileNotFoundException e) {
+            Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
+            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Load the groups and group definitions from the build directory.
+     */
+    private static void loadFromStore() {
+        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroups()))) {
+            groups = Uristmaps.kryo.readObject(input, int[][].class);
+        } catch (FileNotFoundException e) {
+            Log.error("StructureGroups", "Could not read file: " + BuildFiles.getStructureGroups());
+            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+            System.exit(1);
+        }
+
+        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroupsDefinitions()))) {
+            groupTypes = Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (FileNotFoundException e) {
+            Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
+            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Retrieve the group data.
+     * @return
+     */
+    public static int[][] getGroups() {
+        if (groups == null) load();
+        return groups;
+    }
+
+    /**
+     * Retrieve the id of the group.
+     * @param grpId
+     * @return
+     */
+    public static String getType(int grpId) {
+        if (groupTypes == null) load();
+        return groupTypes.get(grpId);
     }
 
     /**

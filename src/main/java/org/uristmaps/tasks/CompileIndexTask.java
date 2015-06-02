@@ -4,6 +4,8 @@ import org.uristmaps.TemplateRenderer;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.OutputFiles;
 
+import java.io.File;
+
 /**
  * Task to call the index compiler.
  */
@@ -14,17 +16,17 @@ public class CompileIndexTask extends Task {
     }
 
     @Override
-    public String[] getDependendFiles() {
-        return new String[] {
-                BuildFiles.getBiomeInfo().getAbsolutePath(),
-                BuildFiles.getSitesFile().getAbsolutePath(),
-                BuildFiles.getWorldFile().getAbsolutePath()
+    public File[] getDependendFiles() {
+        return new File[] {
+                BuildFiles.getBiomeInfo(),
+                BuildFiles.getSitesFile(),
+                BuildFiles.getWorldFile()
         };
     }
 
     @Override
-    public String[] getTargetFiles() {
-        return new String[]{OutputFiles.getIndexHtml().getAbsolutePath()};
+    public File[] getTargetFiles() {
+        return new File[]{OutputFiles.getIndexHtml()};
     }
 
     @Override

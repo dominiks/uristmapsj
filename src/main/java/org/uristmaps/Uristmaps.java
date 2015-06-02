@@ -78,20 +78,20 @@ public class Uristmaps {
         executor.addTask("BmpConvertTask", () -> BmpConverter.convert());
 
         executor.addTask("SitesGeojson",
-                new String[]{BuildFiles.getSitesFile().getAbsolutePath(),
-                             BuildFiles.getWorldFile().getAbsolutePath()},
-                OutputFiles.getSitesGeojson().getAbsolutePath(),
+                new File[]{BuildFiles.getSitesFile(),
+                             BuildFiles.getWorldFile()},
+                OutputFiles.getSitesGeojson(),
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
-                new String[]{ExportFilesFinder.getLegendsXML().getAbsolutePath(),
-                             ExportFilesFinder.getPopulationFile().getAbsolutePath()},
-                BuildFiles.getSitesFile().getAbsolutePath(),
+                new File[]{ExportFilesFinder.getLegendsXML(),
+                             ExportFilesFinder.getPopulationFile()},
+                BuildFiles.getSitesFile(),
                 () -> WorldSites.load());
 
         executor.addTask("CompileUristJs",
-                new String[]{},
-                OutputFiles.getUristJs().getAbsolutePath(),
+                new File[]{},
+                OutputFiles.getUristJs(),
                 () -> TemplateRenderer.compileUristJs());
 
         executor.addTask(new CompileIndexTask());
@@ -99,14 +99,14 @@ public class Uristmaps {
         executor.addTask("DistResources", () -> FileCopier.distResources());
 
         executor.addTask("WorldInfo",
-                new String[] { ExportFilesFinder.getWorldHistory().getAbsolutePath(),
-                        ExportFilesFinder.getBiomeMap().getAbsolutePath()},
-                BuildFiles.getWorldFile().getAbsolutePath(),
+                new File[] { ExportFilesFinder.getWorldHistory(),
+                        ExportFilesFinder.getBiomeMap()},
+                BuildFiles.getWorldFile(),
                 () -> WorldInfo.load());
 
         executor.addTask("BiomeInfoTask",
-                ExportFilesFinder.getBiomeMap().getAbsolutePath(),
-                BuildFiles.getBiomeInfo().getAbsolutePath(),
+                ExportFilesFinder.getBiomeMap(),
+                BuildFiles.getBiomeInfo(),
                 () -> BiomeInfo.load());
 
         executor.addTask(new BiomeSatRendererTask());
@@ -130,7 +130,6 @@ public class Uristmaps {
         // Run the default task or the requested task.
         Log.info("Starting full build");
         executor.exec("FullBuild");
-        String suffixed = StructureInfo.getSuffixed(29, 1278);
     }
 
     /**

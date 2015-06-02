@@ -20,7 +20,7 @@ public class TaskExecutor {
     /**
      * Maps files to the task that creates them.
      */
-    private Map<String, String> filesCreatedByTask = new HashMap<>();
+    private Map<File, String> filesCreatedByTask = new HashMap<>();
 
     /**
      * Tasks that have been executed in this run.
@@ -50,7 +50,7 @@ public class TaskExecutor {
         tasks.put(task.getName(), task);
 
         // Add this task to the files index
-        for (String file : task.getTargetFiles()) {
+        for (File file : task.getTargetFiles()) {
             filesCreatedByTask.put(file, task.getName());
         }
     }
@@ -78,8 +78,8 @@ public class TaskExecutor {
         // All files that have been looked at now need to have their current state saved for this run.
         Set<File> processedFiles = new HashSet<>();
         for (String taskName : executedTasks) {
-            for (String fileName : tasks.get(taskName).getDependendFiles()) {
-                processedFiles.add(new File(fileName));
+            for (File file : tasks.get(taskName).getDependendFiles()) {
+                processedFiles.add(file);
             }
         }
         Uristmaps.files.updateFiles(processedFiles.toArray(new File[]{}));
@@ -100,17 +100,16 @@ public class TaskExecutor {
         // If this task does not have to run, check if it needs to run
         boolean runIt = taskMustRun;
         // Iterate over all files to see if this task needs to be run.
-        for (String fileName : task.getDependendFiles()) {
-            File file = new File(fileName);
+        for (File file : task.getDependendFiles()) {
             if (!file.exists()) {
                 // Task needs to run since a file is missing (and hopefully gets recreated)
                 runIt = true;
                 // Check if there is a provider task for this missing file, else crash
-                if (!filesCreatedByTask.containsKey(fileName)) {
-                    Log.error("TaskExecutor", "Could not providing task for missing file: " + fileName);
+                if (!filesCreatedByTask.containsKey(file)) {
+                    Log.error("TaskExecutor", "Could not providing task for missing file: " + file.getAbsolutePath());
                     System.exit(1);
                 }
-                tasksNeeded.put(filesCreatedByTask.get(fileName), true);
+                tasksNeeded.put(filesCreatedByTask.get(file), true);
             } else {
                 // Check if this file has changed since the last run
                 if (!Uristmaps.files.fileOk(file)) {
@@ -125,8 +124,8 @@ public class TaskExecutor {
         }
 
         // When any of the target files is missing, the task must run
-        for (String fileName : task.getTargetFiles()) {
-            if (!new File(fileName).exists()) {
+        for (File file : task.getTargetFiles()) {
+            if (!file.exists()) {
                 runIt = true;
                 break;
             }
@@ -166,7 +165,7 @@ public class TaskExecutor {
      * @param targetFiles May be null.
      * @param work
      */
-    public void addTask(String name, String[] depFiles, String[] targetFiles, Runnable work) {
+    public void addTask(String name, File[] depFiles, File[] targetFiles, Runnable work) {
         addTask(new AdhocTask(name, depFiles, targetFiles, work));
     }
 
@@ -177,8 +176,8 @@ public class TaskExecutor {
      * @param targetFile
      * @param work
      */
-    public void addTask(String name, String depFile, String targetFile, Runnable work) {
-        addTask(name, new String[]{depFile}, new String[] {targetFile}, work);
+    public void addTask(String name, File depFile, File targetFile, Runnable work) {
+        addTask(name, new File[]{depFile}, new File[] {targetFile}, work);
     }
 
     /**
@@ -188,8 +187,8 @@ public class TaskExecutor {
      * @param targetFile
      * @param work
      */
-    public void addTask(String name, String[] depFiles, String targetFile, Runnable work) {
-        addTask(name, depFiles, new String[] {targetFile}, work);
+    public void addTask(String name, File[] depFiles, File targetFile, Runnable work) {
+        addTask(name, depFiles, new File[] {targetFile}, work);
     }
 
     /**
@@ -199,8 +198,8 @@ public class TaskExecutor {
      * @param targetFiles
      * @param work
      */
-    public void addTask(String name, String depFile, String[] targetFiles, Runnable work) {
-        addTask(name, new String[]{depFile}, targetFiles, work);
+    public void addTask(String name, File depFile, File[] targetFiles, Runnable work) {
+        addTask(name, new File[]{depFile}, targetFiles, work);
     }
 
     /**
@@ -221,6 +220,6 @@ public class TaskExecutor {
     }
 
     public void addTask(String name, Runnable work) {
-        addTask(new AdhocTask(name, new String[]{}, new String[]{}, work));
+        addTask(new AdhocTask(name, new File[]{}, new File[]{}, work));
     }
 }

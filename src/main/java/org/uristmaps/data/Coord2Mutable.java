@@ -13,4 +13,13 @@ public class Coord2Mutable extends Coord2 {
     public void setY(int y) {
         this.y = y;
     }
+
+    public void setXY(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Coord2 copyCoord2() {
+        return new Coord2(x,y);
+    }
 }

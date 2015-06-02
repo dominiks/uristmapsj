@@ -113,6 +113,11 @@ public class Uristmaps {
 
         executor.addTask(new FullBuildMetaTask());
 
+        executor.addTask("GroupStructures",
+                ExportFilesFinder.getStructuresMap(),
+                BuildFiles.getStructureGroups(),
+                () -> StructureGroups.load());
+
         // Parse more parameters
         for (String arg : args) {
             if (arg.equalsIgnoreCase("tasks") ||arg.equalsIgnoreCase("list")) {
@@ -127,9 +132,11 @@ public class Uristmaps {
             }
         }
 
+        executor.exec("GroupStructures");
+
         // Run the default task or the requested task.
-        Log.info("Starting full build");
-        executor.exec("FullBuild");
+        //Log.info("Starting full build");
+        //executor.exec("FullBuild");
     }
 
     /**

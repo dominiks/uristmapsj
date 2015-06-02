@@ -57,7 +57,6 @@ public class StructureInfo {
     public static void load() {
         try {
             structImage = ImageIO.read(ExportFilesFinder.getStructuresMap());
-            updateStructureConnections();
         } catch (IOException e) {
             Log.error("StructureInfo", "Could not read structure export image.");
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
@@ -65,12 +64,12 @@ public class StructureInfo {
         }
         try {
             hydroImage = ImageIO.read(ExportFilesFinder.getHydroMap());
-            updateStructureConnections();
         } catch (IOException e) {
             Log.error("StructureInfo", "Could not read hydro export image.");
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
             System.exit(1);
         }
+        updateStructureConnections();
         Log.info("StructureInfo", "Done");
     }
 

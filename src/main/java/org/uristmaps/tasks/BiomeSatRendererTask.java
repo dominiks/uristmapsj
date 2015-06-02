@@ -26,11 +26,13 @@ public class BiomeSatRendererTask extends Task {
 
     @Override
     public File[] getDependendFiles() {
-        return new File[]{
-                BuildFiles.getBiomeInfo(),
-                BuildFiles.getWorldFile(),
-                ExportFilesFinder.getHydroMap(),
-                ExportFilesFinder.getStructuresMap()
-        };
+        return new File[]{};
+        // TODO: File dependencies disabled until sub tasks are available.
+//        return new File[]{
+//                BuildFiles.getBiomeInfo(),
+//                BuildFiles.getWorldFile(),
+//                ExportFilesFinder.getHydroMap(),
+//                ExportFilesFinder.getStructuresMap()
+//        };
     }
 }

@@ -18,11 +18,6 @@ import java.util.*;
 public class StructureGroups {
 
     /**
-     * Maps site types to structure objects that are associated with them.
-     */
-    private static Map<String, String> typeToStruct;
-
-    /**
      * Types of structures that are ignored.
      * Usually because there is not site icon for them.
      */
@@ -39,15 +34,6 @@ public class StructureGroups {
     private static Map<Integer, String> groupTypes;
 
     static {
-        typeToStruct = new HashMap<>();
-        typeToStruct.put("hamlet", "village");
-        typeToStruct.put("dark fortress", "castle");
-        typeToStruct.put("dark pits", "castle");
-        typeToStruct.put("tomb", "castle");
-        typeToStruct.put("hillocks", "village");
-        typeToStruct.put("town", "village");
-        typeToStruct.put("forest retreat", "village");
-
         structBlacklist = new HashSet<>(Arrays.asList(
                 "river", "meadow", "crops", "orchard", "pasture", "road"
         ));

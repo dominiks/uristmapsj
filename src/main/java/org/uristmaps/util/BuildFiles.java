@@ -46,4 +46,8 @@ public class BuildFiles {
     public static File getStructureGroupsDefinitions() {
         return new File(conf.fetch("Paths", "build"), "group_types.kryo");
     }
+
+    public static File getSiteCenters() {
+        return new File(conf.fetch("Paths", "build"), "site_centers.kryo");
+    }
 }

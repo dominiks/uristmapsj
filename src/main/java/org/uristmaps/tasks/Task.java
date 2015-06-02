@@ -52,4 +52,9 @@ public abstract class Task {
     public boolean isPublic() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

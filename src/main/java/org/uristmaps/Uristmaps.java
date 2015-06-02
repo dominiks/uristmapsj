@@ -118,6 +118,13 @@ public class Uristmaps {
                 BuildFiles.getStructureGroups(),
                 () -> StructureGroups.load());
 
+        executor.addTask("CenterSites",
+                new File[] {
+                        BuildFiles.getStructureGroups(),
+                        BuildFiles.getStructureGroupsDefinitions()},
+                BuildFiles.getSiteCenters(),
+                () -> SiteCenters.load());
+
         // Parse more parameters
         for (String arg : args) {
             if (arg.equalsIgnoreCase("tasks") ||arg.equalsIgnoreCase("list")) {
@@ -132,11 +139,9 @@ public class Uristmaps {
             }
         }
 
-        executor.exec("GroupStructures");
-
         // Run the default task or the requested task.
-        //Log.info("Starting full build");
-        //executor.exec("FullBuild");
+        Log.info("Starting full build");
+        executor.exec("FullBuild");
     }
 
     /**

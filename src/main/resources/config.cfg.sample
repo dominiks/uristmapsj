@@ -5,17 +5,17 @@
 base_dir = .
 
 # Where the exported files are stored
-region = ${base_dir}/export
+region = ../dwarf_fortress
 
 # The name of the region. Exported files start with this name.
 region_name = region1
 
 # Where to place build files You don't really need to change this.
-build = ${base_dir}/build
+build = ${base_dir}/${region_name}/build
 
 # Where the created map will be placed. This folder will then
 # contain an index.html
-output = ${base_dir}/output
+output = ${base_dir}/${region_name}/output
 
 # Location of the single tile images that will be merged into tile sheets
 tiles = tiles
@@ -29,20 +29,24 @@ tilesets = tilesets
 processes = 8
 
 # Set to true to show debug messages.
-debug = False
+debug = false
 
 # Blacklist categories from debug output (separate with ",")
-log_blacklist = kryo, tileset, FileCopier
+log_blacklist = kryo, tileset, filecopier
+
+[Web]
+# Port for the integrated webserver
+port = 8000
 
 [Map]
 # The number of the highest zoom level to render. The higher it gets, the closer you can zoom in.
-max_zoom = 7
+max_zoom = 8
 
 # The minimum zoom level. If you want to zoom even further out, lower this number. Keep it above 0.
 min_zoom = 3
 
 # The minimum distance 2 sites have to be apart from each other to not
-# be clustered together (in px)
+# be clustered together (in onscreen pixels)
 max_cluster_radius = 30
 
 # Hide spoilery content
@@ -54,8 +58,4 @@ map_font = fonts/KaushanScript-Regular.otf
 [Output]
 # Use this to inject html into the resulting index.html. For example for
 # user tracking.
-footer = ""
-
-[Web]
-# Port for the integrated webserver
-port = 8000
+footer =

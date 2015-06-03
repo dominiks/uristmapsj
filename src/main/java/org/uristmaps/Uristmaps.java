@@ -326,16 +326,19 @@ public class Uristmaps {
 
             switch (level) {
                 case Log.LEVEL_ERROR:
-                    builder.append(Util.ANSI_RED).append(" ERROR: ");
+                    //builder.append(Util.ANSI_RED);
+                    builder.append(" ERROR: ");
                     break;
                 case Log.LEVEL_WARN:
-                    builder.append(Util.ANSI_YELLOW).append("  WARN: ");
+                    //builder.append(Util.ANSI_YELLOW);
+                    builder.append("  WARN: ");
                     break;
                 case Log.LEVEL_INFO:
                     builder.append("  INFO: ");
                     break;
                 case Log.LEVEL_DEBUG:
-                    builder.append(Util.ANSI_GREEN).append(" DEBUG: ");
+                    //builder.append(Util.ANSI_GREEN);
+                    builder.append(" DEBUG: ");
                     break;
                 case Log.LEVEL_TRACE:
                     builder.append(" TRACE: ");
@@ -355,7 +358,7 @@ public class Uristmaps {
                 builder.append(writer.toString().trim());
             }
 
-            builder.append(Util.ANSI_RESET);
+            //builder.append(Util.ANSI_RESET);
             print(builder.toString());
         }
     }

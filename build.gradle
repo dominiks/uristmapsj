@@ -12,6 +12,11 @@ ext {
     mainClass = "org.uristmaps.Uristmaps"
 }
 
+onejar {
+    product name: "uristmaps", launchers: ["windows", "shell"]
+    jvmMaxMemory "2048M"
+}
+
 sourceSets {
     main {
         resources {

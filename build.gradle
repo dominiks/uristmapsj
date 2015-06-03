@@ -13,7 +13,7 @@ ext {
 }
 
 onejar {
-    product name: "uristmaps", launchers: ["windows", "shell"]
+    product name: "uristmaps", launchers: []
     jvmMaxMemory "2048M"
 }
 

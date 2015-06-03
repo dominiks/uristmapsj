@@ -55,6 +55,7 @@ public class StructureInfo {
      * Load the structure data from the map file and save it to the build dir.
      */
     public static void load() {
+        Log.debug("StructureInfo", "Loading");
         try {
             structImage = ImageIO.read(ExportFilesFinder.getStructuresMap());
         } catch (IOException e) {
@@ -70,7 +71,7 @@ public class StructureInfo {
             System.exit(1);
         }
         updateStructureConnections();
-        Log.info("StructureInfo", "Done");
+        Log.debug("StructureInfo", "Done");
     }
 
     /**

@@ -9,11 +9,16 @@ import org.uristmaps.util.Progress;
 import org.uristmaps.util.UnitProgress;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Base class for all layer renderer.
@@ -111,19 +116,41 @@ public abstract class LayerRenderer {
      * Have this renderer create the output tiles for all required zoom levels.
      */
     public void work() {
-        Log.info(getName(), "Rendering zoom level " + level);
-
         // Iterate over all levels that are to be rendered
         RenderSettings renderSettings = new RenderSettings(level);
         prepareForLevel(level, renderSettings);
 
+        Log.info(getName(), String.format("Rendering zoom level %d using %dpx sized graphics (%d cols).",
+                level,  renderSettings.getGraphicsSize(), (int)Math.pow(2, level)));
+
         Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
+
+        int poolsize = Uristmaps.conf.get("App", "processes", Integer.class);
+
+        Log.debug(getName(), String.format("Creating thread pool with size %d", poolsize));
+        ExecutorService pool = Executors.newFixedThreadPool(poolsize);
+
+        List<Callable<Object>> columnRenderTasks = new LinkedList<>();
         // Iterate over all tiles of this renderlevel and render them.
         for (int x = 0; x < Math.pow(2, level); x++) {
-            for (int y = 0; y < Math.pow(2, level); y++) {
-                renderMapTile(x, y, renderSettings);
-            }
-            prog.show();
+            final int finalX = x;
+
+            columnRenderTasks.add(() -> {
+                for (int y = 0; y < Math.pow(2, level); y++) {
+                    renderMapTile(finalX, y, renderSettings);
+                }
+                prog.show();
+                return null;
+            });
+        }
+        Log.debug(getName(), "Waiting for pool to shutdown.");
+        try {
+            pool.invokeAll(columnRenderTasks);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.exit(1);
+        } finally {
+            pool.shutdown();
         }
     }
 

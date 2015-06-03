@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class Uristmaps {
 
-    public static final String VERSION = "0.3";
+    public static final String VERSION = "0.3-SNAPSHOT";
 
     /**
      * The global configuration object.

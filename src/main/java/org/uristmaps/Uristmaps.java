@@ -21,6 +21,8 @@ import java.util.*;
  */
 public class Uristmaps {
 
+    public static final String VERSION = "0.3";
+
     /**
      * The global configuration object.
      */
@@ -44,8 +46,8 @@ public class Uristmaps {
      */
     public static void main(String[] args) {
         // Load configuration file
-        Log.info("Uristmaps v0.3");
-        loadConfig();
+        Log.info("Uristmaps " + VERSION);
+        loadConfig(args);
 
         // Check if we can stop initializing here and start the web server.
         for (String arg : args) {
@@ -222,9 +224,19 @@ public class Uristmaps {
     /**
      * Load the config ini-style file.
      */
-    private static void loadConfig() {
-        // TODO: Read config file path from ARGS if provided.
-        File targetFile = new File("config.cfg");
+    private static void loadConfig(String[] args) {
+        File targetFile = new File("config.cfg"); // Default config location
+
+        // Read config file path from ARGS if provided
+        for (int i= 0; i < args.length; i++) {
+            if (args[i].equals("-c")) {
+                if (i + 1 < args.length) {
+                    targetFile = new File(args[i+1]);
+                    break;
+                }
+            }
+        }
+
         try {
             conf = new Wini(targetFile);
         } catch (IOException e) {

@@ -29,7 +29,7 @@ public class TemplateRenderer {
         Log.info("TemplateRenderer", "Writing urist.js");
         VelocityContext context = new VelocityContext();
         context.put("conf", Uristmaps.conf);
-        context.put("version", "0.3");
+        context.put("version",Uristmaps.VERSION);
 
         Template uristJs = Velocity.getTemplate("templates/js/urist.js.vm");
 
@@ -50,7 +50,7 @@ public class TemplateRenderer {
         context.put("conf", Uristmaps.conf);
         context.put("worldInfo", WorldInfo.getData());
         context.put("biomeLegend", getBiomeLegend());
-        context.put("version", "0.3");
+        context.put("version", Uristmaps.VERSION);
 
         Template uristJs = Velocity.getTemplate("templates/index.html.vm");
 

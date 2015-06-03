@@ -5,13 +5,14 @@ import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
-import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
-import org.uristmaps.util.FileWatcher;
-import org.uristmaps.util.OutputFiles;
+import org.uristmaps.util.*;
+import static org.uristmaps.util.Util.ANSI_RED;
+import static org.uristmaps.util.Util.ANSI_RESET;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -254,12 +255,19 @@ public class Uristmaps {
 
         if (!missing.isEmpty()) {
             for (String msg : missing) {
-                Log.error(String.format("Entry missing in config file: %s", msg));
+                Log.error(String.format(ANSI_RED + "Entry missing in config file: %s" + ANSI_RESET, msg));
             }
             System.exit(1);
         }
     }
 
+    /**
+     * Make sure the provided entry is in the given category of the config. If not, add
+     * an entry to the list.
+     * @param category
+     * @param entry
+     * @param missing
+     */
     private static void validateEntry(String category, String entry, List<String> missing) {
         if (conf.get(category, entry) == null) {
             missing.add(String.format("%s->%s", category, entry));
@@ -272,6 +280,8 @@ public class Uristmaps {
     static public class FilteringLogger extends Log.Logger {
 
         private final Set<String> blacklist;
+
+        private long startUpTime = new Date().getTime();
 
         /**
          * Create a new filtering logger with the provided blacklist.
@@ -299,7 +309,54 @@ public class Uristmaps {
             if (level == Log.LEVEL_DEBUG && category != null && blacklist.contains(category.toLowerCase())) {
                 return;
             }
-            super.log(level, category, message, ex);
+            logMsg(level, category, message, ex);
+        }
+
+        private void logMsg(int level, String category, String message, Throwable ex) {
+            StringBuilder builder = new StringBuilder(256);
+
+            long time = new Date().getTime() - startUpTime;
+            long minutes = time / (1000 * 60);
+            long seconds = time / (1000) % 60;
+            if (minutes <= 9) builder.append('0');
+            builder.append(minutes);
+            builder.append(':');
+            if (seconds <= 9) builder.append('0');
+            builder.append(seconds);
+
+            switch (level) {
+                case Log.LEVEL_ERROR:
+                    builder.append(Util.ANSI_RED).append(" ERROR: ");
+                    break;
+                case Log.LEVEL_WARN:
+                    builder.append(Util.ANSI_YELLOW).append("  WARN: ");
+                    break;
+                case Log.LEVEL_INFO:
+                    builder.append("  INFO: ");
+                    break;
+                case Log.LEVEL_DEBUG:
+                    builder.append(Util.ANSI_GREEN).append(" DEBUG: ");
+                    break;
+                case Log.LEVEL_TRACE:
+                    builder.append(" TRACE: ");
+                    break;
+            }
+
+            if (category != null) {
+                builder.append('[').append(category).append("] ");
+            }
+
+            builder.append(message);
+
+            if (ex != null) {
+                StringWriter writer = new StringWriter(256);
+                ex.printStackTrace(new PrintWriter(writer));
+                builder.append('\n');
+                builder.append(writer.toString().trim());
+            }
+
+            builder.append(Util.ANSI_RESET);
+            print(builder.toString());
         }
     }
 }

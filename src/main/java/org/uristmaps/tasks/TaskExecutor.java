@@ -2,6 +2,7 @@ package org.uristmaps.tasks;
 
 import com.esotericsoftware.minlog.Log;
 import org.apache.commons.lang.StringUtils;
+import org.uristmaps.TaskGroup;
 import org.uristmaps.Uristmaps;
 
 import java.io.File;
@@ -17,6 +18,8 @@ public class TaskExecutor {
      * Tasks that are managed by this executor.
      */
     private Map<String, Task> tasks = new HashMap<>();
+
+    private Map<String, TaskGroup> taskGroups = new HashMap<>();
 
     /**
      * Maps files to the task that creates them.
@@ -65,6 +68,12 @@ public class TaskExecutor {
 
         // Run all provided tasks.
         for (String taskName : tasksToRun) {
+            if (taskGroups.containsKey(taskName)) {
+                exec(taskGroups.get(taskName).getTaskNames().toArray(new String[0]));
+            } else if (!tasks.containsKey(taskName)) {
+                Log.error("TaskExecutor", "Ordered to run unknwon task: " + taskName);
+                System.exit(1);
+            }
             // Skip the task if it has been run as a dependency for a previous task
             if (executedTasks.contains(taskName)) {
                 Log.debug("TastExecutor", "Task already done: " + taskName);
@@ -143,9 +152,17 @@ public class TaskExecutor {
         }
 
         // Run all tasks that have to run before this.
+        Task subTask = null;
         for (Map.Entry<String, Boolean> entry : tasksNeeded.entrySet()) {
             if (executedTasks.contains(entry.getKey())) continue;
-            execTask(tasks.get(entry.getKey()), entry.getValue());
+
+            if (tasks.containsKey(entry.getKey())) {
+                execTask(tasks.get(entry.getKey()), entry.getValue());
+            } else if (taskGroups.containsKey(entry.getKey())) {
+                execAllSubtasks(taskGroups.get(entry.getKey()));
+            } else {
+                Log.error("TaskExecutor", "Could not find task: " + entry.getKey());
+            }
         }
 
         // Now run it. But only if it needs to.
@@ -158,6 +175,12 @@ public class TaskExecutor {
         }
         // Add it to the log of completed task.
         executedTasks.add(task.getName());
+    }
+
+    private void execAllSubtasks(TaskGroup taskGroup) {
+        for (String subTaskName : taskGroup.getTaskNames()) {
+            execTask(tasks.get(subTaskName), false);
+        }
     }
 
     /**
@@ -223,5 +246,12 @@ public class TaskExecutor {
 
     public void addTask(String name, Runnable work) {
         addTask(new AdhocTask(name, new File[]{}, new File[]{}, work));
+    }
+
+    public void addTaskGroup(TaskGroup taskGrp) {
+        taskGroups.put(taskGrp.getName(), taskGrp);
+        for (Task task : taskGrp.getTasks()) {
+            addTask(task);
+        }
     }
 }

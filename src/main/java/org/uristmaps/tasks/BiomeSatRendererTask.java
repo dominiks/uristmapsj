@@ -3,6 +3,7 @@ package org.uristmaps.tasks;
 import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
 
@@ -13,26 +14,40 @@ import java.io.File;
  * check which zoom level can be skipped.
  */
 public class BiomeSatRendererTask extends Task {
+
+    /**
+     * The zoom level to render.
+     */
+    private final int level;
+
+    public BiomeSatRendererTask(int level) {
+        this.level = level;
+    }
+
     @Override
     public void work() {
-        SatRenderer renderer = new SatRenderer();
+        SatRenderer renderer = new SatRenderer(level);
         renderer.work();
     }
 
     @Override
     public String getName() {
-        return "BiomeRenderer";
+        return "BiomeRenderer:" + level;
     }
 
     @Override
     public File[] getDependendFiles() {
-        return new File[]{};
-        // TODO: File dependencies disabled until sub tasks are available.
-//        return new File[]{
-//                BuildFiles.getBiomeInfo(),
-//                BuildFiles.getWorldFile(),
-//                ExportFilesFinder.getHydroMap(),
-//                ExportFilesFinder.getStructuresMap()
-//        };
+        return new File[]{
+                BuildFiles.getBiomeInfo(),
+                BuildFiles.getWorldFile(),
+                ExportFilesFinder.getHydroMap(),
+                ExportFilesFinder.getStructuresMap()
+                // TODO: Add tileset image for the graphics size required for this level
+        };
+    }
+
+    @Override
+    public File[] getTargetFiles() {
+        return OutputFiles.getLayerImages("tiles", level);
     }
 }

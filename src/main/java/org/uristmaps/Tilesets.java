@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.apache.commons.io.FilenameUtils;
 import org.uristmaps.data.Coord2;
+import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.Util;
 
 import javax.imageio.ImageIO;
@@ -24,41 +25,13 @@ import java.util.Map;
 public class Tilesets {
 
     /**
-     * Check the tile directory for new loose tiles and compile
-     * them into the tileset file.
-     *
-     */
-    public static void compile() {
-
-        // Iterate over directories in specified tileset dir
-        File tilesDir = new File(Uristmaps.conf.fetch("Paths", "tiles")).getAbsoluteFile();
-
-        if (!tilesDir.exists()) {
-            Log.error("Tileset", "Could not find tiles directory: " + tilesDir);
-            System.exit(1);
-        }
-
-        for (File tileDir : tilesDir.listFiles(fname -> fname.isDirectory())) {
-            Log.debug("Tileset", "Processing directory: " + tileDir);
-            compileDirectory(tileDir);
-        }
-    }
-
-    /**
      * Iterate over the PNG files within the specified directory and
      * create a tileset image and the index file for this.
      * @param directory The directory to walk through.
      */
-    private static void compileDirectory(File directory) {
+    public static void compileDirectory(File directory) {
         File[] files = directory.listFiles(pathname -> pathname.getName().endsWith(".png"));
         Log.debug("Tileset", "Found " + files.length + " images.");
-
-        // Check if any files need refreshing.
-        // If we did .dirty to get only the dirty files and recompiled them, the result would be a
-        // tilesheet of only these tiles.
-        boolean needRefresh = !Uristmaps.files.allOk(files);
-        if (!needRefresh) return;
-
         Log.info("Tileset", "Compiling tileset in " + directory);
 
         int tileSize = 0;
@@ -101,22 +74,18 @@ public class Tilesets {
         Uristmaps.files.updateFiles(files);
 
         // Store the tileset image
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
-                Integer.toString(tileSize) + ".png").toFile();
         try {
-            ImageIO.write(result, "PNG", targetFile);
+            ImageIO.write(result, "PNG", BuildFiles.getTilesetImage(tileSize));
         } catch (Exception e) {
-            Log.warn("Tilesets", "Could not write tileset image file: " + targetFile);
+            Log.warn("Tilesets", "Could not write tileset image file: " + BuildFiles.getTilesetImage(tileSize));
             if (Log.DEBUG) Log.debug("Exception: ", e);
         }
 
-        // TODO: Export the index file
-        targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
-                Integer.toString(tileSize) + ".kryo").toFile();
-        try (Output output = new Output(new FileOutputStream(targetFile))) {
+        // Export the index file
+        try (Output output = new Output(new FileOutputStream(BuildFiles.getTilesetIndex(tileSize)))) {
             Uristmaps.kryo.writeObject(output, index);
         } catch (Exception e) {
-            Log.warn("Tilesets", "Could not write tileset index file: " + targetFile);
+            Log.warn("Tilesets", "Could not write tileset index file: " + BuildFiles.getTilesetIndex(tileSize));
             if (Log.DEBUG) Log.debug("Exception: ", e);
         }
     }
@@ -127,12 +96,10 @@ public class Tilesets {
      * @return
      */
     public static BufferedImage getTilesetImage(int level) {
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
-                Integer.toString(level) + ".png").toFile();
         try {
-            return ImageIO.read(targetFile);
+            return ImageIO.read(BuildFiles.getTilesetImage(level));
         } catch (IOException e) {
-            Log.error("Tilesets", "Could not read tileset image file: " + targetFile);
+            Log.error("Tilesets", "Could not read tileset image file: " + BuildFiles.getTilesetImage(level));
             if (Log.DEBUG) Log.debug("Tilesets", "Exception", e);
             System.exit(1);
         }
@@ -145,15 +112,12 @@ public class Tilesets {
      * @return
      */
     public static Map<String, Coord2> getTilesetIndex(int level) {
-        Map<String, Coord2> result = null;
-        File targetFile = Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
-                Integer.toString(level) + ".kryo").toFile();
-        try (Input input = new Input(new FileInputStream(targetFile))) {
-            result = Uristmaps.kryo.readObject(input, HashMap.class);
+        try (Input input = new Input(new FileInputStream(BuildFiles.getTilesetIndex(level)))) {
+            return Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (Exception e) {
-            Log.warn("Tilesets", "Could not read tileset index file: " + targetFile);
+            Log.error("Tilesets", "Could not read tileset index file: " + BuildFiles.getTilesetIndex(level));
             if (Log.DEBUG) Log.debug("Tilesets", "Exception: ", e);
         }
-        return result;
+        return null;
     }
 }

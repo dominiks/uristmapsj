@@ -67,14 +67,21 @@ public class SatRenderer extends LayerRenderer {
      */
     private String structure;
 
+    /**
+     * Create a layer renderer for a given zoom level.
+     *
+     * @param level
+     */
+    public SatRenderer(int level) {
+        super(level);
+    }
+
     @Override
     protected void prepareForLevel(int level, RenderSettings renderSettings) {
         tilesIndex = Tilesets.getTilesetIndex(renderSettings.getGraphicsSize());
         tilesImage = Tilesets.getTilesetImage(renderSettings.getGraphicsSize());
 
         biomeInfo = BiomeInfo.getBiomeData();
-
-
     }
 
     @Override

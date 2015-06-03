@@ -1,6 +1,9 @@
 package org.uristmaps.util;
 
+import org.uristmaps.Uristmaps;
+
 import java.io.File;
+import java.nio.file.Paths;
 
 import static org.uristmaps.Uristmaps.conf;
 
@@ -49,5 +52,15 @@ public class BuildFiles {
 
     public static File getSiteCenters() {
         return new File(conf.fetch("Paths", "build"), "site_centers.kryo");
+    }
+
+    public static File getTilesetImage(int size) {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
+                Integer.toString(size) + ".png").toFile();
+    }
+
+    public static File getTilesetIndex(int size) {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
+                Integer.toString(size) + ".kryo").toFile();
     }
 }

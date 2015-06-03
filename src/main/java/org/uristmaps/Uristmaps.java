@@ -71,7 +71,7 @@ public class Uristmaps {
         TaskExecutor executor = new TaskExecutor();
 
         // No file management for this task until subtasks are possible.
-        executor.addTask("TilesetTask", () -> Tilesets.compile());
+        executor.addTaskGroup(new TilesetsTaskGroup());
         executor.addTask("BmpConvertTask", () -> BmpConverter.convert());
 
         executor.addTask("SitesGeojson",
@@ -107,9 +107,7 @@ public class Uristmaps {
                 BuildFiles.getBiomeInfo(),
                 () -> BiomeInfo.load());
 
-        executor.addTask(new BiomeSatRendererTask());
-
-        executor.addTask(new FullBuildMetaTask());
+        executor.addTaskGroup(new SatRendererTaskGroup());
 
         executor.addTask("GroupStructures",
                 new File[] {ExportFilesFinder.getStructuresMap(),
@@ -127,6 +125,8 @@ public class Uristmaps {
                         BuildFiles.getStructureGroupsDefinitions()},
                 BuildFiles.getSiteCenters(),
                 () -> SiteCenters.load());
+
+        executor.addTask(new FullBuildMetaTask());
 
         // Parse more parameters
         for (String arg : args) {

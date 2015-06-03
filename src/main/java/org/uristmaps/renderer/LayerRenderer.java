@@ -21,10 +21,13 @@ import java.nio.file.Paths;
  */
 public abstract class LayerRenderer {
 
+    private final int level;
+
     /**
-     * Initialize the renderer for the next render call.
+     * Create a layer renderer for a given zoom level.
      */
-    public LayerRenderer() {
+    public LayerRenderer(int level) {
+        this.level = level;
     }
 
     /**
@@ -108,55 +111,20 @@ public abstract class LayerRenderer {
      * Have this renderer create the output tiles for all required zoom levels.
      */
     public void work() {
-        // Read min&max level from config
-        int minLevel = Uristmaps.conf.get("Map", "min_zoom", Integer.class);
-        int maxLevel = Uristmaps.conf.get("Map", "max_zoom", Integer.class);
+        Log.info(getName(), "Rendering zoom level " + level);
 
         // Iterate over all levels that are to be rendered
-        for (int level = minLevel; level <= maxLevel; level++) {
-            // TODO: Check if any output file for this level is missing, only render in that case
-            if (allResultFilesOK(level)) {
-                Log.info(getName(), "Nothing to do for level " + level);
-                continue;
-            }
+        RenderSettings renderSettings = new RenderSettings(level);
+        prepareForLevel(level, renderSettings);
 
-            Log.info(getName(), "Rendering zoom level " + level);
-            RenderSettings renderSettings = new RenderSettings(level);
-            prepareForLevel(level, renderSettings);
-
-            Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
-            // Iterate over all tiles of this renderlevel and render them.
-            for (int x = 0; x < Math.pow(2, level); x++) {
-                for (int y = 0; y < Math.pow(2, level); y++) {
-                    renderMapTile(x, y, renderSettings);
-                }
-                prog.show();
-            }
-        }
-    }
-
-    /**
-     * Check if all files that are created for a given level are already in place.
-     * @param level
-     * @return
-     */
-    private boolean allResultFilesOK(int level) {
-        File levelFolder = Paths.get(Uristmaps.conf.fetch("Paths", "output"),
-                getFolderName(),
-                Integer.toString(level)).toFile();
-
-        if (!levelFolder.exists()) return false;
-
+        Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
+        // Iterate over all tiles of this renderlevel and render them.
         for (int x = 0; x < Math.pow(2, level); x++) {
-            File xFolder = new File(levelFolder, Integer.toString(x));
-            if (!xFolder.exists()) return false;
-
             for (int y = 0; y < Math.pow(2, level); y++) {
-                File yFile = new File(xFolder, y + ".png");
-                if (!yFile.exists()) return false;
+                renderMapTile(x, y, renderSettings);
             }
+            prog.show();
         }
-        return true;
     }
 
     /**

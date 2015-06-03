@@ -17,22 +17,22 @@ public class ExportFilesFinder {
      * @return A file reference to the file or null if no file was found.
      */
     public static File getPopulationFile() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-world_sites_and_pops.txt"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find population file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find population file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];
     }
 
     public static File getLegendsXML() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-legends.xml"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find legends xml file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find legends xml file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];
@@ -42,44 +42,44 @@ public class ExportFilesFinder {
 
 
     public static File getBiomeMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-bm.png"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find biome map file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find biome map file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];
     }
 
     public static File getWorldHistory() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-world_history.txt"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find history file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find history file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];
     }
 
     public static File getStructuresMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-str.png"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];
     }
 
     public static File getHydroMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith("-hyd.png"));
         if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("paths", "export"));
+            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("Paths", "export"));
             return null;
         }
         return searchResult[0];

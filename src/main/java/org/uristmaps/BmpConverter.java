@@ -19,7 +19,7 @@ public class BmpConverter {
     public static void convert() {
         Log.debug("BmpConverter", "Started");
 
-        File[] bmps = new File(conf.fetch("Paths", "region")).listFiles(
+        File[] bmps = new File(conf.fetch("Paths", "export")).listFiles(
                 filename -> filename.getName().contains(conf.get("Paths", "region_name"))
                         && filename.getName().endsWith(".bmp"));
 

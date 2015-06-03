@@ -12,9 +12,7 @@ import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by schacht on 26.05.15.
@@ -234,7 +232,38 @@ public class Uristmaps {
             }
             System.exit(1);
         }
-        Log.info("Found config file.");
+
+        // Validate config
+        List<String> missing = new LinkedList<>();
+        validateEntry("Paths", "export", missing);
+        validateEntry("Paths", "region_name", missing);
+        validateEntry("Paths", "build", missing);
+        validateEntry("Paths", "output", missing);
+        validateEntry("Paths", "tiles", missing);
+        validateEntry("Paths", "tilesets", missing);
+        validateEntry("App", "processes", missing);
+        validateEntry("App", "debug", missing);
+        validateEntry("App", "log_blacklist", missing);
+        validateEntry("Map", "max_zoom", missing);
+        validateEntry("Map", "min_zoom", missing);
+        validateEntry("Map", "max_cluster_radius", missing);
+        validateEntry("Map", "show_spoilers", missing);
+        validateEntry("Map", "map_font", missing);
+        validateEntry("Output", "footer", missing);
+        validateEntry("Web", "port", missing);
+
+        if (!missing.isEmpty()) {
+            for (String msg : missing) {
+                Log.error(String.format("Entry missing in config file: %s", msg));
+            }
+            System.exit(1);
+        }
+    }
+
+    private static void validateEntry(String category, String entry, List<String> missing) {
+        if (conf.get(category, entry) == null) {
+            missing.add(String.format("%s->%s", category, entry));
+        }
     }
 
     /**

@@ -49,13 +49,7 @@ public class Uristmaps {
         Log.info("Uristmaps " + VERSION);
         loadConfig(args);
 
-        // Check if we can stop initializing here and start the web server.
-        for (String arg : args) {
-            if (arg.equalsIgnoreCase("host")) {
-                WebServer.start();
-                return;
-            }
-        }
+
 
         initKryo();
         initLogger();
@@ -129,6 +123,8 @@ public class Uristmaps {
 
         executor.addTask(new FullBuildMetaTask());
 
+        executor.addTask("Host", () -> WebServer.start());
+
         // Parse more parameters
         for (String arg : args) {
             if (arg.equalsIgnoreCase("tasks") ||arg.equalsIgnoreCase("list")) {
@@ -139,6 +135,14 @@ public class Uristmaps {
                 return;
             } else if (arg.equalsIgnoreCase("help")) {
                 usage();
+                return;
+            }
+        }
+
+        // Check if we can stop initializing here and start the web server.
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("host")) {
+                executor.exec("Host");
                 return;
             }
         }

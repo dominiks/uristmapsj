@@ -1,9 +1,15 @@
-{"type":"FeatureCollection","features" : [
-#foreach ($site in $sites)
-{"type" : "Feature", "properties": {
-"name":"$site.name","type":"$site.type","id":$site.id,"img" : "/icons/${site.type.replace(" ", "_")}.png",
-"popupContent" : "asd"
-},"geometry": {"type":"Point","coordinates":[$site.lat, $site.lon]}
-} #if ($foreach.hasNext),#end
-#end
+{"type":"FeatureCollection",
+    "features" : [
+    #foreach ($site in $sites)
+    {"type" : "Feature",
+        "properties": {
+            "name":"$site.name",
+            "type":"$site.type",
+            "id":$site.id,
+            "img": "/icons/${site.type.replace(" ", "_")}.png"
+
+        },
+        "geometry": {"type":"Point","coordinates":[$site.lat, $site.lon]}
+    }#if ($foreach.hasNext),#end
+    #end
 ]}

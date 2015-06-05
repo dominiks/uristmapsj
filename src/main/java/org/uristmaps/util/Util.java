@@ -1,5 +1,6 @@
 package org.uristmaps.util;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.uristmaps.data.Coord2;
 
 /**
@@ -48,5 +49,10 @@ public class Util {
         G = (G << 8) & 0x0000FF00;
         B = B & 0x000000FF;
         return 0xFF000000 | R | G | B;
+    }
+
+    public static String escapeJSON(String src) {
+        return StringEscapeUtils.escapeHtml(src);
+
     }
 }

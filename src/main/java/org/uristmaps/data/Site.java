@@ -2,6 +2,7 @@ package org.uristmaps.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A single site within the world.
@@ -137,5 +138,13 @@ public class Site {
     @Override
     public String toString() {
         return getName() + "(" + getType() + ")";
+    }
+
+    public Map<Integer, String> getSortedPopulations() {
+        TreeMap<Integer, String> result = new TreeMap<>();
+        for (String popName : getPopulations().keySet()) {
+            result.put(populations.get(popName), popName);
+        }
+        return result;
     }
 }

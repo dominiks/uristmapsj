@@ -150,9 +150,14 @@ public class StructureInfo {
      * @param y
      * @return The suffixed structure type or null if nothing was found.
      */
-    public static String getSuffixed(int x, int y) {
+    public static String getSuffixedAt(int x, int y) {
         if (structures == null) updateStructureConnections();
         return structures[x][y];
     }
 
+
+    public static String[][] getSuffixed() {
+        if (structures == null) updateStructureConnections();
+        return structures;
+    }
 }

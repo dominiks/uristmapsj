@@ -21,7 +21,7 @@ Coordinates:
 
 #if (!$site.populations.isEmpty)
 <hr class="clearfix" style="margin-top: 1em;"/>
-<h5>Population info</h5>
+<h5>Population</h5>
 #foreach($popvalue in $site.getSortedPopulations().descendingKeySet())
     $popvalue $site.getSortedPopulations()[$popvalue]<br />
 #end

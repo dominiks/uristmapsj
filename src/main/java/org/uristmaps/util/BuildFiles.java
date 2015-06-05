@@ -63,4 +63,12 @@ public class BuildFiles {
         return Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
                 Integer.toString(size) + ".kryo").toFile();
     }
+
+    /**
+     * Index file that stores information about all detailed site maps.
+     * @return
+     */
+    public static File getSitemapsIndex() {
+        return new File(conf.fetch("Paths", "build"), "sitemaps.kryo");
+    }
 }

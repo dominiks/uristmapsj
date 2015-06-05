@@ -8,10 +8,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.Coord2d;
-import org.uristmaps.data.Site;
-import org.uristmaps.data.WorldInfo;
+import org.uristmaps.data.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
 import org.uristmaps.util.OutputFiles;
@@ -173,6 +170,8 @@ public class WorldSites {
             site.setLon(latlon.Y());
         }
 
+        Map<Integer, SitemapInfo> sitemaps = loadSitemaps();
+
         ObjectMapper mapper = new ObjectMapper();
 
         Map<String, Object> result = new HashMap<>();
@@ -200,9 +199,9 @@ public class WorldSites {
             props.put("img", String.format("/icons/%s.png", site.getType().replace(" ", "_")));
 
             context.put("site", site);
+            context.put("sitemap", sitemaps.get(site.getId()));
             popupTempl.merge(context, writer);
-            props.put("popupContent", writer.toString()); // TODO: render sub template here
-            if (site.getName().equals("Dastotbesmar")) System.out.println(writer.toString());
+            props.put("popupContent", writer.toString());
 
             Map<String, Object> geometry = new HashMap<>();
             siteMap.put("geometry", geometry);
@@ -218,9 +217,27 @@ public class WorldSites {
             Log.warn("WorldSites", "Could not write js file: " + targetFile);
             if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
         }
-
     }
 
+    /**
+     * DOCME
+     * @return
+     */
+    private static Map<Integer, SitemapInfo> loadSitemaps() {
+        try (Input input = new Input(new FileInputStream(BuildFiles.getSitemapsIndex()))) {
+            return Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (FileNotFoundException e) {
+            Log.error("WorldSites", "Could not read sitemaps index.");
+            if (Log.DEBUG) Log.debug("WorldSites", "Exception", e);
+            System.exit(1);
+        }
+        return null;
+    }
+
+    /**
+     * DOCME
+     * @return
+     */
     public static Map<Integer, Site> getSites() {
         if (sites == null) initSites();
         return sites;

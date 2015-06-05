@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class SiteCenters {
 
-    private static final int MAX_SEARCH_RADIUS = 8;
+    private static final int MAX_SEARCH_RADIUS = 16;
     /**
      * Maps site types to structure objects that are associated with them.
      */

@@ -84,4 +84,21 @@ public class ExportFilesFinder {
         }
         return searchResult[0];
     }
+
+    public static File[] getAllSitemaps() {
+        return new File(conf.fetch("Paths", "export")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().contains("site_map") && filename.getName().endsWith(".png"));
+    }
+
+    public static File getSiteMap(int id) {
+        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
+                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
+                        && filename.getName().endsWith("site_map-" + id + ".png"));
+        if (searchResult.length == 0) {
+            Log.error("Filefinder", "Could not find structures map file for site " + id + " in " + conf.fetch("Paths", "export"));
+            return null;
+        }
+        return searchResult[0];
+    }
 }

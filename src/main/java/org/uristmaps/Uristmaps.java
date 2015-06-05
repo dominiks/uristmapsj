@@ -2,6 +2,7 @@ package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.lang.ArrayUtils;
 import org.ini4j.Wini;
 import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
@@ -49,8 +50,6 @@ public class Uristmaps {
         Log.info("Uristmaps " + VERSION);
         loadConfig(args);
 
-
-
         initKryo();
         initLogger();
         initDirectories();
@@ -72,7 +71,8 @@ public class Uristmaps {
         executor.addTask("SitesGeojson",
                 new File[]{BuildFiles.getSitesFile(),
                            BuildFiles.getWorldFile(),
-                           BuildFiles.getSiteCenters()},
+                           BuildFiles.getSiteCenters(),
+                           BuildFiles.getSitemapsIndex()},
                 OutputFiles.getSitesGeojson(),
                 () -> WorldSites.geoJson());
 
@@ -104,6 +104,11 @@ public class Uristmaps {
 
         executor.addTaskGroup(new SatRendererTaskGroup());
 
+        executor.addTask("LoadSitemaps",
+                ExportFilesFinder.getAllSitemaps(),
+                BuildFiles.getSitemapsIndex(),
+                () -> Sitemaps.load());
+
         executor.addTask("GroupStructures",
                 new File[] {ExportFilesFinder.getStructuresMap(),
                             BuildFiles.getSitesFile(),
@@ -113,11 +118,10 @@ public class Uristmaps {
                 () -> StructureGroups.load());
 
         executor.addTask("CenterSites",
-                new File[]{
-                        BuildFiles.getWorldFile(),
-                        BuildFiles.getSitesFile(),
-                        BuildFiles.getStructureGroups(),
-                        BuildFiles.getStructureGroupsDefinitions()},
+                new File[]{ BuildFiles.getWorldFile(),
+                            BuildFiles.getSitesFile(),
+                            BuildFiles.getStructureGroups(),
+                            BuildFiles.getStructureGroupsDefinitions()},
                 BuildFiles.getSiteCenters(),
                 () -> SiteCenters.load());
 
@@ -223,6 +227,7 @@ public class Uristmaps {
         kryo.register(FileInfo.class);
         kryo.register(WorldInfo.class);
         kryo.register(StructureGroup.class);
+        kryo.register(SitemapInfo.class);
     }
 
     /**

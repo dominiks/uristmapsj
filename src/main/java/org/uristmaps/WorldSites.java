@@ -3,16 +3,16 @@ package org.uristmaps;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.Coord2d;
-import org.uristmaps.data.Site;
-import org.uristmaps.data.WorldInfo;
+import org.uristmaps.data.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
 import org.uristmaps.util.OutputFiles;
+import org.uristmaps.util.Util;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -22,8 +22,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,34 +161,96 @@ public class WorldSites {
      * Write the sitesgeo.json for the output. Also contains the translated coordinates for all sites.
      */
     public static void geoJson() {
-        VelocityContext context = new VelocityContext();
-
         // Apply site centers
-        Site site;
         for (Map.Entry<Integer, Coord2> entry : SiteCenters.getCenters().entrySet()) {
-            site = getSites().get(entry.getKey());
+            Site site = getSites().get(entry.getKey());
             site.setCoords(entry.getValue());
             Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
             site.setLat(latlon.X());
             site.setLon(latlon.Y());
-
         }
 
-        context.put("sites", getSites().values());
+        Map<Integer, SitemapInfo> sitemaps = loadSitemaps();
 
-        Template uristJs = Velocity.getTemplate("templates/js/sitesgeo.js.vm");
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("type", "FeatureCollection");
+        List<Map> features = new LinkedList<>();
+        result.put("features", features);
+
+        // Template for popup content
+        Template popupTempl = Velocity.getTemplate("templates/_site_tooltip.html.vm");
+        VelocityContext context;
+        StringWriter writer;
+
+        for (Site site : sites.values()) {
+            writer = new StringWriter();
+            context = new VelocityContext();
+            Map<String, Object> siteMap = new HashMap<>();
+            features.add(siteMap);
+            siteMap.put("type", "Feature");
+
+            Map<String, Object> props = new HashMap<>();
+            siteMap.put("properties", props);
+            props.put("name", site.getName());
+            props.put("type", site.getType());
+            props.put("id", site.getId());
+            props.put("img", String.format("/icons/%s.png", site.getType().replace(" ", "_")));
+
+            // Configure detailed map (if available)
+            if (sitemaps.containsKey(site.getId())) {
+                SitemapInfo sitemap = sitemaps.get(site.getId());
+                // Detailed maps use blocks of 48px size
+                int east  = site.getCoords().X() + sitemap.getWidth()  / 2 / 48;
+                int west  = site.getCoords().X() - sitemap.getWidth()  / 2 / 48;
+                int north = site.getCoords().Y() - sitemap.getHeight() / 2 / 48;
+                int south = site.getCoords().Y() + sitemap.getHeight() / 2 / 48;
+                Coord2d southWest = xy2LonLat(west, south);
+                Coord2d northEast = xy2LonLat(east, north);
+                props.put("map_bounds", new double[][] {{southWest.Y(), southWest.X()},
+                                                        {northEast.Y(), northEast.X()}});
+            }
+            context.put("site", site);
+            context.put("sitemap", sitemaps.get(site.getId()));
+            popupTempl.merge(context, writer);
+            props.put("popupContent", writer.toString());
+
+            Map<String, Object> geometry = new HashMap<>();
+            siteMap.put("geometry", geometry);
+            geometry.put("type", "Point");
+            geometry.put("coordinates", new double[] {site.getLat(), site.getLon()});
+        }
 
         File targetFile = OutputFiles.getSitesGeojson();
         targetFile.getParentFile().mkdirs();
-        try (FileWriter writer = new FileWriter(targetFile)) {
-            uristJs.merge(context, writer);
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(targetFile, result);
         } catch (IOException e) {
             Log.warn("WorldSites", "Could not write js file: " + targetFile);
             if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
         }
-
     }
 
+    /**
+     * DOCME
+     * @return
+     */
+    private static Map<Integer, SitemapInfo> loadSitemaps() {
+        try (Input input = new Input(new FileInputStream(BuildFiles.getSitemapsIndex()))) {
+            return Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (FileNotFoundException e) {
+            Log.error("WorldSites", "Could not read sitemaps index.");
+            if (Log.DEBUG) Log.debug("WorldSites", "Exception", e);
+            System.exit(1);
+        }
+        return null;
+    }
+
+    /**
+     * DOCME
+     * @return
+     */
     public static Map<Integer, Site> getSites() {
         if (sites == null) initSites();
         return sites;

@@ -45,4 +45,8 @@ public class OutputFiles {
         }
         return result.toArray(new File[0]);
     }
+
+    public static File getSiteMap(int id) {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "sites", id + ".png").toFile();
+    }
 }

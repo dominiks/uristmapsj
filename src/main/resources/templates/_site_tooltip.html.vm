@@ -1,40 +1,29 @@
-<h4>{{ site["name"] | title }} <small>{{ site["type"] | title }}</small></h4>
+<h4>$site.name <small>$site.type</small></h4>
+#if ($site.owner)Owner: $site.owner<br />#end
 
-{% if site["Owner"] %}
-Owner: {{ site["Owner"]}}<br />
-{% endif %}
 
 Coordinates:
-{% if site["coords_accurate"] %}
-{{ site["coords"] }}
-{% else %}
-<u>
-<i title="These coordinates are an approximation" data-toggle="tooltip">
-    {{ site["coords"] }}
-</i>
-</u>
-{% endif %}
+#if ($site.coordsAccurate)
+    $site.coords
+#else
+<u><i title="These coordinates are an approximation" data-toggle="tooltip">
+    $site.coords
+</i></u>#end
 <br />
-
-{% if detailed_maps[site["id"]] %}
+#if ($sitemap)
 <div>
     <button class="btn btn-default btn-xs pull-right btn-detail-map"
-        onclick="toggle_detailed_map({{ site["id"] }})"
-            data-site="{{ site["id"] }}">Detail Map</button>
+            onclick="toggle_detailed_map($site.id)" data-site="$site.id">
+        Detail Map</button>
 </div>
-{% endif %}
+#end
 
-{% if site["popinfo"] %}
+
+#if (!$site.populations.isEmpty)
 <hr class="clearfix" style="margin-top: 1em;"/>
 <h5>Population info</h5>
-<table>
-    {# Apparently the sort direction does not work, it always sorts ascending. so reverse it #}
-{% for item in site["popinfo"] | dictsort(false, "value") | reverse%}
-<tr>
-    <td>&nbsp;&nbsp;{{ item[0] | title }}</td>
-    <td>:</td>
-    <td class="text-right">{{ item[1] }}</td>
-</tr>
-{% endfor %}
-</table>
-{% endif %}
+#foreach($popvalue in $site.getSortedPopulations().descendingKeySet())
+    $popvalue $site.getSortedPopulations()[$popvalue]<br />
+#end
+
+#end

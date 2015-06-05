@@ -10,13 +10,13 @@ Coordinates:
     $site.coords
 </i></u>#end
 <br />
-##{% if detailed_maps[site["id"]] %}
+#if ($sitemap)
 <div>
     <button class="btn btn-default btn-xs pull-right btn-detail-map"
             onclick="toggle_detailed_map($site.id)" data-site="$site.id">
         Detail Map</button>
 </div>
-##{% endif %}
+#end
 
 
 #if (!$site.populations.isEmpty)

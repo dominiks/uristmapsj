@@ -13,7 +13,7 @@ public class FullBuildMetaTask extends Task {
     public String[] getDependantTasks() {
         return new String[] {
                 "TilesetTask", "BmpConvertTask", "BiomeRenderer", "SitesGeojson",
-                "CompileUristJs", "CompileIndex", "DistResources"
+                "CompileUristJs", "CompileIndex", "DistResources", "CopySiteMaps"
         };
     }
 

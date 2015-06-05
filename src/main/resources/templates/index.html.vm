@@ -50,11 +50,11 @@
         #set ($group = $sites[$groupName])
             <h4>$groupName ($group.size())</h4>
             <ul class="list-unstyled">
-            #foreach ($siteName in $group.values())
+            #foreach ($site in $group.values())
                 <li>
                 <button class="btn btn-link btn-xs site-btn"
-                        data-lat="{{ site.geometry.coordinates[1]}}" data-lon="{{ site.geometry.coordinates[0]}}">
-                    $siteName.name
+                        data-lat="$site.lat" data-lon="$site.lon">
+                    $site.name
                 </button>
                 </li>
             #end

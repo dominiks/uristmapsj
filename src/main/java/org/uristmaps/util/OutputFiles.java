@@ -49,4 +49,16 @@ public class OutputFiles {
     public static File getSiteMap(int id) {
         return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "sites", id + ".png").toFile();
     }
+
+    public static File[] getAllSiteMaps() {
+        File[] allSitemaps = ExportFilesFinder.getAllSitemaps();
+        File[] outputFiles = new File[allSitemaps.length];
+        for (int i = 0; i < allSitemaps.length; i++) {
+            String name = allSitemaps[i].getName();
+            String idString = name.substring(name.lastIndexOf("-")+1, name.lastIndexOf("."));
+            int id = Integer.parseInt(idString);
+            outputFiles[i] = getSiteMap(id);
+        }
+        return outputFiles;
+    }
 }

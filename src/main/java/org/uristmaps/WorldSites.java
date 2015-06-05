@@ -4,7 +4,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -12,7 +11,6 @@ import org.uristmaps.data.*;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFilesFinder;
 import org.uristmaps.util.OutputFiles;
-import org.uristmaps.util.Util;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -21,8 +19,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,7 +99,7 @@ public class WorldSites {
      * @param y
      * @return
      */
-    private static Coord2d xy2LonLat(int x, int y) {
+    public static Coord2d xy2LonLat(int x, int y) {
         if (!xyInitialized) {
             initLonLat();
         }

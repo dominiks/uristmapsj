@@ -41,7 +41,6 @@ public class Sitemaps {
             if (!matcher.find()) continue;
             int id = Integer.parseInt(matcher.group(2));
 
-
             // Load image
             BufferedImage img = null;
             try {
@@ -56,15 +55,6 @@ public class Sitemaps {
             // Add info to index
             SitemapInfo info = new SitemapInfo(id, img.getWidth(), img.getHeight());
             result.put(id, info);
-
-            // Copy the sitemap file into the output directory
-            try {
-                FileUtils.copyFile(imageFile, OutputFiles.getSiteMap(id));
-            } catch (IOException e) {
-                Log.error("SiteMaps", "Could not copy image file to: " + OutputFiles.getSiteMap(id));
-                if (Log.DEBUG) Log.debug("SiteMaps", "Exception", e);
-                System.exit(1);
-            }
         }
 
         // Save map to dist
@@ -74,6 +64,26 @@ public class Sitemaps {
             Log.error("SiteMaps", "Could not write sitemaps index: " + BuildFiles.getSitemapsIndex());
             if (Log.DEBUG) Log.debug("SiteMaps", "Exception", e);
             System.exit(1);
+        }
+    }
+
+    /**
+     * DOCME
+     */
+    public static void copy() {
+        for (File imageFile : ExportFilesFinder.getAllSitemaps()) {
+            // Resolve id of the site
+            Matcher matcher = idFind.matcher(imageFile.getName());
+            if (!matcher.find()) continue;
+            int id = Integer.parseInt(matcher.group(2));
+            // Copy the sitemap file into the output directory
+            try {
+                FileUtils.copyFile(imageFile, OutputFiles.getSiteMap(id));
+            } catch (IOException e) {
+                Log.error("SiteMaps", "Could not copy image file to: " + OutputFiles.getSiteMap(id));
+                if (Log.DEBUG) Log.debug("SiteMaps", "Exception", e);
+                System.exit(1);
+            }
         }
     }
 }

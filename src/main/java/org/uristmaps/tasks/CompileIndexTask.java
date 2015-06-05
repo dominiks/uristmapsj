@@ -20,7 +20,8 @@ public class CompileIndexTask extends Task {
         return new File[] {
                 BuildFiles.getBiomeInfo(),
                 BuildFiles.getSitesFile(),
-                BuildFiles.getWorldFile()
+                BuildFiles.getWorldFile(),
+                BuildFiles.getSiteCenters()
         };
     }
 

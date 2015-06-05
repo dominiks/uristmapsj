@@ -176,6 +176,6 @@ $(function() {
     $(".site-btn").click(function() {
         var lat = $(this).attr("data-lat");
         var lon = $(this).attr("data-lon");
-        map.fitBounds([[lat,lon],[lat+0.01, lon+0.01]]);
+        map.fitBounds([[lon,lat],[lon+0.01, lat+0.01]]);
     });
 });

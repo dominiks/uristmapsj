@@ -1,6 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.apache.commons.lang.ArrayUtils;
 import org.ini4j.Wini;
@@ -104,10 +105,18 @@ public class Uristmaps {
 
         executor.addTaskGroup(new SatRendererTaskGroup());
 
+        List<File> dependantForSitemaps = new LinkedList<>();
+        dependantForSitemaps.add(BuildFiles.getSitemapsIndex());
+        dependantForSitemaps.addAll(Arrays.asList(OutputFiles.getAllSiteMaps()));
         executor.addTask("LoadSitemaps",
                 ExportFilesFinder.getAllSitemaps(),
-                BuildFiles.getSitemapsIndex(),
+                dependantForSitemaps.toArray(new File[0]),
                 () -> Sitemaps.load());
+
+        executor.addTask("CopySiteMaps",
+                ExportFilesFinder.getAllSitemaps(),
+                OutputFiles.getAllSiteMaps(),
+                () -> Sitemaps.copy());
 
         executor.addTask("GroupStructures",
                 new File[] {ExportFilesFinder.getStructuresMap(),

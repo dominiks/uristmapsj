@@ -34,4 +34,12 @@ public class SitemapInfo {
     public void setImageSize(Coord2 imageSize) {
         this.imageSize = imageSize;
     }
+
+    public int getWidth() {
+        return imageSize.X();
+    }
+
+    public int getHeight() {
+        return imageSize.Y();
+    }
 }

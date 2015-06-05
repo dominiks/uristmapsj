@@ -198,6 +198,19 @@ public class WorldSites {
             props.put("id", site.getId());
             props.put("img", String.format("/icons/%s.png", site.getType().replace(" ", "_")));
 
+            // Configure detailed map (if available)
+            if (sitemaps.containsKey(site.getId())) {
+                SitemapInfo sitemap = sitemaps.get(site.getId());
+                // Detailed maps use blocks of 48px size
+                int east  = site.getCoords().X() + sitemap.getWidth()  / 2 / 48;
+                int west  = site.getCoords().X() - sitemap.getWidth()  / 2 / 48;
+                int north = site.getCoords().Y() - sitemap.getHeight() / 2 / 48;
+                int south = site.getCoords().Y() + sitemap.getHeight() / 2 / 48;
+                Coord2d southWest = xy2LonLat(west, south);
+                Coord2d northEast = xy2LonLat(east, north);
+                props.put("map_bounds", new double[][] {{southWest.Y(), southWest.X()},
+                                                        {northEast.Y(), northEast.X()}});
+            }
             context.put("site", site);
             context.put("sitemap", sitemaps.get(site.getId()));
             popupTempl.merge(context, writer);

@@ -10,6 +10,10 @@ export = ../dwarf_fortress
 # The name of the region. Exported files start with this name.
 region_name = region1
 
+# The date of the region export (use @LATEST to automatically select the latest export)
+# or specify a date e.g. 00178-03-02
+region_date = @LATEST
+
 # Where to place build files You don't really need to change this.
 build = ${base_dir}/${region_name}/build
 

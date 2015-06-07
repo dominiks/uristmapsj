@@ -1,7 +1,5 @@
 package org.uristmaps.util;
 
-import com.esotericsoftware.minlog.Log;
-
 import java.io.File;
 
 import static org.uristmaps.Uristmaps.conf;
@@ -12,19 +10,49 @@ import static org.uristmaps.Uristmaps.conf;
 public class ExportFilesFinder {
 
     /**
+     * The timestamp of the world export found in filenames.
+     */
+    private static String timeStamp;
+
+    /**
      * Retrieve the population report file.
      * The site is named "`region_name`-*-world_sites_and_pops.txt".
      * @return A file reference to the file or null if no file was found.
      */
     public static File getPopulationFile() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-world_sites_and_pops.txt"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find population file in " + conf.fetch("Paths", "export"));
-            return null;
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-world_sites_and_pops.txt", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
+    }
+
+    /**
+     * Find the date
+     * @return
+     */
+    public static String getDate() {
+        if (timeStamp == null) {
+            String config = conf.get("Paths", "region_date");
+            if (config.equals("@LATEST")) {
+                // Find all *-legends.xml files
+                File[] populationFiles = new File(conf.fetch("Paths", "export")).listFiles(
+                        (dir, name) -> name.startsWith(conf.get("Paths", "region_name"))
+                                && name.endsWith("-legends.xml"));
+
+                // Find the maximum date string within these filenames
+                String maxDate = "00000-00-00";
+                for (File popFile : populationFiles) {
+                    String fileName = popFile.getName();
+                    String date = fileName.replace(conf.get("Paths", "region_name") + "-", "").replace("-legends.xml", "");
+                    if (maxDate.compareTo(date) < 0) maxDate = date;
+                }
+                timeStamp = maxDate;
+            } else {
+                // Use the config as provided
+                timeStamp = config;
+            }
         }
-        return searchResult[0];
+        return timeStamp;
     }
 
     /**
@@ -32,14 +60,10 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getLegendsXML() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-legends.xml"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find legends xml file in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-legends.xml", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
     }
 
     /**
@@ -47,14 +71,10 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getBiomeMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-bm.png"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find biome map file in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-bm.png", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
     }
 
     /**
@@ -62,14 +82,10 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getWorldHistory() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-world_history.txt"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find history file in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-world_history.txt", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
     }
 
     /**
@@ -77,14 +93,10 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getStructuresMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-str.png"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-str.png", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
     }
 
     /**
@@ -92,14 +104,10 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getHydroMap() {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("-hyd.png"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find structures map file in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-hyd.png", conf.get("Paths", "region_name"),
+                        getDate()));
+        return result;
     }
 
     /**
@@ -118,13 +126,9 @@ public class ExportFilesFinder {
      * @return
      */
     public static File getSiteMap(int id) {
-        File[] searchResult = new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().endsWith("site_map-" + id + ".png"));
-        if (searchResult.length == 0) {
-            Log.error("Filefinder", "Could not find structures map file for site " + id + " in " + conf.fetch("Paths", "export"));
-            return null;
-        }
-        return searchResult[0];
+        File result = new File(conf.fetch("Paths", "export"),
+                String.format("%s-%s-site_map-%d.png", conf.get("Paths", "region_name"),
+                        getDate(), id));
+        return result;
     }
 }

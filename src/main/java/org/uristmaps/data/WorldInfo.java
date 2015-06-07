@@ -5,7 +5,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.Uristmaps;
 import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -47,7 +47,7 @@ public class WorldInfo {
      */
     private static void loadNameFromHistory() {
         Log.debug("WorldInfo", "Reading population counts.");
-        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFilesFinder.getWorldHistory()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFiles.getWorldHistory()))) {
             data.put("name", reader.readLine());
             data.put("nameEnglish", reader.readLine());
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class WorldInfo {
         Log.debug("WorldInfo", "Importing world size from biome");
 
         try {
-            BufferedImage image = ImageIO.read(ExportFilesFinder.getBiomeMap());
+            BufferedImage image = ImageIO.read(ExportFiles.getBiomeMap());
             data.put("size", image.getWidth() + "");
         } catch (IOException e) {
             Log.error("WorldInfo", "Could not read biome image file.");

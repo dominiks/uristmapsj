@@ -9,7 +9,7 @@ import static org.uristmaps.Uristmaps.conf;
 /**
  * Provides easy access to resource files.
  */
-public class ExportFilesFinder {
+public class ExportFiles {
 
     /**
      * The timestamp of the world export found in filenames.
@@ -51,7 +51,7 @@ public class ExportFilesFinder {
                     if (maxDate.compareTo(date) < 0) maxDate = date;
                 }
                 timeStamp = maxDate;
-                Log.info("ExportFilesFinder", "Resolved date to " + maxDate);
+                Log.info("ExportFiles", "Resolved date to " + maxDate);
             } else {
                 // Use the config as provided
                 timeStamp = config;

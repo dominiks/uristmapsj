@@ -9,7 +9,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.uristmaps.data.*;
 import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -77,7 +77,7 @@ public class WorldSites {
     private static void loadLegendsXML() {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setNamespaceAware(true);
-        try (Reader reader = new InputStreamReader(new FileInputStream(ExportFilesFinder.getLegendsXML()), "UTF-8")){
+        try (Reader reader = new InputStreamReader(new FileInputStream(ExportFiles.getLegendsXML()), "UTF-8")){
             InputSource source = new InputSource(reader);
             source.setEncoding("UTF-8");
             SAXParser saxParser = spf.newSAXParser();
@@ -120,7 +120,7 @@ public class WorldSites {
         Matcher match;
 
         String line = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFilesFinder.getPopulationFile()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ExportFiles.getPopulationFile()))) {
 
             boolean parsingSites = false; // Is active when we have reached the correct section in the file
             while ((line = reader.readLine()) != null) {

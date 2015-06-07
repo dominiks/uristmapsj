@@ -1,7 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.minlog.Log;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -57,14 +57,14 @@ public class StructureInfo {
     public static void load() {
         Log.debug("StructureInfo", "Loading");
         try {
-            structImage = ImageIO.read(ExportFilesFinder.getStructuresMap());
+            structImage = ImageIO.read(ExportFiles.getStructuresMap());
         } catch (IOException e) {
             Log.error("StructureInfo", "Could not read structure export image.");
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);
             System.exit(1);
         }
         try {
-            hydroImage = ImageIO.read(ExportFilesFinder.getHydroMap());
+            hydroImage = ImageIO.read(ExportFiles.getHydroMap());
         } catch (IOException e) {
             Log.error("StructureInfo", "Could not read hydro export image.");
             if (Log.DEBUG) Log.debug("StructureInfo", "Exception", e);

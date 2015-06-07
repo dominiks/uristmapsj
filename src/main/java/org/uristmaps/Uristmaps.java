@@ -1,9 +1,7 @@
 package org.uristmaps;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
-import org.apache.commons.lang.ArrayUtils;
 import org.ini4j.Wini;
 import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
@@ -77,8 +75,8 @@ public class Uristmaps {
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
-                new File[]{ExportFilesFinder.getLegendsXML(),
-                           ExportFilesFinder.getPopulationFile()},
+                new File[]{ExportFiles.getLegendsXML(),
+                           ExportFiles.getPopulationFile()},
                 BuildFiles.getSitesFile(),
                 () -> WorldSites.load());
 
@@ -92,13 +90,13 @@ public class Uristmaps {
         executor.addTask("DistResources", () -> FileCopier.distResources());
 
         executor.addTask("WorldInfo",
-                new File[] {ExportFilesFinder.getWorldHistory(),
-                            ExportFilesFinder.getBiomeMap()},
+                new File[] {ExportFiles.getWorldHistory(),
+                            ExportFiles.getBiomeMap()},
                 BuildFiles.getWorldFile(),
                 () -> WorldInfo.load());
 
         executor.addTask("BiomeInfoTask",
-                ExportFilesFinder.getBiomeMap(),
+                ExportFiles.getBiomeMap(),
                 BuildFiles.getBiomeInfo(),
                 () -> BiomeInfo.load());
 
@@ -108,17 +106,17 @@ public class Uristmaps {
         dependantForSitemaps.add(BuildFiles.getSitemapsIndex());
         dependantForSitemaps.addAll(Arrays.asList(OutputFiles.getAllSiteMaps()));
         executor.addTask("LoadSitemaps",
-                ExportFilesFinder.getAllSitemaps(),
+                ExportFiles.getAllSitemaps(),
                 dependantForSitemaps.toArray(new File[0]),
                 () -> Sitemaps.load());
 
         executor.addTask("CopySiteMaps",
-                ExportFilesFinder.getAllSitemaps(),
+                ExportFiles.getAllSitemaps(),
                 OutputFiles.getAllSiteMaps(),
                 () -> Sitemaps.copy());
 
         executor.addTask("GroupStructures",
-                new File[] {ExportFilesFinder.getStructuresMap(),
+                new File[] {ExportFiles.getStructuresMap(),
                             BuildFiles.getSitesFile(),
                             BuildFiles.getWorldFile()},
                 new File[]{BuildFiles.getStructureGroups(),

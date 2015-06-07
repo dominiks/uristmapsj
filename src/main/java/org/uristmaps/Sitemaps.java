@@ -5,7 +5,7 @@ import com.esotericsoftware.minlog.Log;
 import org.apache.commons.io.FileUtils;
 import org.uristmaps.data.SitemapInfo;
 import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
 
 import javax.imageio.ImageIO;
@@ -35,7 +35,7 @@ public class Sitemaps {
      */
     public static void load() {
         Map<Integer, SitemapInfo> result = new HashMap<>();
-        for (File imageFile : ExportFilesFinder.getAllSitemaps()) {
+        for (File imageFile : ExportFiles.getAllSitemaps()) {
             // Resolve id of the site
             Matcher matcher = idFind.matcher(imageFile.getName());
             if (!matcher.find()) continue;
@@ -71,7 +71,7 @@ public class Sitemaps {
      * DOCME
      */
     public static void copy() {
-        for (File imageFile : ExportFilesFinder.getAllSitemaps()) {
+        for (File imageFile : ExportFiles.getAllSitemaps()) {
             // Resolve id of the site
             Matcher matcher = idFind.matcher(imageFile.getName());
             if (!matcher.find()) continue;

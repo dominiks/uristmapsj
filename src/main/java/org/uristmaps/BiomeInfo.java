@@ -4,7 +4,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
+
 import static org.uristmaps.util.Util.makeColor;
 
 import javax.imageio.ImageIO;
@@ -71,7 +72,7 @@ public class BiomeInfo {
         Log.info("BiomeInfo", "Reloading biome data from exported image.");
         BufferedImage image = null;
         try {
-            image = ImageIO.read(ExportFilesFinder.getBiomeMap());
+            image = ImageIO.read(ExportFiles.getBiomeMap());
         } catch (IOException e) {
             Log.error("BiomeInfo", "Could not read biome export image.");
             if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);

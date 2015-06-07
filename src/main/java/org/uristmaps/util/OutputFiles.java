@@ -51,7 +51,7 @@ public class OutputFiles {
     }
 
     public static File[] getAllSiteMaps() {
-        File[] allSitemaps = ExportFilesFinder.getAllSitemaps();
+        File[] allSitemaps = ExportFiles.getAllSitemaps();
         File[] outputFiles = new File[allSitemaps.length];
         for (int i = 0; i < allSitemaps.length; i++) {
             String name = allSitemaps[i].getName();

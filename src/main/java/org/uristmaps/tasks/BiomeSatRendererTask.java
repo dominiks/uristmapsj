@@ -2,7 +2,7 @@ package org.uristmaps.tasks;
 
 import org.uristmaps.renderer.SatRenderer;
 import org.uristmaps.util.BuildFiles;
-import org.uristmaps.util.ExportFilesFinder;
+import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
@@ -44,8 +44,8 @@ public class BiomeSatRendererTask extends Task {
         return new File[]{
                 BuildFiles.getBiomeInfo(),
                 BuildFiles.getWorldFile(),
-                ExportFilesFinder.getHydroMap(),
-                ExportFilesFinder.getStructuresMap()
+                ExportFiles.getHydroMap(),
+                ExportFiles.getStructuresMap()
                 // TODO: Add tileset image for the graphics size required for this level
         };
     }

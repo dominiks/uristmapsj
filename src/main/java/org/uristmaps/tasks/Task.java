@@ -4,8 +4,6 @@ import java.io.File;
 
 /**
  * Base class for tasks.
- *
- * TODO: Allow subtasks that are generated at runtime.
  */
 public abstract class Task {
 

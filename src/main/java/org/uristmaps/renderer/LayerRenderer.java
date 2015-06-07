@@ -22,10 +22,12 @@ import java.util.concurrent.Executors;
 
 /**
  * Base class for all layer renderer.
- * TODO: Multithread the tile rendering.
  */
 public abstract class LayerRenderer {
 
+    /**
+     * The zoom level for this render instance.
+     */
     private final int level;
 
     /**
@@ -132,6 +134,8 @@ public abstract class LayerRenderer {
 
         List<Callable<Object>> columnRenderTasks = new LinkedList<>();
         // Iterate over all tiles of this renderlevel and render them.
+        // To make this multithreaded, make each "column" a separate job, so one
+        // job per x-coordinate. These jobs will be processed by a threaded pool.
         for (int x = 0; x < Math.pow(2, level); x++) {
             final int finalX = x;
 

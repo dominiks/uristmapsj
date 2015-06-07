@@ -20,18 +20,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * DOCME
+ * Manages the storage of detailed sitemaps-info.
  */
 public class Sitemaps {
 
     /**
-     * DOCME
+     * Regexp to determine the site id from a site-map filename.
      */
     private static Pattern idFind = Pattern.compile("(site_map-(\\d+))");
 
-
     /**
-     * DOCME
+     * Make an index of all available site maps and which sites they are for.
+     * Also loads the images' dimensions.
      */
     public static void load() {
         Map<Integer, SitemapInfo> result = new HashMap<>();
@@ -68,7 +68,7 @@ public class Sitemaps {
     }
 
     /**
-     * DOCME
+     * Copies all site maps into the output directory to make them available for the web app.
      */
     public static void copy() {
         for (File imageFile : ExportFiles.getAllSitemaps()) {

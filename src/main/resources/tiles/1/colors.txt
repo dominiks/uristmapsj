@@ -1,0 +1,35 @@
+# Biomename = R,G,B
+arctic_ocean = 84,212,255
+badland_desert =
+glacier =
+mangrove_swamp =
+mountain =
+rock_desert =
+sand_desert =
+taiga_forest =
+temperate_brackish_lake =
+temperate_conifer_forest
+temperate_freshwater_lake
+temperate_freshwater_marsh
+temperate_freshwater_swamp
+temperate_grassland
+temperate_ocean = 64,88,255
+temperate_saltwater_lake
+temperate_saltwater_marsh
+temperate_saltwater_swamp
+temperate_savanna
+temperate_shrubland
+tropical_bracklish_lake
+tropical_conifer_forest
+tropical_dry_broadleaf_forest
+tropical_freshwater_lake
+tropical_freshwater_marsh
+tropical_freshwater_swamp
+tropical_grassland
+tropical_moist_broadleaf_forest
+tropical_ocean = 64,88,255
+tropical_saltwater_lake
+tropical_saltwater_marsh
+tropical_savanna
+tropical_shrubland
+tundra

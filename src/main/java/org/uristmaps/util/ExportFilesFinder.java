@@ -1,5 +1,7 @@
 package org.uristmaps.util;
 
+import com.esotericsoftware.minlog.Log;
+
 import java.io.File;
 
 import static org.uristmaps.Uristmaps.conf;
@@ -49,6 +51,7 @@ public class ExportFilesFinder {
                     if (maxDate.compareTo(date) < 0) maxDate = date;
                 }
                 timeStamp = maxDate;
+                Log.info("ExportFilesFinder", "Resolved date to " + maxDate);
             } else {
                 // Use the config as provided
                 timeStamp = config;

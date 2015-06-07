@@ -71,4 +71,9 @@ public class BuildFiles {
     public static File getSitemapsIndex() {
         return new File(conf.fetch("Paths", "build"), "sitemaps.kryo");
     }
+
+    public static File getTilesetColorFile(int tileSize) {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "tilesets"),
+                Integer.toString(tileSize) + ".kryo").toFile();
+    }
 }

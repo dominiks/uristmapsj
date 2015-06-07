@@ -11,16 +11,14 @@ import org.uristmaps.util.Util;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
- * Created by dominik on 26.05.2015.
+ * DOCME
  */
 public class Tilesets {
 
@@ -119,5 +117,46 @@ public class Tilesets {
             if (Log.DEBUG) Log.debug("Tilesets", "Exception: ", e);
         }
         return null;
+    }
+
+    /**
+     *  DOCME
+     * @param tileFile
+     */
+    public static void compileColorTable(File tileFile) {
+        int tileSize = Integer.parseInt(FilenameUtils.removeExtension(tileFile.getName()));
+
+        Properties importTable = new Properties();
+        try {
+            importTable.load(new FileReader(tileFile));
+        } catch (IOException e) {
+            Log.error("Tilesets", "Could not read color table: " + tileFile);
+            if (Log.DEBUG) Log.debug("Tilesets", "Exception", e);
+            System.exit(1);
+        }
+
+        Map<String, Integer> colorTable = new HashMap<>();
+        String[] rgbSplit;
+        for (String biomeKey : importTable.stringPropertyNames()) {
+            rgbSplit = importTable.getProperty(biomeKey).split(",");
+            if (rgbSplit.length != 3) {
+                Log.error("Tilesets", String.format("Could not parse RGB from entry %s = %s",
+                        biomeKey, importTable.getProperty(biomeKey)));
+                continue;
+            }
+            colorTable.put(biomeKey, Util.makeColor(Integer.parseInt(rgbSplit[0]),
+                    Integer.parseInt(rgbSplit[1]),
+                    Integer.parseInt(rgbSplit[2])));
+        }
+
+        // Write color table to file
+        File targetFile = BuildFiles.getTilesetColorFile(tileSize);
+        try (Output output = new Output(new FileOutputStream(targetFile))) {
+            Uristmaps.kryo.writeObject(output, colorTable);
+        } catch (FileNotFoundException e) {
+            Log.error("Tilesets", "Could not write color table: " + targetFile);
+            if (Log.DEBUG) Log.debug("Tilesets", "Exception", e);
+            System.exit(1);
+        }
     }
 }

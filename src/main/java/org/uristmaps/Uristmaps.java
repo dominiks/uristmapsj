@@ -18,8 +18,7 @@ import java.io.StringWriter;
 import java.util.*;
 
 /**
- * Created by schacht on 26.05.15.
- * TODO: Store the version number somewhere.
+ * Entry point for uristmaps application
  */
 public class Uristmaps {
 

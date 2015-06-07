@@ -192,14 +192,10 @@ public class Uristmaps {
     }
 
     public static void Old() {
-
-        // TODO: Load detailed site maps
         // TODO: Load regions info
 
         // TODO: Render region labels
         // TODO: Place region labels
-        // TODO: Place site labels
-        // TODO: Place detailed site maps
     }
 
 

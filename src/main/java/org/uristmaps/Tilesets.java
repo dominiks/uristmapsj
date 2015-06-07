@@ -159,4 +159,26 @@ public class Tilesets {
             System.exit(1);
         }
     }
+
+    /**
+     * Load the color table data from kryo file.
+     * @param size
+     * @return
+     */
+    public static Map<String, Color> getColorTable(int size) {
+        Map<String, Integer> colors = null;
+        Map<String, Color> result = new HashMap<>();
+        try (Input input = new Input(new FileInputStream(BuildFiles.getTilesetColorFile(size)))) {
+            colors = Uristmaps.kryo.readObject(input, HashMap.class);
+        } catch (Exception e) {
+            Log.error("Tilesets", "Could not read color table file: " + BuildFiles.getTilesetColorFile(size));
+            if (Log.DEBUG) Log.debug("Tilesets", "Exception: ", e);
+            System.exit(1);
+        }
+
+        for (Map.Entry<String, Integer> entry : colors.entrySet()) {
+            result.put(entry.getKey(), new Color(entry.getValue()));
+        }
+        return result;
+    }
 }

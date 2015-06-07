@@ -20,6 +20,10 @@ public class BiomeSatRendererTask extends Task {
      */
     private final int level;
 
+    /**
+     * DOCME
+     * @param level
+     */
     public BiomeSatRendererTask(int level) {
         this.level = level;
     }

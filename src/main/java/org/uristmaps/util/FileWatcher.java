@@ -22,7 +22,6 @@ import java.util.Map;
  * if there are any files that need to be redone (are dirty). Then do your work
  * and tell the watcher to update the state for these files.
  *
- * FIXME: If multiple jobs watch the same file, only the first job will see that the file is changed, as the job then updates the state
  * TODO: Watch files on a per-job base?
  */
 public class FileWatcher {

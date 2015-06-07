@@ -21,7 +21,7 @@ public class BiomeSatRendererTask extends Task {
     private final int level;
 
     /**
-     * DOCME
+     * Create a new render task for the provided zoom level.
      * @param level
      */
     public BiomeSatRendererTask(int level) {

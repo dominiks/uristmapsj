@@ -244,10 +244,19 @@ public class TaskExecutor {
         return tasks.get(name);
     }
 
+    /**
+     * Add a task without any dependencies.
+     * @param name
+     * @param work
+     */
     public void addTask(String name, Runnable work) {
         addTask(new AdhocTask(name, new File[]{}, new File[]{}, work));
     }
 
+    /**
+     * Add a task group which spawns multiple tasks at runtime.
+     * @param taskGrp
+     */
     public void addTaskGroup(TaskGroup taskGrp) {
         taskGroups.put(taskGrp.getName(), taskGrp);
         for (Task task : taskGrp.getTasks()) {

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * DOCME
+ * Creates tileset images from tile collections. Provides access to the images, indexes and the color table.
  */
 public class Tilesets {
 
@@ -120,8 +120,8 @@ public class Tilesets {
     }
 
     /**
-     *  DOCME
-     * @param tileFile
+     *  Compile the color table from the given txt file and save it to kryo.
+     * @param tileFile The txt file containing the color properties.
      */
     public static void compileColorTable(File tileFile) {
         int tileSize = Integer.parseInt(FilenameUtils.removeExtension(tileFile.getName()));

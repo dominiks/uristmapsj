@@ -17,7 +17,8 @@ public class ExportFilesFinder {
     /**
      * Retrieve the population report file.
      * The site is named "`region_name`-*-world_sites_and_pops.txt".
-     * @return A file reference to the file or null if no file was found.
+     * Does not check if the file exists!
+     * @return A file reference to the file
      */
     public static File getPopulationFile() {
         File result = new File(conf.fetch("Paths", "export"),
@@ -27,7 +28,8 @@ public class ExportFilesFinder {
     }
 
     /**
-     * Find the date
+     * Find the date of the export files. Either this is set in the config or the latest date
+     * is resolved using the legends.xml file with the latest date.
      * @return
      */
     public static String getDate() {
@@ -56,8 +58,8 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
-     * @return
+     * Resolve the path to the legends xml file.
+     * @return File reference to where this file should be.
      */
     public static File getLegendsXML() {
         File result = new File(conf.fetch("Paths", "export"),
@@ -67,8 +69,9 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
-     * @return
+     * Resolve the path to the biome map image.
+     * Does not check if the file exists!
+     * @return File reference to where this file should be.
      */
     public static File getBiomeMap() {
         File result = new File(conf.fetch("Paths", "export"),
@@ -78,7 +81,8 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
+     * Construct the path to the world_history.txt file.
+     * Does not check if the file exists!
      * @return
      */
     public static File getWorldHistory() {
@@ -89,8 +93,8 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
-     * @return
+     * Construct the path to the structures map image file.
+     * @return File reference to where this file should be.
      */
     public static File getStructuresMap() {
         File result = new File(conf.fetch("Paths", "export"),
@@ -100,8 +104,8 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
-     * @return
+     * Construct the path to the hydro map image file.
+     * @return File reference to where this file should be.
      */
     public static File getHydroMap() {
         File result = new File(conf.fetch("Paths", "export"),
@@ -111,18 +115,20 @@ public class ExportFilesFinder {
     }
 
     /**
-     * DOCME
-     * @return
+     * Find all detailed site maps for the current region & date.
+     * @return File reference to where this file should be.
      */
     public static File[] getAllSitemaps() {
-        return new File(conf.fetch("Paths", "export")).listFiles(
-                filename -> filename.getName().contains(conf.get("Paths", "region_name"))
-                        && filename.getName().contains("site_map") && filename.getName().endsWith(".png"));
+        return new File(conf.fetch("Paths", "export")).listFiles((dir, name) -> name.startsWith(
+                    String.format("%s-%s.site_map-", conf.get("Paths", "region_name"), getDate()))
+                && name.endsWith(".png")
+        );
     }
 
     /**
-     * DOCME
-     * @param id
+     * Construct the path to the detailed site map for a given site.
+     * Does not check if the file exists!
+     * @param id The id of the site.
      * @return
      */
     public static File getSiteMap(int id) {

@@ -13,12 +13,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * DOCME
+ * Task group to compile the directories of tiles for differently sized tilesets.
+ * Creates a subtask for every graphicsize.
  */
 public class TilesetsTaskGroup extends TaskGroup {
 
     /**
-     * DOCME
+     * Internal storage of the craeted tasks.
      */
     private List<Task> tasks;
 
@@ -29,7 +30,8 @@ public class TilesetsTaskGroup extends TaskGroup {
     }
 
     /**
-     * DOCME
+     * Generate the list of tasks. There are 2 types of task, depending on whether the source
+     * is a directory filled with images or a single txt containing a color table.
      */
     private void generateTasks() {
         tasks = new LinkedList<>();

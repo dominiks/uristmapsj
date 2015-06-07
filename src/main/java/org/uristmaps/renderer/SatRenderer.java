@@ -74,7 +74,7 @@ public class SatRenderer extends LayerRenderer {
         // When the color table is set for this level, just draw the color and leave it.
         if (colorTable != null) {
             graphics.setColor(colorTable.get(biomeName));
-            graphics.drawRect(imageCoords.X(), imageCoords.Y(),
+            graphics.fillRect(imageCoords.X(), imageCoords.Y(),
                     renderSettings.getGraphicsSize(), renderSettings.getGraphicsSize());
             return;
         }

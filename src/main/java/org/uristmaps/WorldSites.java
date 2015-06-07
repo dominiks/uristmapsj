@@ -31,13 +31,35 @@ import java.util.regex.Pattern;
  */
 public class WorldSites {
 
+    /**
+     * Regexp to read the site id from a line in the populations file.
+     */
     private static final Pattern idReader = Pattern.compile("(\\d+):");
 
+    /**
+     * Map of all available sites. Maps them by id.
+     */
     private static Map<Integer, Site> sites;
+
+    /**
+     * Offset of the world relative to the size of the rendered map. The map is bigger
+     * than the world, and the offset left and above moves the world into the center of the map.
+     */
     private static int offset;
+
+    /**
+     * Whether the xy translation variables have been initialized.
+     */
     private static boolean xyInitialized;
+
+    /**
+     * Size of the world map.
+     */
     private static int mapSize;
 
+    /**
+     * Load the data for all sites from the export files and write them to the sites file.
+     */
     public static void load() {
         Log.info("Sites", "Loading site information");
 
@@ -112,6 +134,9 @@ public class WorldSites {
         return new Coord2d(lonDeg, latDeg);
     }
 
+    /**
+     * Load population info for each site from the pops txt export.
+     */
     private static void loadPopulationInfo() {
         // The last read site
         Site lastSite = null;
@@ -248,7 +273,7 @@ public class WorldSites {
     }
 
     /**
-     * DOCME
+     * Return a map, listing all sites by their id.
      * @return
      */
     public static Map<Integer, Site> getSites() {
@@ -256,6 +281,9 @@ public class WorldSites {
         return sites;
     }
 
+    /**
+     * Load the sites data from the prepared kryo file.
+     */
     private static void initSites() {
         File sitesFile = BuildFiles.getSitesFile();
         try (Input input = new Input(new FileInputStream(sitesFile))) {

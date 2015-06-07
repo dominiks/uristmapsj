@@ -6,6 +6,7 @@ import org.uristmaps.Tilesets;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.RenderSettings;
 import org.uristmaps.data.WorldInfo;
+import org.uristmaps.util.BuildFiles;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -34,6 +35,11 @@ public class SatRenderer extends LayerRenderer {
     private String[][] suffixed;
 
     /**
+     * Color table used when no tile image is available.
+     */
+    private Map<String, Color> colorTable;
+
+    /**
      * Create a layer renderer for a given zoom level.
      *
      * @param level
@@ -44,8 +50,12 @@ public class SatRenderer extends LayerRenderer {
 
     @Override
     protected void prepareForLevel(int level, RenderSettings renderSettings) {
-        tilesIndex = Tilesets.getTilesetIndex(renderSettings.getGraphicsSize());
-        tilesImage = Tilesets.getTilesetImage(renderSettings.getGraphicsSize());
+        if (BuildFiles.getTilesetImage(renderSettings.getGraphicsSize()).exists()) {
+            tilesIndex = Tilesets.getTilesetIndex(renderSettings.getGraphicsSize());
+            tilesImage = Tilesets.getTilesetImage(renderSettings.getGraphicsSize());
+        } else {
+            colorTable = Tilesets.getColorTable(renderSettings.getGraphicsSize());
+        }
 
         biomeInfo = BiomeInfo.getBiomeData();
 
@@ -60,6 +70,17 @@ public class SatRenderer extends LayerRenderer {
         // Render the tile onto the graphic object at imageX,imageY position.
         String biomeName = biomeInfo[world.X()][world.Y()];
         assert biomeName != null;
+
+        // When the color table is set for this level, just draw the color and leave it.
+        if (colorTable != null) {
+            graphics.setColor(colorTable.get(biomeName));
+            graphics.fillRect(imageCoords.X(), imageCoords.Y(),
+                    renderSettings.getGraphicsSize(), renderSettings.getGraphicsSize());
+            return;
+        }
+
+        // Color table was null, so use the tileset to render biome and structure.
+
         Coord2 tileCoord = tilesIndex.get(biomeName);
         assert tileCoord != null;
         assert tileCoord.X() < tilesImage.getWidth(): "Tile X is out of bounds!";

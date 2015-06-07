@@ -12,10 +12,13 @@ import java.io.IOException;
 import static org.uristmaps.Uristmaps.conf;
 
 /**
- * Created by dominik on 27.05.2015.
+ * DOCME
  */
 public class BmpConverter {
 
+    /**
+     * DOCME
+     */
     public static void convert() {
         Log.debug("BmpConverter", "Started");
 

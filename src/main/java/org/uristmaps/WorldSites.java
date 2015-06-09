@@ -19,10 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +55,73 @@ public class WorldSites {
     private static int mapSize;
 
     /**
+     * DOCME
+     */
+    private static TreeMap<String, List<Site>> popDistribution;
+
+    /**
+     * DOCME
+     */
+    private static TreeMap<String, Integer> maxPop;
+
+    /**
+     * DOCME
+     */
+    private static TreeMap<String, Integer> totalPop;
+
+    /**
+     * DOCME
+     */
+    static Map<String, String> nameTransform = new HashMap<>();
+
+    static {
+        nameTransform.put("Bat", "Bats");
+        nameTransform.put("Bleak Man", "Bleak Men");
+        nameTransform.put("Blind Horror", "Blind Horrors");
+        nameTransform.put("Bronze Colossus", "Bronze Colossuses");
+        nameTransform.put("Cat", "Cats");
+        nameTransform.put("Cougar", "Cougars");
+        nameTransform.put("Creature Of Twilight", "Creatures Of Twilight");
+        nameTransform.put("Cyclops", "Cyclopses");
+        nameTransform.put("Dark Creature", "Dark Creatures");
+        nameTransform.put("Dingo", "Dingoes");
+        nameTransform.put("Dingo Man", "Dingo Men");
+        nameTransform.put("Dragon", "Dragons");
+        nameTransform.put("Dusk Horror", "Dusk Horrors");
+        nameTransform.put("Dwarf", "Dwarves");
+        nameTransform.put("Elf", "Elves");
+        nameTransform.put("Ettin", "Ettins");
+        nameTransform.put("Forest Titan", "Forest Titans");
+        nameTransform.put("Giant", "Giants");
+        nameTransform.put("Giant Dingo", "Giant Dingoes");
+        nameTransform.put("Giant Jaguar", "Giant Jaguars");
+        nameTransform.put("Giant Leopard", "Giant Leopards");
+        nameTransform.put("Giant Tiger", "Giant Tigers");
+        nameTransform.put("Goblin", "Goblins");
+        nameTransform.put("Goblin Outcast", "Goblin Outcasts");
+        nameTransform.put("Grizzly Bear", "Grizzly Bears");
+        nameTransform.put("Hill Titan", "Hill Titans");
+        nameTransform.put("Human", "Humans");
+        nameTransform.put("Hydra", "Hydras");
+        nameTransform.put("Hyena Man", "Hyena Men");
+        nameTransform.put("Jaguar", "Jaguars");
+        nameTransform.put("Jungle Titan", "Jungle Titans");
+        nameTransform.put("Kobold", "Kobolds");
+        nameTransform.put("Marsh Titan", "Marsh Titans");
+        nameTransform.put("Midnight Brute", "Midnight Brutes");
+        nameTransform.put("Minotaur", "Minotaurs");
+        nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
+        nameTransform.put("Plains Titan", "Plains Titans");
+        nameTransform.put("Polar Bear", "Polar Bears");
+        nameTransform.put("Roc", "Rocs");
+        nameTransform.put("Sasquatch", "Sasquatches");
+        nameTransform.put("Tiger Man", "Tiger Men");
+        nameTransform.put("Wicked Freak", "Wicked Freaks");
+        nameTransform.put("Tundra Titan", "Tundra Titans");
+        nameTransform.put("Wicked Creature", "Wicked Creatures");
+    }
+
+    /**
      * Load the data for all sites from the export files and write them to the sites file.
      */
     public static void load() {
@@ -68,7 +132,22 @@ public class WorldSites {
         loadPopulationInfo();
         loadLegendsXML();
 
-        UpdateLatLon();
+        // Set lat&lon for all sites to their current position
+        for (Site site : sites.values()) {
+            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
+            site.setLat(latlon.X());
+            site.setLon(latlon.Y());
+        }
+
+        loadSiteCenters();
+        // Apply site centers
+        for (Map.Entry<Integer, Coord2> entry : SiteCenters.getCenters().entrySet()) {
+            Site site = getSites().get(entry.getKey());
+            site.setCoords(entry.getValue());
+            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
+            site.setLat(latlon.X());
+            site.setLon(latlon.Y());
+        }
 
         Log.debug("Sites", "Writing site info");
         File targetFile = BuildFiles.getSitesFile();
@@ -82,14 +161,10 @@ public class WorldSites {
     }
 
     /**
-     * Calculate the latitude & longitude for every site and update the values.
+     * Call the SiteCenters module to calculate new centers for the sites.
      */
-    public static void UpdateLatLon() {
-        for (Site site : sites.values()) {
-            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
-            site.setLat(latlon.X());
-            site.setLon(latlon.Y());
-        }
+    private static void loadSiteCenters() {
+        SiteCenters.load(sites.values());
     }
 
     /**
@@ -121,7 +196,7 @@ public class WorldSites {
      * @param y
      * @return
      */
-    public static Coord2d xy2LonLat(int x, int y) {
+    private static Coord2d xy2LonLat(int x, int y) {
         if (!xyInitialized) {
             initLonLat();
         }
@@ -183,18 +258,80 @@ public class WorldSites {
     }
 
     /**
+     * DOCME
+     * @return
+     */
+    public static TreeMap<String, List<Site>> getPopulationDistribution() {
+        if (popDistribution == null) loadPopulationDistribution();
+        return popDistribution;
+    }
+
+    /**
+     * Get the total count for all races that can be found in the world.
+     * @return
+     */
+    public static TreeMap<String, Integer> getTotalPopulation() {
+        if (totalPop == null) loadPopulationDistribution();
+        return totalPop;
+    }
+
+    /**
+     * DOCME
+     * @return
+     */
+    public static TreeMap<String, Integer> getPopulationCounts() {
+        if (maxPop == null) loadPopulationDistribution();
+        return maxPop;
+    }
+
+    /**
+     * DOCME
+     */
+    private static void loadPopulationDistribution() {
+        // Create a map, mapping races to a list of sites where they can be found
+        popDistribution = new TreeMap<>();
+
+        // Map the race name to the single biggest population count in a single site
+        maxPop = new TreeMap<>();
+
+        // Map to count the total population counts
+        totalPop = new TreeMap<>();
+
+        for (Site site : sites.values()) {
+
+            String raceName;
+            for (Map.Entry<String, Integer> entry : site.getPopulations().entrySet()) {
+                if (nameTransform.containsKey(entry.getKey())) {
+                    raceName = nameTransform.get(entry.getKey());
+                } else {
+                    System.err.println(entry.getKey());
+                    raceName = entry.getKey();
+                }
+
+                // Update maximum population for that race
+                if (!maxPop.containsKey(raceName)) {
+                    maxPop.put(raceName, entry.getValue());
+                } else if (maxPop.get(raceName) < entry.getValue()) {
+                    maxPop.put(raceName, entry.getValue());
+                }
+
+                if (!popDistribution.containsKey(raceName)) {
+                    popDistribution.put(raceName, new LinkedList<>());
+                }
+                popDistribution.get(raceName).add(site);
+
+                if (!totalPop.containsKey(raceName)) {
+                    totalPop.put(raceName, 0);
+                }
+                totalPop.put(raceName, totalPop.get(raceName) + entry.getValue());
+            }
+        }
+    }
+
+    /**
      * Write the sitesgeo.json for the output. Also contains the translated coordinates for all sites.
      */
     public static void geoJson() {
-        // Apply site centers
-        for (Map.Entry<Integer, Coord2> entry : SiteCenters.getCenters().entrySet()) {
-            Site site = getSites().get(entry.getKey());
-            site.setCoords(entry.getValue());
-            Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
-            site.setLat(latlon.X());
-            site.setLon(latlon.Y());
-        }
-
         Map<Integer, SitemapInfo> sitemaps = loadSitemaps();
 
         ObjectMapper mapper = new ObjectMapper();

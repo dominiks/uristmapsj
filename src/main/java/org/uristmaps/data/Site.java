@@ -1,5 +1,8 @@
 package org.uristmaps.data;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -94,19 +97,19 @@ public class Site {
     public void addInfo(String line) {
         if (line.contains("\"")) {
             String[] split = line.split(":")[1].split(",");
-            setName(split[0].trim());
-            setNameEnglish(split[1].trim().replace("\"", ""));
-            setType(split[2].trim());
+            setName(WordUtils.capitalize(split[0].trim()));
+            setNameEnglish(WordUtils.capitalize(split[1].trim().replace("\"", "")));
+            setType(WordUtils.capitalize(split[2].trim()));
         } else if (line.contains(":")) {
             String[] split = line.split(":");
             if (split[0].equals("Owner")) {
-                setOwner(split[1]);
+                setOwner(WordUtils.capitalize(split[1].trim()));
             } else if (split[0].equals("Parent Civ")) {
-                setParentCiv(split[1]);
+                setParentCiv(WordUtils.capitalize(split[1].trim()));
             }
         } else {
             int separator = line.indexOf(" ");
-            setPopulation(line.substring(separator), Integer.parseInt(line.substring(0, separator)));
+            setPopulation(WordUtils.capitalize(line.substring(separator).trim()), Integer.parseInt(line.substring(0, separator)));
         }
 
     }

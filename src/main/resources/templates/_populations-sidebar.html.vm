@@ -1,0 +1,12 @@
+<h2>Populations</h2>
+Click a population to activate a heat map overlay for that population.
+<ul class="list-unstyled">
+    #foreach ($popName in $populations.keySet())
+    <li style="margin-bottom: 5px;">
+        <button class="btn btn-link btn-xs population-btn"
+                data-race="$popName">
+            $popName : $populations[$popName]</a>
+        </button>
+    </li>
+    #end
+</ul>

@@ -6,16 +6,26 @@ var map;
 // Stores the loaded json with the sites
 var sites_geojson;
 
-// Sidebar objects
-var leftbar;
-var rightbar;
-
 // UI controls
 var btn_sitelist;
 
 // Initializes the map and triggers and loads the sites.
 function init_uristmaps() {
-    map = L.map('map').setView([0, 0], 3);
+     // Heatmap config
+    var heatmap_cfg = {
+        "radius" : 4,
+        "maxOpacity":1,
+        "scaleRadius": true,
+        "useLocalExtrema": false,
+        "latField": "lng",
+        "lngField" : "lat",
+        "valueField": "count"
+    };
+
+    var heatmapLayer = new HeatmapOverlay(heatmap_cfg);
+    window.heatmaplayer = heatmapLayer;
+
+    map = L.map('map', {layers: [heatmapLayer]}).setView([0, 0], 3);
     L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         noWrap: true,
         minZoom: $conf.Map.min_zoom,
@@ -32,47 +42,21 @@ function init_uristmaps() {
     
     window.map = map;
 
+    // Add the layer control widget
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays"]});
+    window.layerControl.addTo(window.map);
+    window.layerControl.addOverlay(window.heatmaplayer, "Population", "Overlays");
+
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
     jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
     
     setup_sidebars();
-    init_buttons();
-};
-
-function init_buttons() {
-    btn_sitelist = L.easyButton("fa-bars",
-        btn_sitelist_clicked,
-        "Show list of sites");
-
-    btn_legend = L.easyButton("fa-question-circle",
-        btn_legend_clicked,
-        "Show legend for the current overlay","");
-    btn_legend.options.position = "bottomright";
-    map.addControl(btn_legend);
 };
 
 function setup_sidebars() {
-    leftbar = L.control.sidebar("sidebar-left", {
-        position: "left",
-        autoPan: false,
-    });
-    rightbar = L.control.sidebar("sidebar-right", {
-        position: "right",
-        autoPan: false,
-    });
-
-    map.addControl(leftbar);
-    map.addControl(rightbar);
+    window.sidebar = L.control.sidebar("sidebar").addTo(map);
 };
-
-function btn_sitelist_clicked() {
-    leftbar.toggle();
-}
-
-function btn_legend_clicked() {
-    rightbar.toggle();
-}
 
 /**
  * Event handler for onclick of toggle detail map button in
@@ -131,13 +115,9 @@ function process_loaded_sites(data) {
     $.each(data.features, function(fid, feature) {
         points.addData(feature);
     });
-    window.map.addLayer(clusters);
-    
-    // Add 
-    var base_layers = {};
-    var icon_layers = {"Regions" : window.regions,
-                       "Sites": clusters};
-    L.control.layers(base_layers, icon_layers).addTo(window.map);
+
+    // Add to layer control
+    window.layerControl.addOverlay(clusters, "Sites", "Icons");
 };
 
 function process_loaded_regions(data) {
@@ -163,19 +143,27 @@ function process_loaded_regions(data) {
     $.each(data.features, function(fid, feature) {
         points.addData(feature);
     });
-    window.map.addLayer(clusters);
 
     // Add
-    var base_layers = {};
-    var icon_layers = {"Regions" : window.regions,
-                       "Sites": clusters};
-    L.control.layers(base_layers, icon_layers).addTo(window.map);
+    window.layercontrol.addOverlay(window.regions, "Regions", "Overlays");
 };
 
 $(function() {
+    // Click function for the site names in the sites sidebar
+    // moves the view to that site
     $(".site-btn").click(function() {
         var lat = $(this).attr("data-lat");
         var lon = $(this).attr("data-lon");
         map.fitBounds([[lon,lat],[lon+0.01, lat+0.01]]);
+    });
+
+    // Click function for populations in population sidebar.
+    // Activates the heatmap overlay and sets data to the selected race
+    $(".population-btn").click(function() {
+        var race = $(this).attr("data-race");
+        window.heatmaplayer.setData(populations[race]);
+        if (!window.map.hasLayer(window.heatmaplayer)) {
+            window.map.addLayer(window.heatmaplayer);
+        }
     });
 });

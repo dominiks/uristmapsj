@@ -3,6 +3,7 @@ package org.uristmaps.data;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.lang.WordUtils;
 import org.uristmaps.Uristmaps;
 import org.uristmaps.util.BuildFiles;
 import org.uristmaps.util.ExportFiles;
@@ -48,8 +49,8 @@ public class WorldInfo {
     private static void loadNameFromHistory() {
         Log.debug("WorldInfo", "Reading population counts.");
         try (BufferedReader reader = new BufferedReader(new FileReader(ExportFiles.getWorldHistory()))) {
-            data.put("name", reader.readLine());
-            data.put("nameEnglish", reader.readLine());
+            data.put("name", WordUtils.capitalize(reader.readLine()));
+            data.put("nameEnglish", WordUtils.capitalize(reader.readLine()));
         } catch (Exception e) {
             Log.error("WorldInfo", "Could not read population info file.");
             if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);

@@ -61,4 +61,8 @@ public class OutputFiles {
         }
         return outputFiles;
     }
+
+    public static File getPopulationJs() {
+        return Paths.get(Uristmaps.conf.fetch("Paths", "output"), "js", "urist.populations.js").toFile();
+    }
 }

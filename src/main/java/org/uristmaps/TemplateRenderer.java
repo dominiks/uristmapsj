@@ -49,21 +49,13 @@ public class TemplateRenderer {
         Log.info("TemplateRenderer", "Writing index.html");
         VelocityContext context = new VelocityContext();
         Map<String, Map<String, Site>> groups = groupSites();
-        for (Map<String, Site> grp : groups.values()) {
-            for (Site site : grp.values()) {
-                if (!SiteCenters.getCenters().containsKey(site.getId())) continue;
-                site.setCoords(SiteCenters.getCenters().get(site.getId()));
-                Coord2d latlon = WorldSites.xy2LonLat(site.getCoords().X(), site.getCoords().Y());
-                site.setLat(latlon.X());
-                site.setLon(latlon.Y());
-            }
-        }
 
         context.put("sites", groups);
         context.put("conf", Uristmaps.conf);
         context.put("worldInfo", WorldInfo.getData());
         context.put("biomeLegend", getBiomeLegend());
         context.put("version", Uristmaps.VERSION);
+        context.put("populations", WorldSites.getTotalPopulation());
 
         Template uristJs = Velocity.getTemplate("templates/index.html.vm");
 

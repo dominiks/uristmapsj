@@ -1,17 +1,59 @@
-#* @vtlvariable name="conf" type="org.ini4j.Wini" *#
-
-// Global reference to the map object
-var map;
-
-// Stores the loaded json with the sites
-var sites_geojson;
-
-// UI controls
-var btn_sitelist;
 
 // Initializes the map and triggers and loads the sites.
 function init_uristmaps() {
-     // Heatmap config
+    init_heatmap();
+    init_map();
+    init_layer_controls();
+
+    // Add the already created heatmap to the new layer control
+    window.layerControl.addOverlay(window.heatmapLayer, "Population", "Overlays");
+
+    init_static_layers();
+
+    // Load the sites json containing short info for every site
+    jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
+
+    // Load the regions data
+    jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
+
+    setup_sidebars();
+};
+
+// Instantiate the map object
+function init_map() {
+    window.map = L.map('map', {layers: [window.heatmapLayer]}).setView([0, 0], 3);
+}
+
+// Instantiate the layer controls object
+function init_layer_controls() {
+    // Add the layer control widget
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["View", "Overlays"]});
+    window.layerControl.addTo(window.map);
+}
+
+// Create and configure the layers for biome view.
+function init_static_layers() {
+    window.biome_layer = L.tileLayer('/tiles/{z}/{x}/{y}.png', {
+        noWrap: true,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
+    }).addTo(window.map);
+    window.layerControl.addOverlay(window.biome_layer, "Biomes", "View");
+
+    /*
+    window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {
+        noWrap: true,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
+    });
+    */
+}
+
+// Initialize and configure the heatmap layer
+function init_heatmap() {
+    // Heatmap config
     var heatmap_cfg = {
         "radius" : 4,
         "maxOpacity":1,
@@ -22,46 +64,15 @@ function init_uristmaps() {
         "valueField": "count"
     };
 
-    var heatmapLayer = new HeatmapOverlay(heatmap_cfg);
-    window.heatmaplayer = heatmapLayer;
+    window.heatmapLayer = new HeatmapOverlay(heatmap_cfg);
+}
 
-    map = L.map('map', {layers: [heatmapLayer]}).setView([0, 0], 3);
-    L.tileLayer('/tiles/{z}/{x}/{y}.png', {
-        noWrap: true,
-        minZoom: $conf.Map.min_zoom,
-        maxZoom: $conf.Map.max_zoom,
-        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
-    }).addTo(map);
-    
-    window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {
-        noWrap: true,
-        minZoom: $conf.Map.min_zoom,
-        maxZoom: $conf.Map.max_zoom,
-        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
-    });
-    
-    window.map = map;
-
-    // Add the layer control widget
-    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays"]});
-    window.layerControl.addTo(window.map);
-    window.layerControl.addOverlay(window.heatmaplayer, "Population", "Overlays");
-
-    // Load the sites json containing short info for every site
-    jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
-    jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
-    
-    setup_sidebars();
-};
-
+// Add the sidebar on the left side
 function setup_sidebars() {
     window.sidebar = L.control.sidebar("sidebar").addTo(map);
 };
 
-/**
- * Event handler for onclick of toggle detail map button in
- * sites' tooltip.
- */
+// Event handler for onclick of toggle detail map button in sites' tooltip.
 function toggle_detailed_map(site_id) {
     var overlay = window.active_site_maps[site_id];
 
@@ -87,15 +98,13 @@ function toggle_detailed_map(site_id) {
     }
 }
 
-/**
- * When the sites json is loaded, create the cluster group for 
- * all site markers.
- */
+// When the sites json is loaded, create the cluster group for
+// all site markers.
 function process_loaded_sites(data) {
     sites_geojson = data;
     window.sites_geojson = data;
     window.active_site_maps = {};
-  
+
     // Create a cluster group to better show the site icons
     var clusters = new L.MarkerClusterGroup({
         maxClusterRadius: $conf.Map.max_cluster_radius
@@ -120,6 +129,7 @@ function process_loaded_sites(data) {
     window.layerControl.addOverlay(clusters, "Sites", "Icons");
 };
 
+// When the regions data has been loaded, add the layer to the map
 function process_loaded_regions(data) {
     sites_geojson = data;
     window.regions_geojson = data;
@@ -145,9 +155,10 @@ function process_loaded_regions(data) {
     });
 
     // Add
-    window.layercontrol.addOverlay(window.regions, "Regions", "Overlays");
+    window.layerControl.addOverlay(window.regions, "Regions", "Overlays");
 };
 
+// Add click handlers to sidebar elements
 $(function() {
     // Click function for the site names in the sites sidebar
     // moves the view to that site
@@ -161,7 +172,7 @@ $(function() {
     // Activates the heatmap overlay and sets data to the selected race
     $(".population-btn").click(function() {
         var race = $(this).attr("data-race");
-        window.heatmaplayer.setData(populations[race]);
+        window.heatmapLayer.setData(populations[race]);
         if (!window.map.hasLayer(window.heatmaplayer)) {
             window.map.addLayer(window.heatmaplayer);
         }

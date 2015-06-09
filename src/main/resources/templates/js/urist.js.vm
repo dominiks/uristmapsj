@@ -32,6 +32,10 @@ function init_uristmaps() {
     
     window.map = map;
 
+    // Add the layer control widget
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays"]});
+    window.layerControl.addTo(window.map);
+
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
     jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
@@ -131,13 +135,9 @@ function process_loaded_sites(data) {
     $.each(data.features, function(fid, feature) {
         points.addData(feature);
     });
-    window.map.addLayer(clusters);
-    
-    // Add 
-    var base_layers = {};
-    var icon_layers = {"Regions" : window.regions,
-                       "Sites": clusters};
-    L.control.layers(base_layers, icon_layers).addTo(window.map);
+
+    // Add to layer control
+    window.layerControl.addOverlay(clusters, "Sites", "Icons");
 };
 
 function process_loaded_regions(data) {
@@ -163,13 +163,11 @@ function process_loaded_regions(data) {
     $.each(data.features, function(fid, feature) {
         points.addData(feature);
     });
-    window.map.addLayer(clusters);
+    //window.map.addLayer(clusters);
 
     // Add
-    var base_layers = {};
-    var icon_layers = {"Regions" : window.regions,
-                       "Sites": clusters};
-    L.control.layers(base_layers, icon_layers).addTo(window.map);
+
+    window.layercontrol.addOverlay(window.regions, "Regions", "Overlays");
 };
 
 $(function() {

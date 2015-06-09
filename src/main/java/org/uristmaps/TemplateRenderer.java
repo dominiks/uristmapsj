@@ -55,6 +55,7 @@ public class TemplateRenderer {
         context.put("worldInfo", WorldInfo.getData());
         context.put("biomeLegend", getBiomeLegend());
         context.put("version", Uristmaps.VERSION);
+        context.put("populations", WorldSites.getTotalPopulation());
 
         Template uristJs = Velocity.getTemplate("templates/index.html.vm");
 

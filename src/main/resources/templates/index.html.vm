@@ -77,7 +77,7 @@
             </div>
 
             <div class="sidebar-pane" id="pops">
-                #parse("templates/_populations-sidebar.html.vm")<h1>Populations</h1>
+                #parse("templates/_populations-sidebar.html.vm")
             </div>
 
             <div class="sidebar-pane" id="legend">

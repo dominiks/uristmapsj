@@ -62,7 +62,12 @@ public class WorldSites {
     /**
      * DOCME
      */
-    private static HashMap<String, Integer> maxPop;
+    private static TreeMap<String, Integer> maxPop;
+
+    /**
+     * DOCME
+     */
+    private static TreeMap<String, Integer> totalPop;
 
     /**
      * DOCME
@@ -262,10 +267,19 @@ public class WorldSites {
     }
 
     /**
+     * Get the total count for all races that can be found in the world.
+     * @return
+     */
+    public static TreeMap<String, Integer> getTotalPopulation() {
+        if (totalPop == null) loadPopulationDistribution();
+        return totalPop;
+    }
+
+    /**
      * DOCME
      * @return
      */
-    public static Map<String, Integer> getPopulationCounts() {
+    public static TreeMap<String, Integer> getPopulationCounts() {
         if (maxPop == null) loadPopulationDistribution();
         return maxPop;
     }
@@ -278,7 +292,11 @@ public class WorldSites {
         popDistribution = new TreeMap<>();
 
         // Map the race name to the single biggest population count in a single site
-        maxPop = new HashMap<>();
+        maxPop = new TreeMap<>();
+
+        // Map to count the total population counts
+        totalPop = new TreeMap<>();
+
         for (Site site : sites.values()) {
 
             String raceName;
@@ -301,6 +319,11 @@ public class WorldSites {
                     popDistribution.put(raceName, new LinkedList<>());
                 }
                 popDistribution.get(raceName).add(site);
+
+                if (!totalPop.containsKey(raceName)) {
+                    totalPop.put(raceName, 0);
+                }
+                totalPop.put(raceName, totalPop.get(raceName) + entry.getValue());
             }
         }
     }

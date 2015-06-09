@@ -13,8 +13,8 @@ var btn_sitelist;
 function init_uristmaps() {
      // Heatmap config
     var heatmap_cfg = {
-        "radius" : 2,
-        "maxOpacity":.8,
+        "radius" : 4,
+        "maxOpacity":1,
         "scaleRadius": true,
         "useLocalExtrema": false,
         "latField": "lng",
@@ -43,40 +43,20 @@ function init_uristmaps() {
     window.map = map;
 
     // Add the layer control widget
-    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays", "Populations"]});
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays"]});
     window.layerControl.addTo(window.map);
-
-    // Iterate over the population info for heatmaps
-    for (var raceName in populations) {
-        console.log(raceName);
-        heatmapLayer.setData(populations[raceName]);
-        break;
-        //window.layerControl.addOverlay(heatmapLayer, raceName, "Populations");
-    }
+    window.layerControl.addOverlay(window.heatmaplayer, "Population", "Overlays");
 
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
     jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
     
     setup_sidebars();
-    init_buttons();
-};
-
-function init_buttons() {
-
 };
 
 function setup_sidebars() {
     window.sidebar = L.control.sidebar("sidebar").addTo(map);
 };
-
-function btn_sitelist_clicked() {
-    leftbar.toggle();
-}
-
-function btn_legend_clicked() {
-    rightbar.toggle();
-}
 
 /**
  * Event handler for onclick of toggle detail map button in
@@ -169,9 +149,21 @@ function process_loaded_regions(data) {
 };
 
 $(function() {
+    // Click function for the site names in the sites sidebar
+    // moves the view to that site
     $(".site-btn").click(function() {
         var lat = $(this).attr("data-lat");
         var lon = $(this).attr("data-lon");
         map.fitBounds([[lon,lat],[lon+0.01, lat+0.01]]);
+    });
+
+    // Click function for populations in population sidebar.
+    // Activates the heatmap overlay and sets data to the selected race
+    $(".population-btn").click(function() {
+        var race = $(this).attr("data-race");
+        window.heatmaplayer.setData(populations[race]);
+        if (!window.map.hasLayer(window.heatmaplayer)) {
+            window.map.addLayer(window.heatmaplayer);
+        }
     });
 });

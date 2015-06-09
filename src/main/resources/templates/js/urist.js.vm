@@ -6,10 +6,6 @@ var map;
 // Stores the loaded json with the sites
 var sites_geojson;
 
-// Sidebar objects
-var leftbar;
-var rightbar;
-
 // UI controls
 var btn_sitelist;
 
@@ -79,17 +75,7 @@ function init_buttons() {
 };
 
 function setup_sidebars() {
-    leftbar = L.control.sidebar("sidebar-left", {
-        position: "left",
-        autoPan: false,
-    });
-    rightbar = L.control.sidebar("sidebar-right", {
-        position: "right",
-        autoPan: false,
-    });
-
-    map.addControl(leftbar);
-    map.addControl(rightbar);
+    window.sidebar = L.control.sidebar("sidebar").addTo(map);
 };
 
 function btn_sitelist_clicked() {

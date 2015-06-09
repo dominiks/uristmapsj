@@ -11,11 +11,61 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by dominik on 09.06.2015.
+ * DOCME
  */
 public class Heatmaps {
 
-    static Set<String> WHITELIST = new HashSet<>(Arrays.asList("goblin", "humans", "dwarves"));
+    /**
+     * DOCME
+     */
+    static Map<String, String> nameTransform = new HashMap<>();
+
+    static {
+        nameTransform.put("Bat", "Bats");
+        nameTransform.put("Bleak Man", "Bleak Men");
+        nameTransform.put("Blind Horror", "Blind Horrors");
+        nameTransform.put("Bronze Colossus", "Bronze Colossuses");
+        nameTransform.put("Cat", "Cats");
+        nameTransform.put("Cougar", "Cougars");
+        nameTransform.put("Creature Of Twilight", "Creatures Of Twilight");
+        nameTransform.put("Cyclops", "Cyclopses");
+        nameTransform.put("Dark Creature", "Dark Creatures");
+        nameTransform.put("Dingo", "Dingoes");
+        nameTransform.put("Dingo Man", "Dingo Men");
+        nameTransform.put("Dragon", "Dragons");
+        nameTransform.put("Dusk Horror", "Dusk Horrors");
+        nameTransform.put("Dwarf", "Dwarves");
+        nameTransform.put("Elf", "Elves");
+        nameTransform.put("Ettin", "Ettins");
+        nameTransform.put("Forest Titan", "Forest Titans");
+        nameTransform.put("Giant", "Giants");
+        nameTransform.put("Giant Dingo", "Giant Dingoes");
+        nameTransform.put("Giant Jaguar", "Giant Jaguars");
+        nameTransform.put("Giant Leopard", "Giant Leopards");
+        nameTransform.put("Giant Tiger", "Giant Tigers");
+        nameTransform.put("Goblin", "Goblins");
+        nameTransform.put("Goblin Outcast", "Goblin Outcasts");
+        nameTransform.put("Grizzly Bear", "Grizzly Bears");
+        nameTransform.put("Hill Titan", "Hill Titans");
+        nameTransform.put("Human", "Humans");
+        nameTransform.put("Hydra", "Hydras");
+        nameTransform.put("Hyena Man", "Hyena Men");
+        nameTransform.put("Jaguar", "Jaguars");
+        nameTransform.put("Jungle Titan", "Jungle Titans");
+        nameTransform.put("Kobold", "Kobolds");
+        nameTransform.put("Marsh Titan", "Marsh Titans");
+        nameTransform.put("Midnight Brute", "Midnight Brutes");
+        nameTransform.put("Minotaur", "Minotaurs");
+        nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
+        nameTransform.put("Plains Titan", "Plains Titans");
+        nameTransform.put("Polar Bear", "Polar Bears");
+        nameTransform.put("Roc", "Rocs");
+        nameTransform.put("Sasquatch", "Sasquatches");
+        nameTransform.put("Tiger Man", "Tiger Men");
+        nameTransform.put("Wicked Freak", "Wicked Freaks");
+        nameTransform.put("Tundra Titan", "Tundra Titans");
+        nameTransform.put("Wicked Creature", "Wicked Creatures");
+    }
 
     public static void writePopInfo() {
         Log.info("Heatmaps", "Writing population info");
@@ -29,21 +79,27 @@ public class Heatmaps {
         // Map the race name to the single biggest population count in a single site
         Map<String, Integer> maxPop = new HashMap<>();
         for (Site site : sites.values()) {
+
+            String raceName;
             for (Map.Entry<String, Integer> entry : site.getPopulations().entrySet()) {
-                System.out.println(entry.getKey());
-                if (!WHITELIST.contains(entry.getKey().trim())) continue;
+                if (nameTransform.containsKey(entry.getKey())) {
+                    raceName = nameTransform.get(entry.getKey());
+                } else {
+                    System.err.println(entry.getKey());
+                    raceName = entry.getKey();
+                }
 
                 // Update maximum population for that race
-                if (!maxPop.containsKey(entry.getKey())) {
-                    maxPop.put(entry.getKey(), entry.getValue());
-                } else if (maxPop.get(entry.getKey()) < entry.getValue()) {
-                    maxPop.put(entry.getKey(), entry.getValue());
+                if (!maxPop.containsKey(raceName)) {
+                    maxPop.put(raceName, entry.getValue());
+                } else if (maxPop.get(raceName) < entry.getValue()) {
+                    maxPop.put(raceName, entry.getValue());
                 }
 
-                if (!popDistribution.containsKey(entry.getKey())) {
-                    popDistribution.put(entry.getKey(), new LinkedList<>());
+                if (!popDistribution.containsKey(raceName)) {
+                    popDistribution.put(raceName, new LinkedList<>());
                 }
-                popDistribution.get(entry.getKey()).add(site);
+                popDistribution.get(raceName).add(site);
             }
         }
 
@@ -58,7 +114,7 @@ public class Heatmaps {
         // Write the js data
         StringBuilder fileContent = new StringBuilder("var populations = {");
         for (String raceName : popDistribution.navigableKeySet()) {
-            fileContent.append("\"").append(raceName.trim()).append("\":{");
+            fileContent.append("\"").append(raceName).append("\":{");
             fileContent.append("max:").append(maxPop.get(raceName)).append(",data:[");
             for (Site site : popDistribution.get(raceName)) {
                 fileContent.append("{lat:").append(site.getLat());

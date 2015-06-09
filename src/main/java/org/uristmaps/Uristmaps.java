@@ -81,13 +81,18 @@ public class Uristmaps {
                 () -> WorldSites.load());
 
         executor.addTask("CompileUristJs",
-                new File[]{},
+                OutputFiles.getPopulationJs(),
                 OutputFiles.getUristJs(),
                 () -> TemplateRenderer.compileUristJs());
 
         executor.addTask(new CompileIndexTask());
 
         executor.addTask("DistResources", () -> FileCopier.distResources());
+
+        executor.addTask("PopulationHeatmaps",
+                BuildFiles.getSiteCenters(),
+                OutputFiles.getPopulationJs(),
+                () -> Heatmaps.writePopInfo());
 
         executor.addTask("WorldInfo",
                 new File[] {ExportFiles.getWorldHistory(),

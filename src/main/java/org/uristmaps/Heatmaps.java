@@ -15,6 +15,8 @@ import java.util.*;
  */
 public class Heatmaps {
 
+    static Set<String> WHITELIST = new HashSet<>(Arrays.asList("goblin", "humans", "dwarves"));
+
     public static void writePopInfo() {
         Log.info("Heatmaps", "Writing population info");
 
@@ -28,6 +30,8 @@ public class Heatmaps {
         Map<String, Integer> maxPop = new HashMap<>();
         for (Site site : sites.values()) {
             for (Map.Entry<String, Integer> entry : site.getPopulations().entrySet()) {
+                System.out.println(entry.getKey());
+                if (!WHITELIST.contains(entry.getKey().trim())) continue;
 
                 // Update maximum population for that race
                 if (!maxPop.containsKey(entry.getKey())) {
@@ -54,7 +58,7 @@ public class Heatmaps {
         // Write the js data
         StringBuilder fileContent = new StringBuilder("var populations = {");
         for (String raceName : popDistribution.navigableKeySet()) {
-            fileContent.append(raceName.trim().replace(" ", "_")).append(":{");
+            fileContent.append("\"").append(raceName.trim()).append("\":{");
             fileContent.append("max:").append(maxPop.get(raceName)).append(",data:[");
             for (Site site : popDistribution.get(raceName)) {
                 fileContent.append("{lat:").append(site.getLat());

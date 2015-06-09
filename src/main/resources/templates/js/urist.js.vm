@@ -15,7 +15,21 @@ var btn_sitelist;
 
 // Initializes the map and triggers and loads the sites.
 function init_uristmaps() {
-    map = L.map('map').setView([0, 0], 3);
+     // Heatmap config
+    var heatmap_cfg = {
+        "radius" : 2,
+        "maxOpacity":.8,
+        "scaleRadius": true,
+        "useLocalExtrema": false,
+        "latField": "lng",
+        "lngField" : "lat",
+        "valueField": "count"
+    };
+
+    var heatmapLayer = new HeatmapOverlay(heatmap_cfg);
+    window.heatmaplayer = heatmapLayer;
+
+    map = L.map('map', {layers: [heatmapLayer]}).setView([0, 0], 3);
     L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         noWrap: true,
         minZoom: $conf.Map.min_zoom,
@@ -33,8 +47,16 @@ function init_uristmaps() {
     window.map = map;
 
     // Add the layer control widget
-    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays"]});
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["Overlays", "Populations"]});
     window.layerControl.addTo(window.map);
+
+    // Iterate over the population info for heatmaps
+    for (var raceName in populations) {
+        console.log(raceName);
+        heatmapLayer.setData(populations[raceName]);
+        break;
+        //window.layerControl.addOverlay(heatmapLayer, raceName, "Populations");
+    }
 
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);

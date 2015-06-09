@@ -63,15 +63,7 @@ function init_uristmaps() {
 };
 
 function init_buttons() {
-    btn_sitelist = L.easyButton("fa-bars",
-        btn_sitelist_clicked,
-        "Show list of sites");
 
-    btn_legend = L.easyButton("fa-question-circle",
-        btn_legend_clicked,
-        "Show legend for the current overlay","");
-    btn_legend.options.position = "bottomright";
-    map.addControl(btn_legend);
 };
 
 function setup_sidebars() {
@@ -171,10 +163,8 @@ function process_loaded_regions(data) {
     $.each(data.features, function(fid, feature) {
         points.addData(feature);
     });
-    //window.map.addLayer(clusters);
 
     // Add
-
     window.layercontrol.addOverlay(window.regions, "Regions", "Overlays");
 };
 

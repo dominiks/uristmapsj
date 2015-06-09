@@ -14,38 +14,44 @@ import java.io.FileOutputStream;
 import java.util.*;
 
 /**
+ * DOCME
  */
 public class SiteCenters {
 
     private static final int MAX_SEARCH_RADIUS = 16;
+
     /**
      * Maps site types to structure objects that are associated with them.
      */
     private static Map<String, String> typeToStruct;
+
+    /**
+     * DOCME
+     */
     private static HashMap<Integer, Coord2> siteCenters;
 
     static {
         typeToStruct = new HashMap<>();
-        typeToStruct.put("hamlet", "village");
-        typeToStruct.put("dark fortress", "castle");
-        typeToStruct.put("dark pits", "castle");
-        typeToStruct.put("tomb", "castle");
-        typeToStruct.put("hillocks", "village");
-        typeToStruct.put("town", "village");
-        typeToStruct.put("forest retreat", "village");
+        typeToStruct.put("Hamlet", "Village");
+        typeToStruct.put("Dark Fortress", "Castle");
+        typeToStruct.put("Dark Pits", "Castle");
+        typeToStruct.put("Tomb", "Castle");
+        typeToStruct.put("Hillocks", "Village");
+        typeToStruct.put("Town", "Village");
+        typeToStruct.put("Forest Retreat", "Village");
     }
 
     /**
      * Update the site coordinates by centering them on the respective structure-group that is closest to them.
      */
-    public static void load() {
+    public static void load(Collection<Site> sites) {
         Set<Integer> visitedGroups = new HashSet<>();
         int groupSize = StructureGroups.getGroupIds().size();
         int [][] grps = StructureGroups.getGroupMap();
         siteCenters = new HashMap<>();
 
         // Iterate over all sites, find the closest group and move the site there.
-        for (Site site : WorldSites.getSites().values()) {
+        for (Site site : sites) {
             if (!typeToStruct.containsKey(site.getType())) continue;
             StructureGroup group = findClosestGroup(site, grps, visitedGroups);
             if (group == null) {
@@ -103,6 +109,13 @@ public class SiteCenters {
         return null;
     }
 
+    /**
+     * DOCME
+     * @param coords
+     * @param radius
+     * @param grps
+     * @return
+     */
     private static Collection<Integer> getGroupsInRing(Coord2 coords, int radius, int[][] grps) {
         int x = coords.X();
         int y = coords.Y();
@@ -126,6 +139,10 @@ public class SiteCenters {
         return foundGroups;
     }
 
+    /**
+     * DOCME
+     * @return
+     */
     public static Map<Integer, Coord2> getCenters() {
         if (siteCenters == null) {
             try (Input input = new Input(new FileInputStream(BuildFiles.getSiteCenters()))) {

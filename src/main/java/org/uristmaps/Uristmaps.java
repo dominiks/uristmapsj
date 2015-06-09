@@ -69,14 +69,15 @@ public class Uristmaps {
         executor.addTask("SitesGeojson",
                 new File[]{BuildFiles.getSitesFile(),
                            BuildFiles.getWorldFile(),
-                           BuildFiles.getSiteCenters(),
                            BuildFiles.getSitemapsIndex()},
                 OutputFiles.getSitesGeojson(),
                 () -> WorldSites.geoJson());
 
         executor.addTask("Sites",
                 new File[]{ExportFiles.getLegendsXML(),
-                           ExportFiles.getPopulationFile()},
+                           ExportFiles.getPopulationFile(),
+                           BuildFiles.getStructureGroups(),
+                           BuildFiles.getStructureGroupsDefinitions()},
                 BuildFiles.getSitesFile(),
                 () -> WorldSites.load());
 
@@ -90,9 +91,9 @@ public class Uristmaps {
         executor.addTask("DistResources", () -> FileCopier.distResources());
 
         executor.addTask("PopulationHeatmaps",
-                BuildFiles.getSiteCenters(),
+                new File[0],
                 OutputFiles.getPopulationJs(),
-                () -> Heatmaps.writePopInfo());
+                () -> Heatmaps.writePopulationsJS());
 
         executor.addTask("WorldInfo",
                 new File[] {ExportFiles.getWorldHistory(),
@@ -122,19 +123,10 @@ public class Uristmaps {
 
         executor.addTask("GroupStructures",
                 new File[] {ExportFiles.getStructuresMap(),
-                            BuildFiles.getSitesFile(),
                             BuildFiles.getWorldFile()},
                 new File[]{BuildFiles.getStructureGroups(),
                         BuildFiles.getStructureGroupsDefinitions()},
                 () -> StructureGroups.load());
-
-        executor.addTask("CenterSites",
-                new File[]{ BuildFiles.getWorldFile(),
-                            BuildFiles.getSitesFile(),
-                            BuildFiles.getStructureGroups(),
-                            BuildFiles.getStructureGroupsDefinitions()},
-                BuildFiles.getSiteCenters(),
-                () -> SiteCenters.load());
 
         executor.addTask(new FullBuildMetaTask());
 

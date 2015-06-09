@@ -1,0 +1,8 @@
+<h2>Biomes Legend</h2>
+<ul class="list-unstyled">
+    #foreach ($popName in $populations.keySet())
+    <li style="margin-bottom: 5px;">
+        <img src="$biomeLegend[$biomeName]" />$biomeName
+    </li>
+    #end
+</ul>

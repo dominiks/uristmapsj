@@ -51,12 +51,16 @@
     <div id="sidebar" class="sidebar collapsed">
         <!-- nav tabs -->
         <ul class="sidebar-tabs" role="tablist">
+            <li><a href="#world" role="tab"><i class="fa fa-globe"></i></a></li>
             <li><a href="#sites" role="tab"><i class="fa fa-home"></i></a></li>
             <li><a href="#pops" role="tab"><i class="fa fa-users"></i></a></li>
             <li><a href="#legend" role="tab"><i class="fa fa-question-circle"></i></a></li>
         </ul>
 
         <div class="sidebar-content active">
+            <div class="sidebar-pane" id="world">
+                <h1>World info</h1>
+            </div>
 
             <div class="sidebar-pane" id="sites">
                 <h1>Sites</h1>

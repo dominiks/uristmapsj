@@ -22,8 +22,8 @@
                 <exclude name="config.cfg" />
             </fileset>
         </copy>
-        <copy file="README.md" todir="${assemble}" />
-        <copy file="LICENSE" todir="${assemble}" />
+        <copy file="README.md" todir="${assemble}" overwrite="true" />
+        <copy file="LICENSE" todir="${assemble}" overwrite="true"/>
         <delete file="${assemble}/VERSION.txt" />
     </target>
 

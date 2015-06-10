@@ -6,4 +6,4 @@ SOURCE="$(readlink "$SOURCE")"
 [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-java -Xmx2048M -Dfile.encoding=UTF8 -jar ${DIR}/uristmaps.jar "$@"
+java -Xmx2048M -Dfile.encoding=UTF8 -jar "${DIR}/uristmaps.jar" "$@"

@@ -22,7 +22,7 @@
                 <exclude name="config.cfg" />
             </fileset>
         </copy>
-        <copy file="README" todir="${assemble}" />
+        <copy file="README.md" todir="${assemble}" />
         <copy file="LICENSE" todir="${assemble}" />
         <delete file="${assemble}/VERSION.txt" />
     </target>

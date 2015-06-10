@@ -1,6 +1,6 @@
 # Biomename = R,G,B
 
-arctic_ocean = 181,208,208
+arctic_ocean = 162,206,255
 badland_desert = 236,220,200
 glacier = 241,238,232
 mangrove_swamp = 214,216,158
@@ -35,7 +35,7 @@ tropical_savanna = 236,220,200
 tropical_shrubland = 181,226,181
 
 # Structures
-river = 181,208,208
+river = 162,206,255
 road = 218,156,155
 
 # Farmland around villages

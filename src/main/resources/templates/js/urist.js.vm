@@ -44,7 +44,7 @@ function init_static_layers() {
         maxZoom: $conf.Map.max_zoom,
         attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
     }).addTo(window.map);
-    window.layerControl.addOverlay(window.biome_layer, "Biomes", "View");
+    //window.layerControl.addOverlay(window.biome_layer, "Biomes", "View");
 
     /*
     window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {

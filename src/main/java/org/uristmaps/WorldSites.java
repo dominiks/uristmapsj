@@ -304,7 +304,6 @@ public class WorldSites {
                 if (nameTransform.containsKey(entry.getKey())) {
                     raceName = nameTransform.get(entry.getKey());
                 } else {
-                    System.err.println(entry.getKey());
                     raceName = entry.getKey();
                 }
 

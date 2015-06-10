@@ -74,6 +74,16 @@ public class SatRenderer extends LayerRenderer {
         // When the color table is set for this level, just draw the color and leave it.
         if (colorTable != null) {
             graphics.setColor(colorTable.get(biomeName));
+
+            // try to find a color for the structure, remove the suffix from it
+            String struct = suffixed[world.X()][world.Y()];
+            if (struct != null) {
+                if (struct.contains("_")) struct = struct.substring(0, struct.lastIndexOf("_"));
+                if (colorTable.containsKey(struct)) {
+                    graphics.setColor(colorTable.get(struct));
+                }
+            }
+
             graphics.fillRect(imageCoords.X(), imageCoords.Y(),
                     renderSettings.getGraphicsSize(), renderSettings.getGraphicsSize());
             return;

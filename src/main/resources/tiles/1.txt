@@ -34,5 +34,8 @@ tropical_saltwater_marsh = 64,255,64
 tropical_savanna = 255,176,0
 tropical_shrubland = 255,192,0
 
+river = 0,137,255
+road = 101,55,30
+
 # Small spots on black background
 tundra = 128,255,255

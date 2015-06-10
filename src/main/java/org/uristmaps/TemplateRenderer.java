@@ -2,6 +2,7 @@ package org.uristmaps;
 
 import com.esotericsoftware.minlog.Log;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -9,6 +10,7 @@ import org.uristmaps.data.Coord2;
 import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
+import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
@@ -52,7 +54,7 @@ public class TemplateRenderer {
 
         context.put("sites", groups);
         context.put("conf", Uristmaps.conf);
-        context.put("worldInfo", WorldInfo.getData());
+        context.put("worldInfo", WorldInfo.class);
         context.put("biomeLegend", getBiomeLegend());
         context.put("version", Uristmaps.VERSION);
         context.put("populations", WorldSites.getTotalPopulation());
@@ -84,13 +86,13 @@ public class TemplateRenderer {
             String biomeName = FilenameUtils.removeExtension(tileFile.getName());
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
                     || biomeName.startsWith("river") || biomeName.startsWith("wall")
-                    || biomeName.startsWith("road")) {
+                    || biomeName.startsWith("road") || biomeName.startsWith("tunnel")) {
                 Log.trace("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
                 continue;
             }
 
             // Add icon under the biome name to the result map.
-            result.put(biomeName, "biome_legend/" + tileFile.getName().replace(" ", "_"));
+            result.put(WordUtils.capitalize(biomeName.replace("_", " ")), "biome_legend/" + tileFile.getName().replace(" ", "_"));
         }
 
         return result;

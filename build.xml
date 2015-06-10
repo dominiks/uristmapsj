@@ -17,7 +17,7 @@
     </target>
 
     <target name="copy_res" description="copy resources to build dir">
-        <copy todir="${assemble}">
+        <copy todir="${assemble}" overwrite="true">
             <fileset dir="${src}/main/resources/">
                 <exclude name="config.cfg" />
             </fileset>

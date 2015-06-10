@@ -1,14 +1,19 @@
 
 // Initializes the map and triggers and loads the sites.
 function init_uristmaps() {
+    // The heatmap has to be created before the map, as it has to be added
+    // to the map as a default view.
     init_heatmap();
     init_map();
     init_layer_controls();
 
-    // Add the already created heatmap to the new layer control
-    window.layerControl.addOverlay(window.heatmapLayer, "Population", "Overlays");
+    // Remove the heatmap layer again
+    window.map.removeLayer(window.heatmapLayer);
 
     init_static_layers();
+
+    // Add the already created heatmap to the new layer control
+    window.layerControl.addOverlay(window.heatmapLayer, "Population", "Overlays");
 
     // Load the sites json containing short info for every site
     jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
@@ -27,7 +32,7 @@ function init_map() {
 // Instantiate the layer controls object
 function init_layer_controls() {
     // Add the layer control widget
-    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["View", "Overlays"]});
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["View"]});
     window.layerControl.addTo(window.map);
 }
 
@@ -172,9 +177,9 @@ $(function() {
     // Activates the heatmap overlay and sets data to the selected race
     $(".population-btn").click(function() {
         var race = $(this).attr("data-race");
-        window.heatmapLayer.setData(populations[race]);
-        if (!window.map.hasLayer(window.heatmaplayer)) {
-            window.map.addLayer(window.heatmaplayer);
+        if (!window.map.hasLayer(window.heatmapLayer)) {
+            window.map.addLayer(window.heatmapLayer);
         }
+        window.heatmapLayer.setData(populations[race]);
     });
 });

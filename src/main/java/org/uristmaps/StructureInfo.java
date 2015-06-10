@@ -34,10 +34,13 @@ public class StructureInfo {
         colorTranslation.put(makeColor(255, 192,   0), "crops");
         colorTranslation.put(makeColor( 0,  255,   0), "pasture");
         colorTranslation.put(makeColor( 64, 255,   0), "meadow");
+        colorTranslation.put(makeColor(  0, 128,   0), "woodland");
         colorTranslation.put(makeColor(  0, 160,   0), "orchard");
         colorTranslation.put(makeColor( 20,  20,  20), "tunnel");
+        // TODO: Render bridges!
         colorTranslation.put(makeColor(224, 224, 224), "stone_bridge");
         colorTranslation.put(makeColor(180, 167,  20), "other_bridge");
+
         colorTranslation.put(makeColor(192, 192, 192), "road");  // stone_road
         colorTranslation.put(makeColor(150, 127,  20), "road");  // other_road
         colorTranslation.put(makeColor( 96,  96,  96), "stone_wall");

@@ -34,8 +34,18 @@ tropical_saltwater_marsh = 214,216,158
 tropical_savanna = 236,220,200
 tropical_shrubland = 181,226,181
 
+# Structures
 river = 181,208,208
 road = 218,156,155
+
+# Farmland around villages
+orchard = 237,221,201
+meadow = 237,221,201
+pasture= 237,221,201
+crops = 237,221,201
+woodland = 160,206,133
+village = 204,204,204
+
 
 # Small spots on black background
 tundra = 241,238,232

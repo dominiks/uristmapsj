@@ -19,7 +19,7 @@ public class FileCopier {
 
         try {
             copyFilesOfDirTo(new File("res"), new File((Uristmaps.conf.fetch("Paths", "output"))));
-            FileUtils.copyDirectory(new File(Uristmaps.conf.fetch("Paths", "tiles"), "32"),
+            FileUtils.copyDirectory(new File(Uristmaps.conf.fetch("Paths", "tiles"), "16"),
                     new File(Uristmaps.conf.fetch("Paths", "output"), "biome_legend"));
         } catch (IOException e) {
             Log.error("FileCopier", "Failed to copy the files: " + e.getMessage());

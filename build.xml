@@ -30,7 +30,7 @@
     <target name="dist" depends="copy_res"
             description="generate the distribution" >
         <!-- Create the distribution directory -->
-        <zip zipfile="${dist}/uristmaps-${version}.zip"
+        <zip zipfile="${dist}/uristmaps.zip"
                 basedir="${assemble}"/>
 
     </target>

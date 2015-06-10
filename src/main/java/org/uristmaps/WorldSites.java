@@ -358,7 +358,7 @@ public class WorldSites {
             props.put("name", site.getName());
             props.put("type", site.getType());
             props.put("id", site.getId());
-            props.put("img", String.format("/icons/%s.png", site.getType().replace(" ", "_")));
+            props.put("img", String.format("/icons/%s.png", site.getType().replace(" ", "_").toLowerCase()));
 
             // Configure detailed map (if available)
             if (sitemaps.containsKey(site.getId())) {

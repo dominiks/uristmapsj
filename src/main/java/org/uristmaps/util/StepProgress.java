@@ -8,29 +8,9 @@ import com.esotericsoftware.minlog.Log;
 public class StepProgress extends Progress {
 
     /**
-     * The maximum value of work units.
-     */
-    private int max;
-
-    /**
-     * The current worked units.
-     */
-    private int current;
-
-    /**
      * At which percentage step the progress will report.
      */
     private int step;
-
-    /**
-     * The category to log as.
-     */
-    private String category;
-
-    /**
-     * The log level to use.
-     */
-    private int loglevel;
 
     /**
      * When the last call of show() was.

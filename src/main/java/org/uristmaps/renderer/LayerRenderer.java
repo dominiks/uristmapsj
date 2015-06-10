@@ -6,6 +6,7 @@ import org.uristmaps.data.Coord2;
 import org.uristmaps.data.Coord2Mutable;
 import org.uristmaps.data.RenderSettings;
 import org.uristmaps.util.Progress;
+import org.uristmaps.util.StepProgress;
 import org.uristmaps.util.UnitProgress;
 
 import javax.imageio.ImageIO;
@@ -125,7 +126,8 @@ public abstract class LayerRenderer {
         Log.info(getName(), String.format("Rendering zoom level %d using %dpx sized graphics (%d cols).",
                 level,  renderSettings.getGraphicsSize(), (int)Math.pow(2, level)));
 
-        Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
+        //Progress prog = new UnitProgress((int) Math.pow(2, level), 1, getName());
+        Progress prog = new StepProgress((int) Math.pow(2, level), 1, getName());
 
         int poolsize = Uristmaps.conf.get("App", "processes", Integer.class);
 

@@ -1,8 +1,8 @@
 <h2>Biomes Legend</h2>
 <ul class="list-unstyled">
     #foreach ($biomeName in $biomeLegend.keySet())
-    <li style="margin-bottom: 5px;">
-        <img src="$biomeLegend[$biomeName]" />$biomeName
+    <li style="margin-bottom: 5px; border: 1px solid #c9c9c9">
+        <img src="$biomeLegend[$biomeName]" /> &nbsp;$biomeName
     </li>
     #end
 </ul>

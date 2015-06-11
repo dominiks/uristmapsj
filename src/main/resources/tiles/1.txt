@@ -39,6 +39,7 @@ river = 162,206,255
 road = 218,156,155
 
 # Farmland around villages
+farmland = 237,221,201
 orchard = 237,221,201
 meadow = 237,221,201
 pasture= 237,221,201

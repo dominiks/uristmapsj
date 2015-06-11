@@ -17,25 +17,43 @@ import static org.uristmaps.util.Util.makeColor;
  */
 public class StructureInfo {
 
+    /**
+     * DOCME
+     */
     private static Map<Integer, String> colorTranslation;
+
+    /**
+     * DOCME
+     */
     private static Map<Integer, String> hydroColors;
 
+    /**
+     * DOCME
+     */
     private static BufferedImage structImage;
+
+    /**
+     * DOCME
+     */
     private static BufferedImage hydroImage;
 
+    /**
+     * DOCME
+     */
     private static String[][] structures;
 
     static {
         colorTranslation = new HashMap<>();
         colorTranslation.put(makeColor(128, 128, 128), "castle");
         colorTranslation.put(makeColor(255, 255, 255), "village");
-        colorTranslation.put(makeColor(255, 128,   0), "crops");
-        colorTranslation.put(makeColor(255, 160,   0), "crops");
-        colorTranslation.put(makeColor(255, 192,   0), "crops");
-        colorTranslation.put(makeColor( 0,  255,   0), "pasture");
-        colorTranslation.put(makeColor( 64, 255,   0), "meadow");
-        colorTranslation.put(makeColor(  0, 128,   0), "woodland");
-        colorTranslation.put(makeColor(  0, 160,   0), "orchard");
+        colorTranslation.put(makeColor(255, 128,   0), "farmland"); // crops
+        colorTranslation.put(makeColor(255, 160,   0), "farmland"); // crops
+        colorTranslation.put(makeColor(255, 192,   0), "farmland"); // crops
+        colorTranslation.put(makeColor( 0,  255,   0), "farmland"); // pasture
+        colorTranslation.put(makeColor( 64, 255,   0), "farmland"); // meadow
+        colorTranslation.put(makeColor(  0, 128,   0), "farmland"); // woodland
+        colorTranslation.put(makeColor(  0, 160,   0), "farmland"); // orchard
+
         colorTranslation.put(makeColor( 20,  20,  20), "tunnel");
         // TODO: Render bridges!
         colorTranslation.put(makeColor(224, 224, 224), "stone_bridge");

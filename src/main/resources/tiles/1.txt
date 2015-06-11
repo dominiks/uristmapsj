@@ -18,7 +18,7 @@ temperate_ocean =162,206,255
 temperate_saltwater_lake = 162,206,255
 temperate_saltwater_marsh = 214,216,158
 temperate_saltwater_swamp = 214,216,158
-temperate_savanna = 236,220,200
+temperate_savanna = 181,226,181
 temperate_shrubland = 181,226,181
 tropical_brackish_lake = 162,206,255
 tropical_conifer_forest = 160,206,133
@@ -31,7 +31,7 @@ tropical_moist_broadleaf_forest = 160,206,133
 tropical_ocean = 162,206,255
 tropical_saltwater_lake = 162,206,255
 tropical_saltwater_marsh = 214,216,158
-tropical_savanna = 236,220,200
+tropical_savanna = 181,226,181
 tropical_shrubland = 181,226,181
 
 # Structures

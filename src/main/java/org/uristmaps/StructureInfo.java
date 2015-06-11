@@ -135,6 +135,10 @@ public class StructureInfo {
                     suffix.append("e");
                 }
 
+                // TODO: Let roads connect to bridges
+
+                // TODO: Find orientation for bridges
+
                 // Remove the _ at the end if no suffixes were added.
                 if (suffix.charAt(suffix.length()-1) == '_') suffix.deleteCharAt(suffix.length()-1);
                 structures[x][y] = suffix.toString();

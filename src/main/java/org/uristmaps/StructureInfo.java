@@ -135,6 +135,8 @@ public class StructureInfo {
                     suffix.append("e");
                 }
 
+                // TODO: Tunnel orientation/connection seems completely broken
+
                 // TODO: Let roads connect to bridges
 
                 // TODO: Find orientation for bridges

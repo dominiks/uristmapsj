@@ -37,6 +37,7 @@ tropical_shrubland = 181,226,181
 # Structures
 river = 162,206,255
 road = 218,156,155
+tunnel =  207,207,207
 
 # Farmland around villages
 farmland = 237,221,201

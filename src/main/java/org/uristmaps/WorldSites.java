@@ -371,6 +371,7 @@ public class WorldSites {
                 Coord2d northEast = xy2LonLat(east, north);
                 props.put("map_bounds", new double[][] {{southWest.Y(), southWest.X()},
                                                         {northEast.Y(), northEast.X()}});
+
             }
             context.put("site", site);
             context.put("sitemap", sitemaps.get(site.getId()));

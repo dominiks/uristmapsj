@@ -36,7 +36,7 @@ public class StructureGroups {
 
     static {
         structBlacklist = new HashSet<>(Arrays.asList(
-                "river", "meadow", "crops", "orchard", "pasture", "road"
+                "river", "meadow", "crops", "orchard", "pasture", "road", "tunnel", "bridge", "farmland"
         ));
     }
 
@@ -91,18 +91,19 @@ public class StructureGroups {
                 toVisit.add(new Coord2(x+1,   y));
                 toVisit.add(new Coord2(x  , y+1));
                 toVisit.add(new Coord2(x+1, y+1));
+                toVisit.add(new Coord2(x-1, y+1));
                 while (!toVisit.isEmpty()) {
                     checkCoord = toVisit.pop();
                     cX = checkCoord.X();
                     cY = checkCoord.Y();
                     visited[cX][cY] = true;
                     int i = groupMap[cX][cY];
-                    if (i == 0) continue; // Allready added to a group
+                    if (i > 0) continue; // Already added to a group
 
                     // nothing there
                     String struct = StructureInfo.getData(cX, cY);
-                    if (struct != null
-                            && StructureInfo.getData(cX, cY).equalsIgnoreCase(currentType)) continue;
+                    if (struct == null) continue;
+                    if (!struct.equalsIgnoreCase(currentType)) continue;
 
                     // Add this tile to the group
                     groupMap[cX][cY] = currentGrp;

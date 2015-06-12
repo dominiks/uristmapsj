@@ -182,4 +182,7 @@ $(function() {
         }
         window.heatmapLayer.setData(populations[race]);
     });
+
+    // Add sorting to all tables supporting that
+    $(".tablesorter").tablesorter();
 });

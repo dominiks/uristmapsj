@@ -180,4 +180,14 @@ public class WorldInfo {
         if (data == null) loadData();
         return Integer.parseInt(data.get("timestamp").split("-")[2]) + "";
     }
+
+    public static String getDaySuffixed() {
+        if (data == null) loadData();
+        String suffix = "th";
+        String day = getDay();
+        if (day.endsWith("1")) suffix = "st";
+        if (day.endsWith("2")) suffix = "nd";
+        if (day.endsWith("3")) suffix = "rd";
+        return day + suffix;
+    }
 }

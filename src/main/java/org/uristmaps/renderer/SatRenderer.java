@@ -5,7 +5,6 @@ import org.uristmaps.StructureInfo;
 import org.uristmaps.Tilesets;
 import org.uristmaps.data.Coord2;
 import org.uristmaps.data.RenderSettings;
-import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.BuildFiles;
 
 import java.awt.*;

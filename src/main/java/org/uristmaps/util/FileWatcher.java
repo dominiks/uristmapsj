@@ -3,8 +3,8 @@ package org.uristmaps.util;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
-import org.uristmaps.data.FileInfo;
 import org.uristmaps.Uristmaps;
+import org.uristmaps.data.FileInfo;
 
 import java.io.File;
 import java.io.FileInputStream;

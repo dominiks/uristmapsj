@@ -1,7 +1,5 @@
 package org.uristmaps.data;
 
-import org.uristmaps.Uristmaps;
-
 /**
  * Created by schacht on 26.05.15.
  */

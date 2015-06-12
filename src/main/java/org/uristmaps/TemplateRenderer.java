@@ -6,11 +6,8 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
-import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
 
 import java.io.File;

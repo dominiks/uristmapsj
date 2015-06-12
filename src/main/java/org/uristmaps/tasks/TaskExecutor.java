@@ -1,7 +1,6 @@
 package org.uristmaps.tasks;
 
 import com.esotericsoftware.minlog.Log;
-import org.apache.commons.lang.StringUtils;
 import org.uristmaps.TaskGroup;
 import org.uristmaps.Uristmaps;
 

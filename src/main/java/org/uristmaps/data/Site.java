@@ -1,6 +1,5 @@
 package org.uristmaps.data;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 
 import java.util.HashMap;

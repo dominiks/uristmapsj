@@ -1,7 +1,3 @@
 <h2 class="text-center">$worldInfo.getWorldName()</h2>
 <h2 class="text-center">$worldInfo.getNameEnglish()</h2>
-<h4 class="text-center">On the
-    $worldInfo.getDaySuffixed() of $worldInfo.getMonthName() in $worldInfo.getYear()</h4>
-
-Here could be some more info about this world. But what would be interesting enough
-to be placed here - in text?
+<h4 class="text-center">On the $worldInfo.getDaySuffixed() of $worldInfo.getMonthName() in $worldInfo.getYear()</h4>

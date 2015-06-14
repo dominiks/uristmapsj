@@ -1,2 +1,2 @@
 #!/bin/bash
-sh uristmaps.sh host
+java -Xmx2048M -Dfile.encoding=UTF8 -jar "uristmaps.jar" "$@"

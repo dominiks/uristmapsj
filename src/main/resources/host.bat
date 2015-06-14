@@ -1,2 +1,1 @@
 uristmaps.bat host
-PAUSE

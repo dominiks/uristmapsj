@@ -1,0 +1,29 @@
+<h4>$site.name <small>$site.type</small></h4>
+#if ($site.owner)Owner: $site.owner<br />#end
+
+
+Coordinates:
+#if ($site.coordsAccurate)
+    $site.coords
+#else
+<u><i title="These coordinates are an approximation" data-toggle="tooltip">
+    $site.coords
+</i></u>#end
+<br />
+#if ($sitemap)
+<div>
+    <button class="btn btn-default btn-xs pull-right btn-detail-map"
+            onclick="toggle_detailed_map($site.id)" data-site="$site.id">
+        Detail Map</button>
+</div>
+#end
+
+
+#if (!$site.populations.isEmpty)
+<hr class="clearfix" style="margin-top: 1em;"/>
+<h5>Population</h5>
+#foreach($popvalue in $site.getSortedPopulations().descendingKeySet())
+    $popvalue $site.getSortedPopulations()[$popvalue]<br />
+#end
+
+#end

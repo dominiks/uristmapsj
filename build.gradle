@@ -1,14 +1,48 @@
 group 'org.uristmaps'
-version '0.1-SNAPSHOT'
+version '0.3'
 
 apply plugin: 'java'
-
-sourceCompatibility = 1.5
+apply plugin: 'idea'
 
 repositories {
     mavenCentral()
 }
 
+apply from: 'https://raw.github.com/akhikhl/gradle-onejar/master/pluginScripts/gradle-onejar.plugin'
+ext {
+    mainClass = "org.uristmaps.Uristmaps"
+}
+
+onejar {
+    product name: "uristmaps", launchers: []
+    jvmMaxMemory "2048M"
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude "fonts/"
+            exclude "res/"
+            exclude "config.cfg*"
+            exclude "templates"
+            exclude "tiles"
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "org.uristmaps.Uristmaps"
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: "org.apache.velocity", name: "velocity", version: "1.7"
+    compile group: "commons-io", name: "commons-io", version: "2.4"
+    compile group: "org.ini4j", name: "ini4j", version:"0.5.4"
+    compile group: "com.esotericsoftware", name:"kryo", version:"3.0.1"
+    compile group: "com.sparkjava", name: "spark-core", version: "2.2"
+    compile group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.6.0-rc1"
+    compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.6.0-rc1"
 }

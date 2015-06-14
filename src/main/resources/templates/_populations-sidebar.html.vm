@@ -1,0 +1,18 @@
+<h2>Populations</h2>
+
+<p>Click a group name to activate a heatmap overlay showing the distribution.</p>
+
+<table class="table table-condensed tablesorter">
+    <thead>
+        <tr><th>Group</th><th>Total size</th></tr>
+    </thead>
+    <tbody>
+        #foreach ($popName in $populations.keySet())
+        <tr>
+            <td><button class="btn btn-link btn-xs population-btn"
+                    data-race="$popName">$popName</button></td>
+            <td>$populations[$popName]</td>
+        </tr>
+        #end
+    </tbody>
+</table>

@@ -5,7 +5,6 @@ package org.uristmaps.data;
  */
 public class RenderSettings {
 
-
     private final long scaledWorldSize;
     private final int graphicTilesPerBlock;
 
@@ -22,18 +21,18 @@ public class RenderSettings {
     private int graphicsSize;
     private int clearTiles;
 
-    public RenderSettings(int level, WorldInfo worldInfo) {
+    public RenderSettings(int level) {
         this.level = level;
 
-        initZoomOffset(worldInfo.getSize());
+        initZoomOffset(WorldInfo.getSize());
 
-        graphicsSize = 2 ^ level - zoomOffset;
+        graphicsSize = (int) Math.pow(2,(level - zoomOffset));
 
         initStepSize();
-        scaledWorldSize = worldInfo.getSize() / stepSize;
+        scaledWorldSize = WorldInfo.getSize() / stepSize;
 
         // Calculate how many tiles are clear left&top of the render to center the world on the map.
-        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - worldInfo.getSize();
+        clearTiles = 256 * (int)(Math.pow(2, zoomOffset)) - WorldInfo.getSize();
         clearTiles /= stepSize;
         clearTiles /= 2;
 
@@ -52,8 +51,8 @@ public class RenderSettings {
          When the word does not fit into the renderer at 1px steps,
          double the step size until it does.
           */
-        if (zoomOffset == 0) {
-            stepSize = 2 ^ zoomOffset - level;
+        if (graphicsSize == 0) {
+            stepSize = (int) Math.pow(2, zoomOffset - level);
             graphicsSize = 1;
         }
     }

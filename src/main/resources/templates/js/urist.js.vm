@@ -1,0 +1,188 @@
+
+// Initializes the map and triggers and loads the sites.
+function init_uristmaps() {
+    // The heatmap has to be created before the map, as it has to be added
+    // to the map as a default view.
+    init_heatmap();
+    init_map();
+    init_layer_controls();
+
+    // Remove the heatmap layer again
+    window.map.removeLayer(window.heatmapLayer);
+
+    init_static_layers();
+
+    // Add the already created heatmap to the new layer control
+    window.layerControl.addOverlay(window.heatmapLayer, "Population", "Overlays");
+
+    // Load the sites json containing short info for every site
+    jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
+
+    // Load the regions data
+    jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
+
+    setup_sidebars();
+};
+
+// Instantiate the map object
+function init_map() {
+    window.map = L.map('map', {layers: [window.heatmapLayer]}).setView([0, 0], 3);
+}
+
+// Instantiate the layer controls object
+function init_layer_controls() {
+    // Add the layer control widget
+    window.layerControl = L.control.groupedLayers({}, {}, {exclusiveGroups: ["View"]});
+    window.layerControl.addTo(window.map);
+}
+
+// Create and configure the layers for biome view.
+function init_static_layers() {
+    window.biome_layer = L.tileLayer('/tiles/{z}/{x}/{y}.png', {
+        noWrap: true,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
+    }).addTo(window.map);
+    //window.layerControl.addOverlay(window.biome_layer, "Biomes", "View");
+
+    /*
+    window.regions = L.tileLayer('/regions/{z}/{x}/{y}.png', {
+        noWrap: true,
+        minZoom: $conf.Map.min_zoom,
+        maxZoom: $conf.Map.max_zoom,
+        attribution: "<a href='http://www.uristmaps.org/'>UristMaps $version</a>",
+    });
+    */
+}
+
+// Initialize and configure the heatmap layer
+function init_heatmap() {
+    // Heatmap config
+    var heatmap_cfg = {
+        "radius" : 4,
+        "maxOpacity":1,
+        "scaleRadius": true,
+        "useLocalExtrema": false,
+        "latField": "lng",
+        "lngField" : "lat",
+        "valueField": "count"
+    };
+
+    window.heatmapLayer = new HeatmapOverlay(heatmap_cfg);
+}
+
+// Add the sidebar on the left side
+function setup_sidebars() {
+    window.sidebar = L.control.sidebar("sidebar").addTo(map);
+};
+
+// Event handler for onclick of toggle detail map button in sites' tooltip.
+function toggle_detailed_map(site_id) {
+    var overlay = window.active_site_maps[site_id];
+
+    // When the overlay was active, remove it
+    if (overlay != undefined) {
+        window.map.removeLayer(overlay);
+        window.active_site_maps[site_id] = null;
+    } else {
+        // Create the overlay and add it to active_site_maps
+        var image_url = "/sites/" + site_id + ".png";
+
+        // the .features object is a list in which the index is resolved as id-1
+        for (var i = 0; i < window.sites_geojson.features.length; i++) {
+            var site = window.sites_geojson.features[i];
+            if (site.properties.id != site_id) {
+                continue;
+            }
+            var overlay = L.imageOverlay(image_url, site.properties.map_bounds);
+            window.active_site_maps[site_id] = overlay;
+            overlay.addTo(window.map);
+            break;
+        }
+    }
+}
+
+// When the sites json is loaded, create the cluster group for
+// all site markers.
+function process_loaded_sites(data) {
+    sites_geojson = data;
+    window.sites_geojson = data;
+    window.active_site_maps = {};
+
+    // Create a cluster group to better show the site icons
+    var clusters = new L.MarkerClusterGroup({
+        maxClusterRadius: $conf.Map.max_cluster_radius
+    });
+
+    // Convert geojson info to clustered markers
+    var points = L.geoJson(null, {
+        pointToLayer: function (feature, latlng) {
+            var marker = L.marker(latlng, {icon: get_icon(feature.properties.img)});
+            if (feature.properties && feature.properties.popupContent) {
+                marker.bindPopup(feature.properties.popupContent);
+            }
+            clusters.addLayer(marker);
+            return clusters;
+        }
+    });
+    $.each(data.features, function(fid, feature) {
+        points.addData(feature);
+    });
+
+    // Add to layer control
+    window.layerControl.addOverlay(clusters, "Sites", "Icons");
+};
+
+// When the regions data has been loaded, add the layer to the map
+function process_loaded_regions(data) {
+    sites_geojson = data;
+    window.regions_geojson = data;
+
+    // Create a cluster group to better show the site icons
+    var clusters = new L.MarkerClusterGroup({
+        maxClusterRadius: $conf.Map.max_cluster_radius
+    });
+
+    // Convert geojson info to clustered markers
+    var points = L.geoJson(null, {
+        pointToLayer: function (feature, latlng) {
+            var marker = L.marker(latlng, {icon: get_icon(feature.properties.img)});
+            if (feature.properties && feature.properties.popupContent) {
+                marker.bindPopup(feature.properties.popupContent);
+            }
+            clusters.addLayer(marker);
+            return clusters;
+        }
+    });
+    $.each(data.features, function(fid, feature) {
+        points.addData(feature);
+    });
+
+    // Add
+    window.layerControl.addOverlay(window.regions, "Regions", "Overlays");
+};
+
+// Add click handlers to sidebar elements
+$(function() {
+    // Click function for the site names in the sites sidebar
+    // moves the view to that site
+    $(".site-btn").click(function() {
+        var lat = $(this).attr("data-lat");
+        var lon = $(this).attr("data-lon");
+        map.fitBounds([[lon,lat],[lon+0.01, lat+0.01]]);
+    });
+
+    // Click function for populations in population sidebar.
+    // Activates the heatmap overlay and sets data to the selected race
+    $(".population-btn").click(function() {
+        var race = $(this).attr("data-race");
+        if (!window.map.hasLayer(window.heatmapLayer)) {
+            window.map.addLayer(window.heatmapLayer);
+        }
+        window.heatmapLayer.setData(populations[race]);
+    });
+
+    // Add sorting to all tables supporting that
+    $(".tablesorter").tablesorter();
+});

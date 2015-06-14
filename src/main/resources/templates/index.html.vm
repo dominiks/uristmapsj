@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <link href="/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/leaflet.css" type="text/css">
+        <link rel="stylesheet" href="/css/MarkerCluster.Default.css" type="text/css">
+        <link rel="stylesheet" href="/css/MarkerCluster.css" type="text/css">
+        <link rel="stylesheet" href="/css/leaflet-sidebar.min.css" type="text/css">
+        <link rel="stylesheet" href="/css/urist.css" type="text/css">
+        <link rel="stylesheet" href="/css/leaflet.groupedlayercontrol.min.css" type="text/css" />
+        
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .leaflet-container {
+            background: white;
+        }
+        .map {
+            height: 100vh;
+            width: 100%;
+        }
+        </style>
+
+        <!-- Everyone needs it, so here it is -->
+        <script src="/js/jquery.js" type="text/javascript"></script>
+        <script src="/js/jquery.tablesorter.min.js" type="text/javascript"></script>
+
+        <!-- Oh all the bootstrap -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="/js/bootstrap.min.js"></script>
+
+        <script src="/js/leaflet.js" type="text/javascript"></script>
+        <script src="/js/leaflet-sidebar.min.js" type="text/javascript"></script>
+        <script src="/js/heatmap.min.js" type="text/javascript"></script>
+        <script src="/js/leaflet-heatmap.js" type="text/javascript"></script>
+        <script src="/js/leaflet.markercluster.js" type="text/javascript"></script>
+        <script src="/js/easy-button.js" type="text/javascript"></script>
+        <script src="/js/leaflet.groupedlayercontrol.min.js" type="text/javascript"></script>
+        <script src="/js/icons.js" type="text/javascript"></script>
+        <script src="/js/urist.populations.js" type="text/javascript"></script>
+        <script src="/js/urist.js" type="text/javascript"></script>
+        
+        <title>$worldInfo.getWorldName() - $worldInfo.getNameEnglish()</title>
+    </head>
+    <body>
+    <div id="sidebar" class="sidebar collapsed">
+        <!-- nav tabs -->
+        <ul class="sidebar-tabs" role="tablist">
+            <li><a href="#world" role="tab"><i class="fa fa-globe"></i></a></li>
+            <li><a href="#sites" role="tab"><i class="fa fa-home"></i></a></li>
+            <li><a href="#pops" role="tab"><i class="fa fa-users"></i></a></li>
+            <li><a href="#legend" role="tab"><i class="fa fa-question-circle"></i></a></li>
+        </ul>
+
+        <div class="sidebar-content active">
+            <div class="sidebar-pane" id="world">
+                #parse("templates/_world-info.html.vm")
+            </div>
+
+            <div class="sidebar-pane" id="sites">
+                #parse("templates/_site-sidebar.html.vm")
+            </div>
+
+            <div class="sidebar-pane" id="pops">
+                #parse("templates/_populations-sidebar.html.vm")
+            </div>
+
+            <div class="sidebar-pane" id="legend">
+                #parse("templates/_biome-legend.html.vm")
+            </div>
+        </div>
+
+    </div>
+
+    <div id="map" class="map"></div>
+
+    <script type="text/javascript">
+        $(function() {
+            var urist_version = "$version";
+            init_uristmaps();
+        });
+            
+    </script>
+
+    $conf.Output.footer
+    </body>
+</html>

@@ -1,0 +1,43 @@
+<project name="uristmaps" default="dist" basedir=".">
+    <description>
+        buildfile to create distributable package
+    </description>
+    <!-- set global properties for this build -->
+    <property name="version" value="0.3" />
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist" />
+    <property name="assemble" location="${build}/output/uristmaps-${version}/" />
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="copy_res" description="copy resources to build dir">
+        <copy todir="${assemble}" overwrite="true">
+            <fileset dir="${src}/main/resources/">
+                <exclude name="config.cfg" />
+            </fileset>
+        </copy>
+        <copy file="README.md" todir="${assemble}" overwrite="true" />
+        <copy file="LICENSE" todir="${assemble}" overwrite="true"/>
+        <delete file="${assemble}/VERSION.txt" />
+    </target>
+
+    <target name="dist" depends="copy_res"
+            description="generate the distribution" >
+        <!-- Create the distribution directory -->
+        <zip zipfile="${dist}/uristmaps.zip"
+                basedir="${assemble}"/>
+
+    </target>
+
+    <target name="clean"
+            description="clean up" >
+        <!-- Delete the ${build} and ${dist} directory trees -->
+
+    </target>
+</project>

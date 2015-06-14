@@ -1,0 +1,53 @@
+# Biomename = R,G,B
+
+arctic_ocean = 162,206,255
+badland_desert = 236,220,200
+glacier = 241,238,232
+mangrove_swamp = 214,216,158
+mountain = 224,222,216
+rock_desert = 236,220,200
+sand_desert = 236,220,200
+taiga_forest = 160,206,133
+temperate_brackish_lake = 181,208,208
+temperate_conifer_forest = 160,206,133
+temperate_freshwater_lake = 162,206,255
+temperate_freshwater_marsh = 214,216,158
+temperate_freshwater_swamp = 214,216,158
+temperate_grassland = 181,226,181
+temperate_ocean =162,206,255
+temperate_saltwater_lake = 162,206,255
+temperate_saltwater_marsh = 214,216,158
+temperate_saltwater_swamp = 214,216,158
+temperate_savanna = 181,226,181
+temperate_shrubland = 181,226,181
+tropical_brackish_lake = 162,206,255
+tropical_conifer_forest = 160,206,133
+tropical_dry_broadleaf_forest = 160,206,133
+tropical_freshwater_lake = 162,206,255
+tropical_freshwater_marsh = 214,216,158
+tropical_freshwater_swamp = 214,216,158
+tropical_grassland = 181,226,181
+tropical_moist_broadleaf_forest = 160,206,133
+tropical_ocean = 162,206,255
+tropical_saltwater_lake = 162,206,255
+tropical_saltwater_marsh = 214,216,158
+tropical_savanna = 181,226,181
+tropical_shrubland = 181,226,181
+
+# Structures
+river = 162,206,255
+road = 218,156,155
+tunnel =  207,207,207
+
+# Farmland around villages
+farmland = 237,221,201
+orchard = 237,221,201
+meadow = 237,221,201
+pasture= 237,221,201
+crops = 237,221,201
+woodland = 160,206,133
+village = 204,204,204
+
+
+# Small spots on black background
+tundra = 241,238,232

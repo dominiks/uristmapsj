@@ -1,0 +1,2 @@
+uristmaps.bat host
+PAUSE

@@ -52,7 +52,14 @@ public class TemplateRenderer {
         context.put("sites", groups);
         context.put("conf", Uristmaps.conf);
         context.put("worldInfo", WorldInfo.class);
-        context.put("biomeLegend", getBiomeLegend());
+
+        Map<String, String> biomeLegend = getBiomeLegend();
+        biomeLegend.put("Farmland", "biome_legend/farmland.png");
+        biomeLegend.put("Road", "biome_legend/road_we.png");
+        biomeLegend.put("River", "biome_legend/river_we.png");
+        biomeLegend.put("Tunnel", "biome_legend/tunnel_we.png");
+        context.put("biomeLegend", biomeLegend);
+
         context.put("version", Uristmaps.VERSION);
         context.put("populations", WorldSites.getTotalPopulation());
 

@@ -44,10 +44,11 @@ port = 8000
 
 [Map]
 # The number of the highest zoom level to render. The higher it gets, the closer you can zoom in.
+# I recommend not to use higher levels than 8.
 max_zoom = 8
 
-# The minimum zoom level. If you want to zoom even further out, lower this number. Keep it above 0.
-min_zoom = 3
+# The minimum zoom level. Keep it above 0. Set it to a higher value if you wan't to skip low zoom levels.
+min_zoom = 0
 
 # The minimum distance 2 sites have to be apart from each other to not
 # be clustered together (in onscreen pixels)

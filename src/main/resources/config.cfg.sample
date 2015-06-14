@@ -62,7 +62,7 @@ max_cluster_radius = 30
 show_spoilers = no
 
 # Not yet used
-map_font = 
+map_font =
 
 [Output]
 # Use this to inject html into the resulting index.html. For example for

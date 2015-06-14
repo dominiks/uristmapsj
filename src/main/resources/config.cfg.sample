@@ -4,7 +4,11 @@
 # Only used as a shared constant in this config file
 base_dir = .
 
-# Where the exported files are stored
+# The directory where the exported files are stored. This is usually your Dwarf Fortress directory.
+# examples:
+#   export = G:\Games\Dwarf Fortress 40_24 Starter Pack\Dwarf Fortress 0.40.24
+#   export = ~/home/df40_24
+#   export = ../my_special_folder
 export = ../dwarf_fortress
 
 # The name of the region. Exported files start with this name.
@@ -57,8 +61,8 @@ max_cluster_radius = 30
 # Hide spoilery content
 show_spoilers = no
 
-# The font used to render the region names
-map_font = fonts/KaushanScript-Regular.otf
+# Not yet used
+map_font = 
 
 [Output]
 # Use this to inject html into the resulting index.html. For example for

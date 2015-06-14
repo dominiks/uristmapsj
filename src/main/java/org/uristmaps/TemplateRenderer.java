@@ -90,7 +90,8 @@ public class TemplateRenderer {
             String biomeName = FilenameUtils.removeExtension(tileFile.getName());
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
                     || biomeName.startsWith("river") || biomeName.startsWith("wall")
-                    || biomeName.startsWith("road") || biomeName.startsWith("tunnel")) {
+                    || biomeName.startsWith("road") || biomeName.startsWith("tunnel")
+                    || biomeName.startsWith("farmland") || biomeName.startsWith("bridge")) {
                 Log.trace("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
                 continue;
             }

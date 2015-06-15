@@ -65,6 +65,6 @@ show_spoilers = no
 map_font =
 
 [Output]
-# Use this to inject html into the resulting index.html. For example for
-# user tracking.
+# Here you can provide a file which will be dumped in the index.html file of the map.
+# Use this to add tracking code to the page. Leave it empty if you do not want to add anything.
 footer =

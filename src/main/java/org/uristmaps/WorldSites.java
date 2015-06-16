@@ -118,7 +118,7 @@ public class WorldSites {
         nameTransform.put("Kobold", "Kobolds");
         nameTransform.put("Marsh Titan", "Marsh Titans");
         nameTransform.put("Midnight Brute", "Midnight Brutes");
-        nameTransform.put("Minotaur", "Minotaurs");
+        nameTransform.put("Minotaur", "Minotaurs");4
         nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
         nameTransform.put("Pig", "Pigs");
         nameTransform.put("Plains Titan", "Plains Titans");
@@ -160,6 +160,7 @@ public class WorldSites {
             Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
             site.setLat(latlon.X());
             site.setLon(latlon.Y());
+            site.setCoordsMoved(true);
         }
 
         Log.debug("Sites", "Writing site info");

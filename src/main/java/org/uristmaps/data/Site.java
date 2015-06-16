@@ -23,6 +23,7 @@ public class Site {
     private double lon;
 
     private Map<String, Integer> populations;
+    private boolean coordsMoved;
 
     public Site() {}
 
@@ -148,5 +149,13 @@ public class Site {
             result.put(populations.get(popName), popName);
         }
         return result;
+    }
+
+    public void setCoordsMoved(boolean coordsMoved) {
+        this.coordsMoved = coordsMoved;
+    }
+
+    public boolean isCoordsMoved() {
+        return coordsMoved;
     }
 }

@@ -75,6 +75,12 @@ public class WorldSites {
     static Map<String, String> nameTransform = new HashMap<>();
 
     static {
+        nameTransform.put("Alligator", "Alligators");
+        nameTransform.put("Anaconda", "Anacondas");
+        nameTransform.put("Animated Dwarf", "Animated Dwarves");
+        nameTransform.put("Animated Elf", "Animated Elves");
+        nameTransform.put("Animated Human", "Animated Humans");
+        nameTransform.put("Animated Goblin", "Animated Goblins");
         nameTransform.put("Bat", "Bats");
         nameTransform.put("Bleak Man", "Bleak Men");
         nameTransform.put("Blind Horror", "Blind Horrors");
@@ -99,8 +105,11 @@ public class WorldSites {
         nameTransform.put("Giant Tiger", "Giant Tigers");
         nameTransform.put("Goblin", "Goblins");
         nameTransform.put("Goblin Outcast", "Goblin Outcasts");
+        nameTransform.put("Goose", "Geese");
         nameTransform.put("Grizzly Bear", "Grizzly Bears");
+        nameTransform.put("Groundhog", "Groundhogs");
         nameTransform.put("Hill Titan", "Hill Titans");
+        nameTransform.put("Hamster", "Hamsters");
         nameTransform.put("Human", "Humans");
         nameTransform.put("Hydra", "Hydras");
         nameTransform.put("Hyena Man", "Hyena Men");
@@ -111,14 +120,18 @@ public class WorldSites {
         nameTransform.put("Midnight Brute", "Midnight Brutes");
         nameTransform.put("Minotaur", "Minotaurs");
         nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
+        nameTransform.put("Pig", "Pigs");
         nameTransform.put("Plains Titan", "Plains Titans");
         nameTransform.put("Polar Bear", "Polar Bears");
         nameTransform.put("Roc", "Rocs");
         nameTransform.put("Sasquatch", "Sasquatches");
         nameTransform.put("Tiger Man", "Tiger Men");
+        nameTransform.put("Troll", "Trolls");
         nameTransform.put("Wicked Freak", "Wicked Freaks");
+        nameTransform.put("Wolf", "Wolves");
         nameTransform.put("Tundra Titan", "Tundra Titans");
         nameTransform.put("Wicked Creature", "Wicked Creatures");
+        nameTransform.put("Yeti", "Yetis");
     }
 
     /**

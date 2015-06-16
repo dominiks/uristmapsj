@@ -106,11 +106,17 @@ public class WorldInfo {
      * Load the saved data.
      */
     private static void loadData() {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getWorldFile()))) {
+        File worldFile = BuildFiles.getWorldFile();
+        try (Input input = new Input(new FileInputStream(worldFile))) {
             data = Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (Exception e) {
-            Log.error("WorldInfo", "Could not read world info file: " + BuildFiles.getWorldFile());
-            if (Log.DEBUG) Log.debug("WorldInfo", "Exception", e);
+            Log.warn("WorldInfo", "Error when reading world info file: " + worldFile);
+            if (worldFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                worldFile.delete();
+                Log.info("WorldInfo", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
     }

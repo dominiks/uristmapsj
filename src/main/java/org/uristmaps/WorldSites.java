@@ -413,11 +413,17 @@ public class WorldSites {
      * @return
      */
     private static Map<Integer, SitemapInfo> loadSitemaps() {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getSitemapsIndex()))) {
+        File sitemapsFile = BuildFiles.getSitemapsIndex();
+        try (Input input = new Input(new FileInputStream(sitemapsFile))) {
             return Uristmaps.kryo.readObject(input, HashMap.class);
-        } catch (FileNotFoundException e) {
-            Log.error("WorldSites", "Could not read sitemaps index.");
-            if (Log.DEBUG) Log.debug("WorldSites", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("WorldSites", "Error when reading sitemaps index file: " + sitemapsFile);
+            if (sitemapsFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                sitemapsFile.delete();
+                Log.info("WorldSites", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
         return null;

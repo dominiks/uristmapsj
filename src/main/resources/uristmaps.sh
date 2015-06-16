@@ -1,2 +1,3 @@
-#!/bin/bash
-java -Xmx2048M -Dfile.encoding=UTF8 -jar "uristmaps.jar" "$@"
+#!/bin/sh
+java -DfileEncoding=UTF-8 -jar uristmaps.jar %*
+

@@ -8,6 +8,7 @@ import org.uristmaps.data.StructureGroup;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.BuildFiles;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -144,19 +145,31 @@ public class StructureGroups {
      * Load the groupMap and group definitions from the build directory.
      */
     private static void loadFromStore() {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroups()))) {
+        File groupsFile = BuildFiles.getStructureGroups();
+        try (Input input = new Input(new FileInputStream(groupsFile))) {
             groupMap = Uristmaps.kryo.readObject(input, int[][].class);
-        } catch (FileNotFoundException e) {
-            Log.error("StructureGroups", "Could not read file: " + BuildFiles.getStructureGroups());
-            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("StructureGroups", "Error when reading structure groups file: " + groupsFile);
+            if (groupsFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                groupsFile.delete();
+                Log.info("StructureGroups", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
 
-        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroupsDefinitions()))) {
+        File defFile = BuildFiles.getStructureGroupsDefinitions();
+        try (Input input = new Input(new FileInputStream(defFile))) {
             groups = Uristmaps.kryo.readObject(input, HashMap.class);
-        } catch (FileNotFoundException e) {
-            Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
-            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("StructureGroups", "Error when reading structure groups definition file: " + defFile);
+            if (defFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                defFile.delete();
+                Log.info("StructureGroups", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
     }

@@ -8,6 +8,7 @@ import org.uristmaps.data.Site;
 import org.uristmaps.data.StructureGroup;
 import org.uristmaps.util.BuildFiles;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -144,11 +145,19 @@ public class SiteCenters {
      * @return
      */
     public static Map<Integer, Coord2> getCenters() {
+        File centersFile = BuildFiles.getSiteCenters();
         if (siteCenters == null) {
-            try (Input input = new Input(new FileInputStream(BuildFiles.getSiteCenters()))) {
+            try (Input input = new Input(new FileInputStream(centersFile))) {
                 siteCenters = Uristmaps.kryo.readObject(input, HashMap.class);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.warn("SiteCenters", "Error when reading site centers file: " + centersFile);
+                if (centersFile.exists()) {
+                    // This might have happened because an update changed the class and it can no longer be read
+                    // remove the file and re-generate it in the next run.
+                    centersFile.delete();
+                    Log.info("SiteCenters", "The file has been removed. Please try again.");
+                }
+                System.exit(1);
             }
         }
         return siteCenters;

@@ -75,11 +75,24 @@ public class WorldSites {
     static Map<String, String> nameTransform = new HashMap<>();
 
     static {
+        nameTransform.put("Alligator", "Alligators");
+        nameTransform.put("Alligator Outcast", "Alligators Outcasts");
+        nameTransform.put("Anaconda", "Anacondas");
+        nameTransform.put("Anaconda Man", "Anaconda Men");
+        nameTransform.put("Animated Dwarf", "Animated Dwarves");
+        nameTransform.put("Animated Elf", "Animated Elves");
+        nameTransform.put("Animated Human", "Animated Humans");
+        nameTransform.put("Animated Goblin", "Animated Goblins");
+        nameTransform.put("Axolotl", "Axolotls");
         nameTransform.put("Bat", "Bats");
+        nameTransform.put("Bat Man", "Bat Men");
+        nameTransform.put("Black Bear", "Black Bears");
         nameTransform.put("Bleak Man", "Bleak Men");
         nameTransform.put("Blind Horror", "Blind Horrors");
+        nameTransform.put("Blue Peafowl", "Blue Peafowls");
         nameTransform.put("Bronze Colossus", "Bronze Colossuses");
         nameTransform.put("Cat", "Cats");
+        nameTransform.put("Chicken", "Chickens");
         nameTransform.put("Cougar", "Cougars");
         nameTransform.put("Creature Of Twilight", "Creatures Of Twilight");
         nameTransform.put("Cyclops", "Cyclopses");
@@ -89,36 +102,52 @@ public class WorldSites {
         nameTransform.put("Dragon", "Dragons");
         nameTransform.put("Dusk Horror", "Dusk Horrors");
         nameTransform.put("Dwarf", "Dwarves");
+        nameTransform.put("Dwarf Outcast", "Dwarf Outcasts");
         nameTransform.put("Elf", "Elves");
+        nameTransform.put("Elf Outcast", "Elf Outcasts");
+        nameTransform.put("Elf Prisoner", "Elf Prisoners");
         nameTransform.put("Ettin", "Ettins");
         nameTransform.put("Forest Titan", "Forest Titans");
         nameTransform.put("Giant", "Giants");
+        nameTransform.put("Giant Desert Scorpion", "Giant Desert Scorpions");
         nameTransform.put("Giant Dingo", "Giant Dingoes");
         nameTransform.put("Giant Jaguar", "Giant Jaguars");
         nameTransform.put("Giant Leopard", "Giant Leopards");
         nameTransform.put("Giant Tiger", "Giant Tigers");
         nameTransform.put("Goblin", "Goblins");
         nameTransform.put("Goblin Outcast", "Goblin Outcasts");
+        nameTransform.put("Goblin Prisoner", "Goblin Prisoners");
+        nameTransform.put("Goose", "Geese");
         nameTransform.put("Grizzly Bear", "Grizzly Bears");
+        nameTransform.put("Groundhog", "Groundhogs");
         nameTransform.put("Hill Titan", "Hill Titans");
+        nameTransform.put("Hamster", "Hamsters");
         nameTransform.put("Human", "Humans");
         nameTransform.put("Hydra", "Hydras");
         nameTransform.put("Hyena Man", "Hyena Men");
         nameTransform.put("Jaguar", "Jaguars");
         nameTransform.put("Jungle Titan", "Jungle Titans");
         nameTransform.put("Kobold", "Kobolds");
+        nameTransform.put("Kobold Outcast", "Kobold Outcasts");
+        nameTransform.put("Kobold Prisoner", "Kobold Prisoners");
         nameTransform.put("Marsh Titan", "Marsh Titans");
         nameTransform.put("Midnight Brute", "Midnight Brutes");
         nameTransform.put("Minotaur", "Minotaurs");
         nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
+        nameTransform.put("Monster Of Twilight Outcast", "Monsters Of Twilight Outcasts");
+        nameTransform.put("Pig", "Pigs");
         nameTransform.put("Plains Titan", "Plains Titans");
         nameTransform.put("Polar Bear", "Polar Bears");
         nameTransform.put("Roc", "Rocs");
         nameTransform.put("Sasquatch", "Sasquatches");
         nameTransform.put("Tiger Man", "Tiger Men");
+        nameTransform.put("Troll", "Trolls");
+        nameTransform.put("Troll Outcast", "Troll Outcasts");
         nameTransform.put("Wicked Freak", "Wicked Freaks");
+        nameTransform.put("Wolf", "Wolves");
         nameTransform.put("Tundra Titan", "Tundra Titans");
         nameTransform.put("Wicked Creature", "Wicked Creatures");
+        nameTransform.put("Yeti", "Yetis");
     }
 
     /**
@@ -147,6 +176,7 @@ public class WorldSites {
             Coord2d latlon = xy2LonLat(site.getCoords().X(), site.getCoords().Y());
             site.setLat(latlon.X());
             site.setLon(latlon.Y());
+            site.setCoordsMoved(true);
         }
 
         Log.debug("Sites", "Writing site info");
@@ -399,11 +429,17 @@ public class WorldSites {
      * @return
      */
     private static Map<Integer, SitemapInfo> loadSitemaps() {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getSitemapsIndex()))) {
+        File sitemapsFile = BuildFiles.getSitemapsIndex();
+        try (Input input = new Input(new FileInputStream(sitemapsFile))) {
             return Uristmaps.kryo.readObject(input, HashMap.class);
-        } catch (FileNotFoundException e) {
-            Log.error("WorldSites", "Could not read sitemaps index.");
-            if (Log.DEBUG) Log.debug("WorldSites", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("WorldSites", "Error when reading sitemaps index file: " + sitemapsFile);
+            if (sitemapsFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                sitemapsFile.delete();
+                Log.info("WorldSites", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
         return null;
@@ -426,9 +462,16 @@ public class WorldSites {
         try (Input input = new Input(new FileInputStream(sitesFile))) {
             sites = Uristmaps.kryo.readObject(input, HashMap.class);
             return;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             Log.warn("Sites", "Error when reading state file: " + sitesFile);
+            if (sitesFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                sitesFile.delete();
+                Log.info("Sites", "The file has been removed. Please try again.");
+            }
             if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+            System.exit(1);
         }
     }
 

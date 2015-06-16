@@ -118,7 +118,7 @@ public class WorldSites {
         nameTransform.put("Kobold", "Kobolds");
         nameTransform.put("Marsh Titan", "Marsh Titans");
         nameTransform.put("Midnight Brute", "Midnight Brutes");
-        nameTransform.put("Minotaur", "Minotaurs");4
+        nameTransform.put("Minotaur", "Minotaurs");
         nameTransform.put("Monster Of Twilight", "Monsters Of Twilight");
         nameTransform.put("Pig", "Pigs");
         nameTransform.put("Plains Titan", "Plains Titans");
@@ -440,9 +440,16 @@ public class WorldSites {
         try (Input input = new Input(new FileInputStream(sitesFile))) {
             sites = Uristmaps.kryo.readObject(input, HashMap.class);
             return;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             Log.warn("Sites", "Error when reading state file: " + sitesFile);
+            if (sitesFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                sitesFile.delete();
+                Log.info("Sites", "The file has been removed. Please try again.");
+            }
             if (Log.DEBUG) Log.debug("Sites", "Exception", e);
+            System.exit(1);
         }
     }
 

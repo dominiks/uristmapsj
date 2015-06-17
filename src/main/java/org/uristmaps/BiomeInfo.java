@@ -112,9 +112,14 @@ public class BiomeInfo {
         try (Input input = new Input(new FileInputStream(biomeInfoFile))) {
             biomeData = Uristmaps.kryo.readObject(input, String[][].class);
             return biomeData;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             Log.warn("BiomeInfo", "Error when reading biome file: " + biomeInfoFile);
-            if (Log.DEBUG) Log.debug("BiomeInfo", "Exception", e);
+            if (biomeInfoFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                biomeInfoFile.delete();
+                Log.info("BiomeInfo", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
         return null;

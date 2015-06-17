@@ -6,8 +6,7 @@ import org.uristmaps.util.ExportFiles;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.uristmaps.util.Util.makeColor;
 
@@ -42,6 +41,8 @@ public class StructureInfo {
      */
     private static String[][] structures;
 
+    private static Map<String, Set<String>> connectors;
+
     static {
         colorTranslation = new HashMap<>();
         colorTranslation.put(makeColor(128, 128, 128), "castle");
@@ -55,20 +56,26 @@ public class StructureInfo {
         colorTranslation.put(makeColor(  0, 160,   0), "farmland"); // orchard
 
         colorTranslation.put(makeColor( 20,  20,  20), "tunnel");
-        // TODO: Render bridges!
-        colorTranslation.put(makeColor(224, 224, 224), "stone_bridge");
-        colorTranslation.put(makeColor(180, 167,  20), "other_bridge");
+
+        // Bridges are parsed as roads, so roads can just cross rivers where a bridge is
+        colorTranslation.put(makeColor(224, 224, 224), "bridge"); // stone_bridge
+        colorTranslation.put(makeColor(180, 167,  20), "bridge"); // other_bridge
 
         colorTranslation.put(makeColor(192, 192, 192), "road");  // stone_road
         colorTranslation.put(makeColor(150, 127,  20), "road");  // other_road
-        colorTranslation.put(makeColor( 96,  96,  96), "stone_wall");
-        colorTranslation.put(makeColor(160, 127,  20), "other_wall");
+        colorTranslation.put(makeColor( 96,  96,  96), "wall"); // stone_wall
+        colorTranslation.put(makeColor(160, 127,  20), "wall"); // other_wall
         colorTranslation.put(makeColor(  0,  96, 255), "lake");
 
         hydroColors = new HashMap<>();
         hydroColors.put(makeColor(  0, 224, 255), "river");
         hydroColors.put(makeColor(  0, 255, 255), "river");
         hydroColors.put(makeColor(  0, 112, 255), "river");
+
+        connectors = new HashMap<>();
+        connectors.put("river", new HashSet<>(Arrays.asList("bridge")));
+        connectors.put("bridge", new HashSet<>(Arrays.asList("road")));
+        connectors.put("road", new HashSet<>(Arrays.asList("bridge")));
     }
 
 
@@ -119,19 +126,20 @@ public class StructureInfo {
                 suffix.append(current).append("_");
 
                 neighbour = getData(x, y-1);
-                if (neighbour != null && neighbour.equals(current)) {
+                if (canConnect(current, neighbour)) {
                     suffix.append("n");
                 }
+
                 neighbour = getData(x-1, y);
-                if (neighbour != null && neighbour.equals(current)) {
+                if (canConnect(current, neighbour)) {
                     suffix.append("w");
                 }
                 neighbour = getData(x, y+1);
-                if (neighbour != null && neighbour.equals(current)) {
+                if (canConnect(current, neighbour)) {
                     suffix.append("s");
                 }
                 neighbour = getData(x+1, y);
-                if (neighbour != null && neighbour.equals(current)) {
+                if (canConnect(current, neighbour)) {
                     suffix.append("e");
                 }
 
@@ -150,6 +158,21 @@ public class StructureInfo {
     }
 
     /**
+     * Check if the current data and the neighbour are connected types.
+     * Types are connected if they are of the same type, or a connection is specified in
+     * the connectors-map.
+     * @param current
+     * @param neighbour
+     * @return True if the current structure can connect to the neighbour.
+     */
+    private static boolean canConnect(String current, String neighbour) {
+        if (neighbour == null) return false;
+        if (current.equals(neighbour)) return true;
+        if (connectors.containsKey(current) && connectors.get(current).contains(neighbour)) return true;
+        return false;
+    }
+
+    /**
      * Get type value for given coordinates.
      * @param x X coordinate
      * @param y Y coordinate
@@ -161,9 +184,10 @@ public class StructureInfo {
         if (x >= structImage.getWidth() || y >= structImage.getHeight()) return null;
 
         // First check if there is a river, as that is more important!
-        String result = hydroColors.get(hydroImage.getRGB(x,y));
-        if (result != null) return result;
-        return colorTranslation.get(structImage.getRGB(x, y));
+        String river = hydroColors.get(hydroImage.getRGB(x,y));
+        String struct = colorTranslation.get(structImage.getRGB(x, y));
+        if (river != null && !"bridge".equals(struct)) return river;
+        return struct;
     }
 
     /**

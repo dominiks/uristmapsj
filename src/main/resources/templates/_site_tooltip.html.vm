@@ -3,7 +3,7 @@
 
 
 Coordinates:
-#if ($site.coordsAccurate)
+#if ($site.coordsMoved)
     $site.coords
 #else
 <u><i title="These coordinates are an approximation" data-toggle="tooltip">

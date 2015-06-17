@@ -1,0 +1,20 @@
+<h1>Sites</h1>
+#foreach( $groupName in $sites.keySet() )
+    #set ($group = $sites[$groupName])
+<h3><a data-toggle="collapse" aria-expanded="false" href="#table-$groupName.replace(" ", "_")" aria-controls="table-$groupName">
+    $groupName ($group.size())</a></h3>
+<table class="table table-condensed tablesorter collapse table-bordered" id="table-$groupName.replace(" ", "_")">
+    <thead><tr><th>Site</th><th>Owner</th></tr></thead>
+    <tbody>
+    #foreach ($site in $group.values())
+        <tr>
+            <td><button class="btn btn-link btn-xs site-btn"
+                    data-lat="$site.lat" data-lon="$site.lon">
+                $site.name
+            </button></td>
+            <td>$!site.owner</td>
+        </tr>
+    #end
+    </tbody>
+</table>
+#end

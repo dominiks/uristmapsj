@@ -3,8 +3,8 @@ package org.uristmaps.util;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
-import org.uristmaps.data.FileInfo;
 import org.uristmaps.Uristmaps;
+import org.uristmaps.data.FileInfo;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,10 +40,15 @@ public class FileWatcher {
         if (storeFile.exists()) {
             try (Input input = new Input(new FileInputStream(storeFile))) {
                 fileMap = Uristmaps.kryo.readObject(input, HashMap.class);
-            } catch (FileNotFoundException e) {
-                Log.warn("FileWatcher", "Error when reading state file: " + storeFile);
-                if (Log.DEBUG) Log.debug("FileWatcher", "Exception", e);
-                fileMap = new HashMap<>();
+            } catch (Exception e) {
+                Log.warn("FileWatcher", "Error when reading file cache: " + storeFile);
+                if (storeFile.exists()) {
+                    // This might have happened because an update changed the class and it can no longer be read
+                    // remove the file and re-generate it in the next run.
+                    storeFile.delete();
+                    Log.info("FileWatcher", "The file has been removed. Please try again.");
+                }
+                System.exit(1);
             }
         } else {
             fileMap = new HashMap<>();

@@ -123,7 +123,7 @@ public class ExportFiles {
      */
     public static File[] getAllSitemaps() {
         return new File(conf.fetch("Paths", "export")).listFiles((dir, name) -> name.startsWith(
-                    String.format("%s-%s.site_map-", conf.get("Paths", "region_name"), getDate()))
+                    String.format("%s-%s-site_map-", conf.get("Paths", "region_name"), getDate()))
                 && name.endsWith(".png")
         );
     }

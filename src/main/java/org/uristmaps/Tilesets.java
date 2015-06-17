@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -110,11 +109,18 @@ public class Tilesets {
      * @return
      */
     public static Map<String, Coord2> getTilesetIndex(int level) {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getTilesetIndex(level)))) {
+        File tilesetIndex = BuildFiles.getTilesetIndex(level);
+        try (Input input = new Input(new FileInputStream(tilesetIndex))) {
             return Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (Exception e) {
-            Log.error("Tilesets", "Could not read tileset index file: " + BuildFiles.getTilesetIndex(level));
-            if (Log.DEBUG) Log.debug("Tilesets", "Exception: ", e);
+            Log.warn("Tilesets", "Error when reading tileset index file: " + tilesetIndex);
+            if (tilesetIndex.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                tilesetIndex.delete();
+                Log.info("Tilesets", "The file has been removed. Please try again.");
+            }
+            System.exit(1);
         }
         return null;
     }
@@ -166,13 +172,19 @@ public class Tilesets {
      * @return
      */
     public static Map<String, Color> getColorTable(int size) {
+        File tilesFile = BuildFiles.getTilesetColorFile(size);
         Map<String, Integer> colors = null;
         Map<String, Color> result = new HashMap<>();
-        try (Input input = new Input(new FileInputStream(BuildFiles.getTilesetColorFile(size)))) {
+        try (Input input = new Input(new FileInputStream(tilesFile))) {
             colors = Uristmaps.kryo.readObject(input, HashMap.class);
         } catch (Exception e) {
-            Log.error("Tilesets", "Could not read color table file: " + BuildFiles.getTilesetColorFile(size));
-            if (Log.DEBUG) Log.debug("Tilesets", "Exception: ", e);
+            Log.warn("Tilesets", "Error when reading tileset file: " + tilesFile);
+            if (tilesFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                tilesFile.delete();
+                Log.info("Tilesets", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
 

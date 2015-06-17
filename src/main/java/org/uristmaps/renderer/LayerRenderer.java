@@ -121,6 +121,9 @@ public abstract class LayerRenderer {
     public void work() {
         // Iterate over all levels that are to be rendered
         RenderSettings renderSettings = new RenderSettings(level);
+
+        // TODO: Check if tiles for that size are available
+
         prepareForLevel(level, renderSettings);
 
         Log.info(getName(), String.format("Rendering zoom level %d using %dpx sized graphics (%d cols).",

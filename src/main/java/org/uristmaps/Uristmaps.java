@@ -5,9 +5,10 @@ import com.esotericsoftware.minlog.Log;
 import org.ini4j.Wini;
 import org.uristmaps.data.*;
 import org.uristmaps.tasks.*;
-import org.uristmaps.util.*;
-import static org.uristmaps.util.Util.ANSI_RED;
-import static org.uristmaps.util.Util.ANSI_RESET;
+import org.uristmaps.util.BuildFiles;
+import org.uristmaps.util.ExportFiles;
+import org.uristmaps.util.FileWatcher;
+import org.uristmaps.util.OutputFiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +16,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 
+import static org.uristmaps.util.Util.ANSI_RED;
+import static org.uristmaps.util.Util.ANSI_RESET;
+
 /**
  * Entry point for uristmaps application
  */
 public class Uristmaps {
 
-    public static final String VERSION = "0.3-SNAPSHOT";
+    public static final String VERSION = "0.3.2";
 
     /**
      * The global configuration object.

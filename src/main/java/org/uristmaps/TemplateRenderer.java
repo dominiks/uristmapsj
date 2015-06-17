@@ -1,21 +1,19 @@
 package org.uristmaps;
 
 import com.esotericsoftware.minlog.Log;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.uristmaps.data.Coord2;
-import org.uristmaps.data.Coord2d;
 import org.uristmaps.data.Site;
 import org.uristmaps.data.WorldInfo;
-import org.uristmaps.util.ExportFiles;
 import org.uristmaps.util.OutputFiles;
+import sun.swing.StringUIClientPropertyKey;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
@@ -55,9 +53,35 @@ public class TemplateRenderer {
         context.put("sites", groups);
         context.put("conf", Uristmaps.conf);
         context.put("worldInfo", WorldInfo.class);
-        context.put("biomeLegend", getBiomeLegend());
+
+        Map<String, String> biomeLegend = getBiomeLegend();
+        biomeLegend.put("Farmland", "biome_legend/farmland.png");
+        biomeLegend.put("Road", "biome_legend/road_we.png");
+        biomeLegend.put("River", "biome_legend/river_we.png");
+        biomeLegend.put("Tunnel", "biome_legend/tunnel_we.png");
+        context.put("biomeLegend", biomeLegend);
+
         context.put("version", Uristmaps.VERSION);
         context.put("populations", WorldSites.getTotalPopulation());
+
+        // Check if there's a file for footer contents
+        String path = Uristmaps.conf.fetch("Output", "footer");
+        if (StringUtils.isNotEmpty(path)) {
+            File footer = new File(path);
+            if (footer.exists()) {
+                try {
+                    context.put("footer", FileUtils.readFileToString(footer));
+                } catch (IOException e) {
+                    Log.error("TemplateRenderer", "Could not read footer file: " + footer.getAbsolutePath());
+                    if (Log.DEBUG) Log.debug("TemplateRenderer", "Exception", e);
+                    System.exit(1);
+                }
+            } else {
+                Log.error("TemplateRenderer", "Footer file does not exist: " + footer.getAbsolutePath());
+            }
+        } else {
+            context.put("footer", "");
+        }
 
         Template uristJs = Velocity.getTemplate("templates/index.html.vm");
 
@@ -86,7 +110,8 @@ public class TemplateRenderer {
             String biomeName = FilenameUtils.removeExtension(tileFile.getName());
             if (biomeName.startsWith("castle") || biomeName.startsWith("village")
                     || biomeName.startsWith("river") || biomeName.startsWith("wall")
-                    || biomeName.startsWith("road") || biomeName.startsWith("tunnel")) {
+                    || biomeName.startsWith("road") || biomeName.startsWith("tunnel")
+                    || biomeName.startsWith("farmland") || biomeName.startsWith("bridge")) {
                 Log.trace("TemplateRenderer", "Skipping " + biomeName + " in biome legend.");
                 continue;
             }

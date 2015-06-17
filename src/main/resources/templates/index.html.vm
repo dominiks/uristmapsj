@@ -25,6 +25,7 @@
 
         <!-- Everyone needs it, so here it is -->
         <script src="/js/jquery.js" type="text/javascript"></script>
+        <script src="/js/jquery.tablesorter.min.js" type="text/javascript"></script>
 
         <!-- Oh all the bootstrap -->
         <!-- Latest compiled and minified CSS -->
@@ -63,21 +64,7 @@
             </div>
 
             <div class="sidebar-pane" id="sites">
-                <h1>Sites</h1>
-                #foreach( $groupName in $sites.keySet() )
-                    #set ($group = $sites[$groupName])
-                    <h4>$groupName ($group.size())</h4>
-                    <ul class="list-unstyled">
-                        #foreach ($site in $group.values())
-                            <li>
-                                <button class="btn btn-link btn-xs site-btn"
-                                        data-lat="$site.lat" data-lon="$site.lon">
-                                    $site.name
-                                </button>
-                            </li>
-                        #end
-                    </ul>
-                #end
+                #parse("templates/_site-sidebar.html.vm")
             </div>
 
             <div class="sidebar-pane" id="pops">
@@ -94,12 +81,13 @@
     <div id="map" class="map"></div>
 
     <script type="text/javascript">
-
-        var urist_version = "$version";
-        init_uristmaps();
+        $(function() {
+            var urist_version = "$version";
+            init_uristmaps();
+        });
             
     </script>
+    $footer
 
-    $conf.Output.footer
     </body>
 </html>

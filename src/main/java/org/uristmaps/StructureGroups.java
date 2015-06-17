@@ -8,6 +8,7 @@ import org.uristmaps.data.StructureGroup;
 import org.uristmaps.data.WorldInfo;
 import org.uristmaps.util.BuildFiles;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,7 +37,7 @@ public class StructureGroups {
 
     static {
         structBlacklist = new HashSet<>(Arrays.asList(
-                "river", "meadow", "crops", "orchard", "pasture", "road"
+                "river", "meadow", "crops", "orchard", "pasture", "road", "tunnel", "bridge", "farmland"
         ));
     }
 
@@ -91,18 +92,19 @@ public class StructureGroups {
                 toVisit.add(new Coord2(x+1,   y));
                 toVisit.add(new Coord2(x  , y+1));
                 toVisit.add(new Coord2(x+1, y+1));
+                toVisit.add(new Coord2(x-1, y+1));
                 while (!toVisit.isEmpty()) {
                     checkCoord = toVisit.pop();
                     cX = checkCoord.X();
                     cY = checkCoord.Y();
                     visited[cX][cY] = true;
                     int i = groupMap[cX][cY];
-                    if (i == 0) continue; // Allready added to a group
+                    if (i > 0) continue; // Already added to a group
 
                     // nothing there
                     String struct = StructureInfo.getData(cX, cY);
-                    if (struct != null
-                            && StructureInfo.getData(cX, cY).equalsIgnoreCase(currentType)) continue;
+                    if (struct == null) continue;
+                    if (!struct.equalsIgnoreCase(currentType)) continue;
 
                     // Add this tile to the group
                     groupMap[cX][cY] = currentGrp;
@@ -143,19 +145,31 @@ public class StructureGroups {
      * Load the groupMap and group definitions from the build directory.
      */
     private static void loadFromStore() {
-        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroups()))) {
+        File groupsFile = BuildFiles.getStructureGroups();
+        try (Input input = new Input(new FileInputStream(groupsFile))) {
             groupMap = Uristmaps.kryo.readObject(input, int[][].class);
-        } catch (FileNotFoundException e) {
-            Log.error("StructureGroups", "Could not read file: " + BuildFiles.getStructureGroups());
-            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("StructureGroups", "Error when reading structure groups file: " + groupsFile);
+            if (groupsFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                groupsFile.delete();
+                Log.info("StructureGroups", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
 
-        try (Input input = new Input(new FileInputStream(BuildFiles.getStructureGroupsDefinitions()))) {
+        File defFile = BuildFiles.getStructureGroupsDefinitions();
+        try (Input input = new Input(new FileInputStream(defFile))) {
             groups = Uristmaps.kryo.readObject(input, HashMap.class);
-        } catch (FileNotFoundException e) {
-            Log.error("StructureGroups", "Could not write file: " + BuildFiles.getStructureGroupsDefinitions());
-            if (Log.DEBUG) Log.debug("StructureGroups", "Exception", e);
+        } catch (Exception e) {
+            Log.warn("StructureGroups", "Error when reading structure groups definition file: " + defFile);
+            if (defFile.exists()) {
+                // This might have happened because an update changed the class and it can no longer be read
+                // remove the file and re-generate it in the next run.
+                defFile.delete();
+                Log.info("StructureGroups", "The file has been removed. Please try again.");
+            }
             System.exit(1);
         }
     }

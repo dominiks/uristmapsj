@@ -4,6 +4,8 @@ version '0.3.2'
 apply plugin: 'java'
 apply plugin: 'idea'
 
+targetCompatibility = 1.8
+
 repositories {
     mavenCentral()
 }
@@ -15,7 +17,6 @@ ext {
 
 onejar {
     product name: "uristmaps", launchers: []
-    jvmMaxMemory "2048M"
 }
 
 sourceSets {

@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <link href="/css/font-awesome.css" rel="stylesheet">
-        <link rel="stylesheet" href="/css/leaflet.css" type="text/css">
-        <link rel="stylesheet" href="/css/MarkerCluster.Default.css" type="text/css">
-        <link rel="stylesheet" href="/css/MarkerCluster.css" type="text/css">
-        <link rel="stylesheet" href="/css/leaflet-sidebar.min.css" type="text/css">
-        <link rel="stylesheet" href="/css/urist.css" type="text/css">
-        <link rel="stylesheet" href="/css/leaflet.groupedlayercontrol.min.css" type="text/css" />
+        <link href="css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/leaflet.css" type="text/css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" type="text/css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" type="text/css">
+        <link rel="stylesheet" href="css/leaflet-sidebar.min.css" type="text/css">
+        <link rel="stylesheet" href="css/urist.css" type="text/css">
+        <link rel="stylesheet" href="css/leaflet.groupedlayercontrol.min.css" type="text/css" />
         
         <style>
         body {
@@ -24,27 +24,27 @@
         </style>
 
         <!-- Everyone needs it, so here it is -->
-        <script src="/js/jquery.js" type="text/javascript"></script>
-        <script src="/js/jquery.tablesorter.min.js" type="text/javascript"></script>
+        <script src="js/jquery.js" type="text/javascript"></script>
+        <script src="js/jquery.tablesorter.min.js" type="text/javascript"></script>
 
         <!-- Oh all the bootstrap -->
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
         <!-- Optional theme -->
-        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <!-- Latest compiled and minified JavaScript -->
-        <script src="/js/bootstrap.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
 
-        <script src="/js/leaflet.js" type="text/javascript"></script>
-        <script src="/js/leaflet-sidebar.min.js" type="text/javascript"></script>
-        <script src="/js/heatmap.min.js" type="text/javascript"></script>
-        <script src="/js/leaflet-heatmap.js" type="text/javascript"></script>
-        <script src="/js/leaflet.markercluster.js" type="text/javascript"></script>
-        <script src="/js/easy-button.js" type="text/javascript"></script>
-        <script src="/js/leaflet.groupedlayercontrol.min.js" type="text/javascript"></script>
-        <script src="/js/icons.js" type="text/javascript"></script>
-        <script src="/js/urist.populations.js" type="text/javascript"></script>
-        <script src="/js/urist.js" type="text/javascript"></script>
+        <script src="js/leaflet.js" type="text/javascript"></script>
+        <script src="js/leaflet-sidebar.min.js" type="text/javascript"></script>
+        <script src="js/heatmap.min.js" type="text/javascript"></script>
+        <script src="js/leaflet-heatmap.js" type="text/javascript"></script>
+        <script src="js/leaflet.markercluster.js" type="text/javascript"></script>
+        <script src="js/easy-button.js" type="text/javascript"></script>
+        <script src="js/leaflet.groupedlayercontrol.min.js" type="text/javascript"></script>
+        <script src="js/icons.js" type="text/javascript"></script>
+        <script src="js/urist.populations.js" type="text/javascript"></script>
+        <script src="js/urist.js" type="text/javascript"></script>
         
         <title>$worldInfo.getWorldName() - $worldInfo.getNameEnglish()</title>
     </head>

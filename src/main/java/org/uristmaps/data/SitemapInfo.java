@@ -16,7 +16,7 @@ public class SitemapInfo {
     }
 
     public String getUrl() {
-        return String.format("/sitemaps/%d.png", siteId);
+        return String.format("sitemaps/%d.png", siteId);
     }
 
     public int getSiteId() {

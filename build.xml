@@ -3,7 +3,7 @@
         buildfile to create distributable package
     </description>
     <!-- set global properties for this build -->
-    <property name="version" value="0.3.2" />
+    <property name="version" value="0.3.3" />
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist" />
@@ -14,6 +14,12 @@
         <tstamp/>
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="package">
+        <exec executable="gradle">
+            <arg value="buildProduct_uristmaps" />
+        </exec>
     </target>
 
     <target name="copy_res" description="copy resources to build dir">

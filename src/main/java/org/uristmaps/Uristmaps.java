@@ -24,7 +24,7 @@ import static org.uristmaps.util.Util.ANSI_RESET;
  */
 public class Uristmaps {
 
-    public static final String VERSION = "0.3.2";
+    public static final String VERSION = "0.3.3";
 
     /**
      * The global configuration object.

@@ -16,10 +16,10 @@ function init_uristmaps() {
     window.layerControl.addOverlay(window.heatmapLayer, "Population", "Overlays");
 
     // Load the sites json containing short info for every site
-    jQuery.getJSON("/js/sitesgeo.json", process_loaded_sites);
+    jQuery.getJSON("js/sitesgeo.json", process_loaded_sites);
 
     // Load the regions data
-    jQuery.getJSON("/js/regionsgeo.json", process_loaded_regions);
+    jQuery.getJSON("js/regionsgeo.json", process_loaded_regions);
 
     setup_sidebars();
 };
@@ -38,7 +38,7 @@ function init_layer_controls() {
 
 // Create and configure the layers for biome view.
 function init_static_layers() {
-    window.biome_layer = L.tileLayer('/tiles/{z}/{x}/{y}.png', {
+    window.biome_layer = L.tileLayer('tiles/{z}/{x}/{y}.png', {
         noWrap: true,
         minZoom: $conf.Map.min_zoom,
         maxZoom: $conf.Map.max_zoom,
@@ -87,7 +87,7 @@ function toggle_detailed_map(site_id) {
         window.active_site_maps[site_id] = null;
     } else {
         // Create the overlay and add it to active_site_maps
-        var image_url = "/sites/" + site_id + ".png";
+        var image_url = "sites/" + site_id + ".png";
 
         // the .features object is a list in which the index is resolved as id-1
         for (var i = 0; i < window.sites_geojson.features.length; i++) {

@@ -1,4 +1,4 @@
-Uristmaps v0.3.2
+Uristmaps v0.3.3
 ==============
 
 Uristmaps is a world map renderer that can create google-maps like maps for your browser.
